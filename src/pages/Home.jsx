@@ -42,13 +42,13 @@ export default function Home() {
           </div>
           
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
-            Referenční
-            <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> Odkazy</span>
+            Vyzkoušej
+            <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
           </h1>
           
           <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Získej exkluzivní bonusy při registraci přes moje odkazy. 
-            Ušetříš ty i já dostanu malou provizi. Win-win!
+            Speciální výběr aplikací s aktivním bonusem do začátku. 
+            Klikni na náhled pro více informací.
           </p>
         </motion.div>
 
