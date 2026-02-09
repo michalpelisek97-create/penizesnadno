@@ -50,9 +50,16 @@ export default function LinkCard({ link, index }) {
             </div>
           )}
           
-          {/* Category Badge */}
-          <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r ${gradientClass} shadow-lg`}>
-            {categoryLabels[primaryCategory]}
+          {/* Category Badges */}
+          <div className="absolute top-3 left-3 flex flex-wrap gap-1">
+            {(link.categories || [primaryCategory]).map((cat) => (
+              <div 
+                key={cat}
+                className={`px-2.5 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r ${categoryColors[cat] || categoryColors.other} shadow-lg`}
+              >
+                {categoryLabels[cat]}
+              </div>
+            ))}
           </div>
         </div>
 
