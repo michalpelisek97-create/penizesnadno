@@ -17,7 +17,7 @@ export default function Home() {
 
   const filteredLinks = selectedCategory === 'all' 
     ? links 
-    : links.filter(link => link.category === selectedCategory);
+    : links.filter(link => link.categories?.includes(selectedCategory) || link.category === selectedCategory);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">

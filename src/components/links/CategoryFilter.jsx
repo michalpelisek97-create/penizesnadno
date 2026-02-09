@@ -5,7 +5,7 @@ import {
   Building2, 
   Percent, 
   Gamepad2, 
-  ShoppingBag, 
+  Smartphone, 
   LayoutGrid,
   Sparkles
 } from 'lucide-react';
@@ -16,7 +16,7 @@ const categories = [
   { id: 'banks', label: 'Banky', icon: Building2 },
   { id: 'cashback', label: 'Cashback', icon: Percent },
   { id: 'games', label: 'Hry', icon: Gamepad2 },
-  { id: 'shopping', label: 'Nákupy', icon: ShoppingBag },
+  { id: 'apps', label: 'Aplikace', icon: Smartphone },
 ];
 
 export default function CategoryFilter({ selected, onSelect }) {

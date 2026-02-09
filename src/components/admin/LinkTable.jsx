@@ -19,7 +19,7 @@ const categoryLabels = {
   banks: 'Banky',
   cashback: 'Cashback',
   games: 'Hry',
-  shopping: 'Nákupy',
+  apps: 'Aplikace',
   other: 'Ostatní'
 };
 
@@ -28,7 +28,7 @@ const categoryColors = {
   banks: 'bg-emerald-100 text-emerald-800',
   cashback: 'bg-pink-100 text-pink-800',
   games: 'bg-purple-100 text-purple-800',
-  shopping: 'bg-blue-100 text-blue-800',
+  apps: 'bg-blue-100 text-blue-800',
   other: 'bg-slate-100 text-slate-800'
 };
 
@@ -95,9 +95,13 @@ export default function LinkTable({ links, onEdit, onRefresh }) {
                 </div>
               </TableCell>
               <TableCell>
-                <Badge className={categoryColors[link.category]}>
-                  {categoryLabels[link.category]}
-                </Badge>
+                <div className="flex flex-wrap gap-1">
+                  {(link.categories || [link.category]).map(cat => (
+                    <Badge key={cat} className={categoryColors[cat]}>
+                      {categoryLabels[cat]}
+                    </Badge>
+                  ))}
+                </div>
               </TableCell>
               <TableCell className="text-center">
                 <Switch

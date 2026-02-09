@@ -8,7 +8,7 @@ const categoryColors = {
   banks: 'from-emerald-500 to-teal-600',
   cashback: 'from-pink-500 to-rose-600',
   games: 'from-purple-500 to-violet-600',
-  shopping: 'from-blue-500 to-indigo-600',
+  apps: 'from-blue-500 to-indigo-600',
   other: 'from-slate-500 to-slate-600'
 };
 
@@ -17,12 +17,13 @@ const categoryLabels = {
   banks: 'Banky',
   cashback: 'Cashback',
   games: 'Hry',
-  shopping: 'Nákupy',
+  apps: 'Aplikace',
   other: 'Ostatní'
 };
 
 export default function LinkCard({ link, index }) {
-  const gradientClass = categoryColors[link.category] || categoryColors.other;
+  const primaryCategory = link.categories?.[0] || link.category || 'other';
+  const gradientClass = categoryColors[primaryCategory] || categoryColors.other;
 
   return (
     <motion.div
@@ -51,7 +52,7 @@ export default function LinkCard({ link, index }) {
           
           {/* Category Badge */}
           <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r ${gradientClass} shadow-lg`}>
-            {categoryLabels[link.category]}
+            {categoryLabels[primaryCategory]}
           </div>
         </div>
 

@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, Link2, Sparkles, Globe, Image as ImageIcon } from 'lucide-react';
@@ -15,7 +16,7 @@ const categories = [
   { id: 'banks', label: 'Banky' },
   { id: 'cashback', label: 'Cashback' },
   { id: 'games', label: 'Hry' },
-  { id: 'shopping', label: 'Nákupy' },
+  { id: 'apps', label: 'Aplikace' },
   { id: 'other', label: 'Ostatní' },
 ];
 
@@ -25,7 +26,7 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
     title: '',
     description: '',
     image_url: '',
-    category: 'other',
+    categories: [],
     cta_text: 'Získat bonus',
     is_active: true,
     sort_order: 0
@@ -187,21 +188,28 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label className="text-slate-700">Kategorie *</Label>
-              <Select 
-                value={formData.category} 
-                onValueChange={(value) => setFormData({ ...formData, category: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
+              <div className="grid grid-cols-2 gap-2 p-3 border rounded-lg bg-slate-50/50">
+                {categories.map((cat) => (
+                  <div key={cat.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`cat-${cat.id}`}
+                      checked={formData.categories?.includes(cat.id)}
+                      onCheckedChange={(checked) => {
+                        const newCategories = checked
+                          ? [...(formData.categories || []), cat.id]
+                          : (formData.categories || []).filter(c => c !== cat.id);
+                        setFormData({ ...formData, categories: newCategories });
+                      }}
+                    />
+                    <label
+                      htmlFor={`cat-${cat.id}`}
+                      className="text-sm font-medium leading-none cursor-pointer"
+                    >
                       {cat.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="space-y-2">
