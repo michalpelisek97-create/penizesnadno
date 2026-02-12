@@ -157,4 +157,32 @@ export default function Admin() {
       </div>
     </div>
   );
-}
+}// Přidejte tento useEffect do Layout komponenty
+useEffect(() => {
+  const API_BASE = 'https://api.base44.com/v1/apps/YOUR_ANALYTICS_APP_ID/entities';
+  
+  const getSessionId = () => {
+    let id = sessionStorage.getItem('pr_session');
+    if (!id) {
+      id = 'sess_' + Math.random().toString(36).substr(2, 9) + Date.now();
+      sessionStorage.setItem('pr_session', id);
+    }
+    return id;
+  };
+
+  const getDeviceType = () => {
+    const ua = navigator.userAgent;
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) return 'tablet';
+    if (/Mobile|Android|iP(hone|od)|IEMobile/i.test(ua)) return 'mobile';
+    return 'desktop';
+  };
+
+  // Track page view
+  base44.entities.PageView.create({
+    session_id: getSessionId(),
+    page_url: window.location.href,
+    referrer: document.referrer,
+    device_type: getDeviceType(),
+  }).catch(() => {});
+
+}, [currentPageName]);
