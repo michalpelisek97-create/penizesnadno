@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Gift, FileText, ArrowRight } from 'lucide-react';
+import { Sparkles, Gift, FileText, ArrowRight, Banknote } from 'lucide-react';
 import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -11,7 +11,6 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
 
-  // Seznam oznámení
   const notifications = useMemo(() => [
     { name: 'Marek P.', app: 'Air Bank' },
     { name: 'Lucie K.', app: 'Honeygain' },
@@ -27,7 +26,6 @@ export default function Home() {
     { name: 'Filip N.', app: 'RollerCoin' }
   ], []);
 
-  // Interval pro oznámení
   useEffect(() => {
     const timer = setInterval(() => {
       setNotifIndex((prev) => (prev + 1) % notifications.length);
@@ -102,7 +100,6 @@ export default function Home() {
           {selectedCategory !== 'Článek' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
               {isLoading ? (
-                // Opravené skeletony: Zobrazeno 6 kusů pro lepší vizuální zaplnění gridu
                 [...Array(6)].map((_, i) => (
                   <div key={i} className="flex flex-col space-y-3">
                     <Skeleton className="h-48 w-full rounded-2xl" />
@@ -117,13 +114,9 @@ export default function Home() {
                 return (
                   <div key={link.id} className="relative">
                     {isFavorite && (
-                      <motion.div 
-                        initial={{ scale: 0.8 }}
-                        animate={{ scale: 1 }}
-                        className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce"
-                      >
+                      <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
                         🔥 NEJOBLÍBENĚJŠÍ
-                      </motion.div>
+                      </div>
                     )}
                     <LinkCard link={link} index={index} />
                   </div>
@@ -133,7 +126,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* SEKCE ČLÁNKY */}
+        {/* SEKCE ČLÁNKY (včetně Air Bank speciálu) */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'Článek' && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
@@ -142,8 +135,33 @@ export default function Home() {
                 <h2 className="text-3xl font-bold text-slate-900">Návody a články</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                {/* Air Bank článek se zobrazí jen zde */}
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="bg-gradient-to-br from-emerald-50 to-white p-8 rounded-3xl border-2 border-emerald-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+                    <Banknote className="w-24 h-24 text-emerald-600" />
+                  </div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold mb-4">
+                    PRŮVODCE
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4 text-slate-900 leading-tight group-hover:text-emerald-600 transition-colors">
+                    Návod: Jak získat 500 Kč od Air Bank
+                  </h3>
+                  <p className="text-slate-600 mb-6 leading-relaxed">
+                    Založení účtu u Air Bank je otázkou 5 minut. V tomto návodu vám ukážeme, jak správně projít registrací, kam vložit promo kód a co přesně musíte udělat, aby vám odměna 500 Kč dorazila co nejdříve...
+                  </p>
+                  <div className="flex items-center text-emerald-600 font-bold cursor-pointer hover:underline">
+                    Přečíst návod <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </motion.div>
+
+                {/* Dynamické články z API */}
                 {isLoadingArticles ? (
-                  [...Array(4)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-3xl" />)
+                  [...Array(2)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-3xl" />)
                 ) : (
                   articles.map((article) => (
                     <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all group">
