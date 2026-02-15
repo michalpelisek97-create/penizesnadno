@@ -11,7 +11,7 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
   
-  // Identifikační číslo projektu
+  // Vaše ID pro CPX Research
   const PROJECT_ID = 31456;
 
   // --- OVĚŘENÍ GOOGLE ADSENSE (META TAG + SCRIPT) ---
@@ -33,7 +33,7 @@ export default function Home() {
     };
   }, []);
 
-  // Seznam oznámení
+  // Seznam oznámení pro social proof
   const notifications = useMemo(() => [
     { name: 'Marek P.', app: 'Air Bank' },
     { name: 'Lucie K.', app: 'Honeygain' },
@@ -49,7 +49,7 @@ export default function Home() {
     { name: 'Filip N.', app: 'RollerCoin' }
   ], []);
 
-  // Interval pro oznámení
+  // Interval pro animaci oznámení
   useEffect(() => {
     const timer = setInterval(() => {
       setNotifIndex((prev) => (prev + 1) % notifications.length);
@@ -67,10 +67,10 @@ export default function Home() {
     queryFn: () => base44.entities.Article.filter({ is_active: true }, '-created_at'),
   });
 
-  // ROZDĚLENÍ DAT: Odkazy vs Články
+  // Filtrace dat: Odkazy (vyloučení kategorie Článek)
   const linksOnly = useMemo(() => allData.filter(item => item.category !== 'Článek'), [allData]);
 
-  // FILTRACE ODKAZŮ PRO MŘÍŽKU
+  // Dynamická filtrace podle vybrané kategorie
   const filteredLinks = useMemo(() => {
     if (selectedCategory === 'all') return linksOnly;
     if (selectedCategory === 'Článek' || selectedCategory === 'průzkumy') return [];
@@ -88,14 +88,14 @@ export default function Home() {
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
             <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span className="text-sm font-medium text-slate-700">Dnes aktivní bonusy (ID: {PROJECT_ID})</span>
+            <span className="text-sm font-medium text-slate-700">Dnes aktivní bonusy pro vás</span>
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
             Vyzkoušej<span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
           </h1>
         </motion.div>
 
-        {/* Social Proof */}
+        {/* Social Proof Bar */}
         <div className="flex justify-center mb-12 h-10">
           <AnimatePresence mode="wait">
             <motion.div key={notifIndex} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.1 }}
@@ -111,7 +111,7 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* SEKCE ODKAZY */}
+        {/* SEKCE ODKAZY - MŘÍŽKA */}
         <AnimatePresence mode="wait">
           {selectedCategory !== 'Článek' && selectedCategory !== 'průzkumy' && (
             <motion.div key="links-grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
@@ -134,7 +134,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* SEKCE PRŮZKUMY (CPX Research) */}
+        {/* SEKCE PRŮZKUMY (CPX Research Integration) */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'průzkumy' && (
             <motion.div key="surveys-section" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-8 mb-20">
@@ -142,7 +142,7 @@ export default function Home() {
                 <div className="p-2 rounded-lg bg-emerald-600 text-white shadow-lg"><ClipboardList className="w-5 h-5" /></div>
                 <div>
                   <h2 className="text-3xl font-bold text-slate-900">Placené průzkumy</h2>
-                  <p className="text-slate-500 text-sm font-medium tracking-tight">Získejte odměnu za svůj názor přes ID: {PROJECT_ID}.</p>
+                  <p className="text-slate-500 text-sm font-medium tracking-tight">Získejte odměnu za svůj názor.</p>
                 </div>
               </div>
               <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden min-h-[800px]">
@@ -156,7 +156,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* SEKCE ČLÁNKY */}
+        {/* SEKCE ČLÁNKY - VÝPIS */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'Článek' && (
             <motion.div key="articles-section" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
