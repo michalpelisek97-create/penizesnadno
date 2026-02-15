@@ -7,7 +7,7 @@ import {
   Gamepad2, 
   Smartphone, 
   LayoutGrid,
-  Sparkles
+  FileText // Importována ikona pro články
 } from 'lucide-react';
 
 const categories = [
@@ -17,6 +17,7 @@ const categories = [
   { id: 'cashback', label: 'Cashback', icon: Percent },
   { id: 'games', label: 'Hry', icon: Gamepad2 },
   { id: 'apps', label: 'Aplikace', icon: Smartphone },
+  { id: 'Článek', label: 'Články', icon: FileText }, // Přidaná kategorie článků
 ];
 
 export default function CategoryFilter({ selected, onSelect }) {
@@ -49,7 +50,7 @@ export default function CategoryFilter({ selected, onSelect }) {
               />
             )}
             <span className="relative z-10 flex items-center gap-2">
-              <Icon className="w-4 h-4" />
+              <Icon className={`w-4 h-4 ${isSelected ? 'text-white' : 'text-slate-500'}`} />
               {category.label}
             </span>
           </motion.button>
