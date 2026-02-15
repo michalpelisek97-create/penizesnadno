@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Gift, FileText, ArrowRight } from 'lucide-react';
+import { Sparkles, Gift, FileText, ArrowRight, ClipboardList } from 'lucide-react';
 import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -47,7 +47,7 @@ export default function Home() {
 
   const filteredLinks = useMemo(() => {
     if (selectedCategory === 'all') return links;
-    if (selectedCategory === 'Článek') return [];
+    if (selectedCategory === 'Článek' || selectedCategory === 'průzkumy') return [];
     return links.filter(link => 
       link.category === selectedCategory || 
       (Array.isArray(link.categories) && link.categories.includes(selectedCategory))
@@ -99,8 +99,12 @@ export default function Home() {
 
         {/* SEKCE ODKAZY */}
         <AnimatePresence mode="wait">
-          {selectedCategory !== 'Článek' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+          {selectedCategory !== 'Článek' && selectedCategory !== 'průzkumy' && (
+            <motion.div 
+              key="links-grid"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20"
+            >
               {isLoading ? (
                 [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
               ) : filteredLinks.map((link, index) => {
@@ -116,14 +120,53 @@ export default function Home() {
                   </div>
                 );
               })}
-            </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* SEKCE PRŮZKUMY (CPX Research) */}
+        <AnimatePresence mode="wait">
+          {selectedCategory === 'průzkumy' && (
+            <motion.div 
+              key="surveys-section"
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="space-y-8 mb-20"
+            >
+              <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
+                <div className="p-2 rounded-lg bg-emerald-600 text-white shadow-lg">
+                  <ClipboardList className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-3xl font-bold text-slate-900">Placené průzkumy</h2>
+                  <p className="text-slate-500 text-sm font-medium">Vydělávejte peníze sdílením svého názoru</p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden min-h-[800px]">
+                <iframe 
+                  width="100%" 
+                  frameBorder="0" 
+                  height="1000px" 
+                  title="CPX Research Surveys"
+                  src="https://offers.cpx-research.com"
+                  className="w-full"
+                />
+              </div>
+            </motion.div>
           )}
         </AnimatePresence>
 
         {/* SEKCE ČLÁNKY */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'Článek' && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+            <motion.div 
+              key="articles-section"
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              className="space-y-8"
+            >
                <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
                 <FileText className="w-6 h-6 text-purple-600" />
                 <h2 className="text-3xl font-bold text-slate-900">Návody a články</h2>
