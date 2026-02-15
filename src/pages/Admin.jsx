@@ -2,158 +2,54 @@ import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Link2, LayoutGrid, Settings, ArrowLeft, FileText } from 'lucide-react'; // Přidáno FileText
+import { Plus, Link2, ArrowLeft, FileText, Save, X, Trash2, Edit3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
-// Importy pro Odkazy
+// Importy pro referral odkazy
 import LinkForm from '@/components/admin/LinkForm';
 import LinkTable from '@/components/admin/LinkTable';
-
-// --- PŘEDPOKLAD: Vytvoř si podobné komponenty pro články ---
-// import ArticleForm from '@/components/admin/ArticleForm';
-// import ArticleTable from '@/components/admin/ArticleTable';
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState('links');
   const [showForm, setShowForm] = useState(false);
-  const [editingItem, setEditingItem] = useState(null); // Přejmenováno z editingLink pro obecnost
+  const [editingItem, setEditingItem] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const queryClient = useQueryClient();
 
-  // Query pro Odkazy
-  const { data: links = [] } = useQuery({
+  // Načítáme vše z ReferralLink
+  const { data: allItems = [] } = useQuery({
     queryKey: ['admin-links'],
     queryFn: () => base44.entities.ReferralLink.list('sort_order'),
   });
 
-  // Query pro Články
-  const { data: articles = [] } = useQuery({
-    queryKey: ['admin-articles'],
-    queryFn: () => base44.entities.Article.list('-created_at'), // Řazení od nejnovějších
-  });
+  const links = allItems.filter(item => item.category !== 'Článek');
+  const articles = allItems.filter(item => item.category === 'Článek');
 
   const handleSuccess = () => {
-    queryClient.invalidateQueries({ queryKey: [activeTab === 'links' ? 'admin-links' : 'admin-articles'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-links'] });
+    queryClient.invalidateQueries({ queryKey: ['referral-links'] });
     setShowForm(false);
     setEditingItem(null);
   };
-
-  const handleEdit = (item) => {
-    setEditingItem(item);
-    setShowForm(true);
-  };
-
-  const handleCancel = () => {
-    setShowForm(false);
-    setEditingItem(null);
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <Link to={createPageUrl('Home')}>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-            </Link>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900">Správa obsahu</h1>
-              <p className="text-sm text-slate-500">Spravuj své odkazy a články na jednom místě</p>
-            </div>
-          </div>
-          
-          {!showForm && (
-            <Button 
-              onClick={() => { setEditingItem(null); setShowForm(true); }}
-              className="bg-slate-900 hover:bg-slate-800"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              {activeTab === 'links' ? 'Přidat odkaz' : 'Napsat článek'}
-            </Button>
-          )}
-        </div>
-
-        {/* Přepínač sekcí */}
-        {!showForm && (
-          <Tabs defaultValue="links" className="mb-8" onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2 max-w-[400px]">
-              <TabsTrigger value="links" className="flex gap-2">
-                <Link2 className="w-4 h-4" /> Odkazy
-              </TabsTrigger>
-              <TabsTrigger value="articles" className="flex gap-2">
-                <FileText className="w-4 h-4" /> Články
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        )}
-
-        {/* Obsah (Formuláře / Tabulky) */}
-        <AnimatePresence mode="wait">
-          {showForm ? (
-            <motion.div
-              key="form"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-            >
-              {activeTab === 'links' ? (
-                <LinkForm onSuccess={handleSuccess} editingLink={editingItem} onCancel={handleCancel} />
-              ) : (
-                /* Zde bude tvůj ArticleForm */
-                <div className="bg-white p-8 rounded-xl border">Formulář pro články (ArticleForm) zatím není vytvořen.</div>
-              )}
-            </motion.div>
-          ) : (
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -10 }}
-            >
-              {activeTab === 'links' ? (
-                <LinkTable 
-                  links={links} 
-                  onEdit={handleEdit}
-                  onRefresh={() => queryClient.invalidateQueries({ queryKey: ['admin-links'] })}
-                />
-              ) : (
-                /* Zde bude tvá ArticleTable */
-                <div className="bg-white p-8 rounded-xl border text-center text-slate-500">
-                  Tabulka článků (ArticleTable) zatím není vytvořena. <br/>
-                  Počet článků v databázi: {articles.length}
-                </div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
-  );
-}// ... (vaše importy)
-
-export default function Admin() {
-  // ... (stavy a query zůstávají stejné)
 
   const handleArticleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     const formData = new FormData(e.currentTarget);
     
-    // KLÍČOVÁ ZMĚNA: Vynucení prázdných polí, aby to nebyl referral
     const data = {
       title: formData.get('title'),
-      description: formData.get('content'), // Obsah článku
-      category: 'Článek',                 // Identifikátor pro filtraci
-      url: '',                            // Článek NESMÍ mít URL
-      reward: '',                         // Článek NESMÍ mít odměnu
+      description: formData.get('content'), 
+      category: 'Článek',
+      url: '', 
+      reward: '',
       is_active: true,
-      sort_order: 999                     // Články až na konci
+      sort_order: 0
     };
 
     try {
@@ -164,11 +60,95 @@ export default function Admin() {
       }
       handleSuccess();
     } catch (error) {
-      alert("Chyba při ukládání: " + error.message);
+      console.error(error);
+      alert("Chyba při ukládání článku.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // ... (zbytek Adminu s Tabs a Formem)
+  const handleDelete = async (id) => {
+    if (!window.confirm("Opravdu smazat?")) return;
+    try {
+      await base44.entities.ReferralLink.delete(id);
+      handleSuccess();
+    } catch (e) { alert("Smazání selhalo."); }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+      <div className="max-w-5xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <Link to={createPageUrl('Home')}>
+              <Button variant="ghost" size="icon" className="rounded-full">
+                <ArrowLeft className="w-5 h-5" />
+              </Button>
+            </Link>
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900">Správa webu</h1>
+              <p className="text-sm text-slate-500">Odkazy a články</p>
+            </div>
+          </div>
+          
+          {!showForm && (
+            <Button onClick={() => { setEditingItem(null); setShowForm(true); }} className="bg-slate-900">
+              <Plus className="w-4 h-4 mr-2" />
+              {activeTab === 'links' ? 'Nový odkaz' : 'Napsat článek'}
+            </Button>
+          )}
+        </div>
+
+        {!showForm && (
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
+            <TabsList className="grid w-full grid-cols-2 max-w-[400px]">
+              <TabsTrigger value="links">Odkazy ({links.length})</TabsTrigger>
+              <TabsTrigger value="articles">Články ({articles.length})</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        )}
+
+        <AnimatePresence mode="wait">
+          {showForm ? (
+            <motion.div key="form" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+              {activeTab === 'links' ? (
+                <LinkForm onSuccess={handleSuccess} editingLink={editingItem} onCancel={() => setShowForm(false)} />
+              ) : (
+                <form onSubmit={handleArticleSubmit} className="bg-white p-6 rounded-xl border space-y-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-bold">Článek</h2>
+                    <Button type="button" variant="ghost" onClick={() => setShowForm(false)}><X className="w-4 h-4" /></Button>
+                  </div>
+                  <Input name="title" defaultValue={editingItem?.title} required placeholder="Nadpis" />
+                  <Textarea name="content" defaultValue={editingItem?.description} required placeholder="Text..." className="min-h-[300px]" />
+                  <div className="flex gap-3">
+                    <Button type="submit" disabled={isSubmitting} className="bg-slate-900">Uložit</Button>
+                    <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Zrušit</Button>
+                  </div>
+                </form>
+              )}
+            </motion.div>
+          ) : (
+            <motion.div key={activeTab} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              {activeTab === 'links' ? (
+                <LinkTable links={links} onEdit={(item) => { setEditingItem(item); setShowForm(true); }} />
+              ) : (
+                <div className="grid gap-4">
+                  {articles.map(art => (
+                    <div key={art.id} className="bg-white p-4 rounded-xl border flex justify-between items-center shadow-sm">
+                      <div className="font-bold">{art.title}</div>
+                      <div className="flex gap-2">
+                        <Button variant="ghost" size="sm" onClick={() => { setEditingItem(art); setShowForm(true); }}><Edit3 className="w-4 h-4" /></Button>
+                        <Button variant="ghost" size="sm" className="text-red-500" onClick={() => handleDelete(art.id)}><Trash2 className="w-4 h-4" /></Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
 }
