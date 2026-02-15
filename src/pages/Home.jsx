@@ -11,6 +11,23 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
 
+  // --- GOOGLE ADSENSE NACÍTÁNÍ ---
+  useEffect(() => {
+    // Vytvoření skriptu
+    const script = document.createElement('script');
+    script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3492240221253160";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    
+    // Přidání do hlavičky (head)
+    document.head.appendChild(script);
+
+    return () => {
+      // Úklid při opuštění stránky
+      document.head.removeChild(script);
+    };
+  }, []);
+
   // Fake data pro oznámení
   const notifications = useMemo(() => [
     { name: 'Marek P.', app: 'Air Bank' },
@@ -55,7 +72,6 @@ export default function Home() {
 
   const isLoading = isLoadingLinks || isLoadingArticles;
 
-  // Animace padajících mincí (vytvoříme 10 mincí s náhodnou pozicí)
   const coins = useMemo(() => [...Array(10)].map((_, i) => ({
     id: i,
     left: Math.random() * 100 + "%",
@@ -132,9 +148,7 @@ export default function Home() {
               {isLoading ? (
                 [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
               ) : filteredLinks.map((link, index) => {
-                // TADY PŘIDÁVÁME SPECIÁLNÍ ŠTÍTEK PRO TVÉ OBLÍBENÉ BANKY
                 const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
-                
                 return (
                   <div key={link.id} className="relative">
                     {isFavorite && (
