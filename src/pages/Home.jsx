@@ -11,27 +11,6 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
 
-  // --- BEZPEČNÉ GENEROVÁNÍ URL PŘES BASE64 ---
-  const finalCpxUrl = useMemo(() => {
-    if (typeof window === 'undefined') return "";
-    
-    let storedId = localStorage.getItem('cpx_user_id');
-    if (!storedId) {
-      storedId = 'user_' + Math.floor(Math.random() * 1000000);
-      localStorage.setItem('cpx_user_id', storedId);
-    }
-
-    // Zakódovaná základní část URL, aby do ní systém nezasahoval
-    // Obsahuje: https://offers.cpx-research.com
-    const base64Url = "aHR0cHM6Ly9vZmZlcnMuY3B4LXJlc2VhcmNoLmNvbS9pbmRleS5waHA/YXBwX2lkPTMxNDU2JmV4dF91c2VyX2lkPQ==";
-    
-    try {
-      return atob(base64Url) + storedId;
-    } catch (e) {
-      return "https://offers.cpx-research.com" + storedId;
-    }
-  }, []);
-
   // --- GOOGLE ADSENSE ---
   useEffect(() => {
     const meta = document.createElement('meta');
@@ -98,25 +77,11 @@ export default function Home() {
         <div className="text-center mb-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
             <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span className="text-sm font-medium text-slate-700">Dnes aktivní bonusy pro vás</span>
+            <span className="text-sm font-medium text-slate-700">Aktivní bonusy (ID 31456)</span>
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
             Vyzkoušej<span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
           </h1>
-        </div>
-
-        {/* Social Proof */}
-        <div className="flex justify-center mb-12 h-10">
-          <AnimatePresence mode="wait">
-            <motion.div key={notifIndex} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white border border-emerald-100 shadow-sm"
-            >
-              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-sm font-medium text-slate-700">
-                <span className="font-bold">{notifications[notifIndex].name}</span> u <span className="text-emerald-600 font-bold">{notifications[notifIndex].app}</span>
-              </p>
-            </motion.div>
-          </AnimatePresence>
         </div>
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
@@ -134,29 +99,32 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* SEKCE PRŮZKUMY */}
+        {/* PRŮZKUMY - ČISTÉ HTML ŘEŠENÍ */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'průzkumy' && (
             <motion.div key="surveys-section" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 mb-20">
               <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
                 <div className="p-2 rounded-lg bg-emerald-600 text-white shadow-lg"><ClipboardList className="w-5 h-5" /></div>
-                <div>
-                  <h2 className="text-3xl font-bold text-slate-900">Placené průzkumy</h2>
-                  <p className="text-slate-500 text-sm font-medium tracking-tight">Odměna za váš názor (ID: 31456)</p>
-                </div>
+                <h2 className="text-3xl font-bold text-slate-900">Placené průzkumy</h2>
               </div>
-              <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden min-h-[800px]">
+              
+              <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden">
+                {/* 
+                   POZOR: Zde je URL vložená jako prostý text. 
+                   Pokud ani toto nepůjde, problém je v zabezpečení vašeho serveru (Content Security Policy), 
+                   který zakazuje načítání cizích stránek.
+                */}
                 <iframe 
-                  src={finalCpxUrl} 
+                  src="https://offers.cpx-research.com"
                   style={{ width: '100%', height: '800px', border: 'none' }}
-                  title="CPX Research"
+                  title="Surveys"
                 />
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* ČLÁNKY */}
+        {/* SEKCE ČLÁNKY */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'Článek' && (
             <motion.div key="articles-section" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
