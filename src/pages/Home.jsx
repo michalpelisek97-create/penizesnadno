@@ -11,20 +11,19 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
 
-  // --- GOOGLE ADSENSE NACÍTÁNÍ ---
+  // --- OVĚŘENÍ GOOGLE ADSENSE ---
   useEffect(() => {
-    // Vytvoření skriptu
     const script = document.createElement('script');
     script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3492240221253160";
     script.async = true;
     script.crossOrigin = "anonymous";
-    
-    // Přidání do hlavičky (head)
     document.head.appendChild(script);
 
     return () => {
-      // Úklid při opuštění stránky
-      document.head.removeChild(script);
+      // Úklid skriptu při opuštění komponenty
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
     };
   }, []);
 
@@ -72,36 +71,8 @@ export default function Home() {
 
   const isLoading = isLoadingLinks || isLoadingArticles;
 
-  const coins = useMemo(() => [...Array(10)].map((_, i) => ({
-    id: i,
-    left: Math.random() * 100 + "%",
-    delay: Math.random() * 2,
-    duration: 3 + Math.random() * 2
-  })), []);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 overflow-hidden">
-      
-      {/* ANIMACE PADAJÍCÍCH MINCÍ V POZADÍ */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        {coins.map((coin) => (
-          <motion.div
-            key={coin.id}
-            initial={{ y: -50, opacity: 0 }}
-            animate={{ y: "110vh", opacity: [0, 1, 1, 0], rotate: 360 }}
-            transition={{ 
-              duration: coin.duration, 
-              delay: coin.delay, 
-              repeat: Infinity,
-              ease: "linear" 
-            }}
-            style={{ left: coin.left, position: 'absolute' }}
-          >
-            <Coins className="text-amber-400/20 w-8 h-8" />
-          </motion.div>
-        ))}
-      </div>
-
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-12 sm:py-16">
         
         {/* Header */}
