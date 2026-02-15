@@ -30,7 +30,6 @@ export default function Home() {
     };
   }, []);
 
-  // Notifikace pro Social Proof
   const notifications = useMemo(() => [
     { name: 'Marek P.', app: 'Air Bank' },
     { name: 'Lucie K.', app: 'Honeygain' },
@@ -78,7 +77,7 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 overflow-hidden">
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-12 sm:py-16">
         
-        {/* Hero sekce */}
+        {/* Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
             <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
@@ -89,7 +88,7 @@ export default function Home() {
           </h1>
         </motion.div>
 
-        {/* Social Proof Bar */}
+        {/* Social Proof */}
         <div className="flex justify-center mb-12 h-10">
           <AnimatePresence mode="wait">
             <motion.div key={notifIndex} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.1 }}
@@ -105,7 +104,7 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* MŘÍŽKA ODKAZŮ */}
+        {/* ODKAZY */}
         <AnimatePresence mode="wait">
           {selectedCategory !== 'Článek' && selectedCategory !== 'průzkumy' && (
             <motion.div key="links-grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
@@ -128,7 +127,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* SEKCE PRŮZKUMY (Opraveno na statický text) */}
+        {/* PRŮZKUMY - OPRAVENÁ URL STRUKTURA */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'průzkumy' && (
             <motion.div key="surveys-section" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-8 mb-20">
@@ -136,13 +135,13 @@ export default function Home() {
                 <div className="p-2 rounded-lg bg-emerald-600 text-white shadow-lg"><ClipboardList className="w-5 h-5" /></div>
                 <div>
                   <h2 className="text-3xl font-bold text-slate-900">Placené průzkumy</h2>
-                  <p className="text-slate-500 text-sm font-medium tracking-tight">Vydělávejte peníze za svůj názor (ID: 31456).</p>
+                  <p className="text-slate-500 text-sm font-medium tracking-tight">Získejte odměnu za svůj názor (ID: 31456).</p>
                 </div>
               </div>
               <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden min-h-[800px]">
                 <iframe 
                   src="https://offers.cpx-research.com"
-                  style={{ width: '100%', height: '800px', border: 'none' }}
+                  style={{ width: "100%", height: "800px", border: "none" }}
                   title="CPX Research Surveys"
                 />
               </div>
