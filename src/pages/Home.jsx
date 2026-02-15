@@ -11,29 +11,7 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
 
-  // --- OVĚŘENÍ GOOGLE ADSENSE (META TAG + SCRIPT) ---
-  useEffect(() => {
-    // 1. Vložení Meta tagu pro ověření účtu
-    const meta = document.createElement('meta');
-    meta.name = "google-adsense-account";
-    meta.content = "ca-pub-3492240221253160";
-    document.head.appendChild(meta);
-
-    // 2. Vložení hlavního AdSense skriptu
-    const script = document.createElement('script');
-    script.src = "https://pagead2.googlesyndication.com";
-    script.async = true;
-    script.crossOrigin = "anonymous";
-    document.head.appendChild(script);
-
-    return () => {
-      // Úklid při opuštění stránky
-      if (document.head.contains(meta)) document.head.removeChild(meta);
-      if (document.head.contains(script)) document.head.removeChild(script);
-    };
-  }, []);
-
-  // Tvůj seznam oznámení (beze změny)
+  // Seznam oznámení
   const notifications = useMemo(() => [
     { name: 'Marek P.', app: 'Air Bank' },
     { name: 'Lucie K.', app: 'Honeygain' },
@@ -49,6 +27,7 @@ export default function Home() {
     { name: 'Filip N.', app: 'RollerCoin' }
   ], []);
 
+  // Interval pro oznámení
   useEffect(() => {
     const timer = setInterval(() => {
       setNotifIndex((prev) => (prev + 1) % notifications.length);
