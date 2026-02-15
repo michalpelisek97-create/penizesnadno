@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Gift, FileText, ArrowRight, Coins } from 'lucide-react';
+import { Sparkles, Gift, FileText, ArrowRight } from 'lucide-react';
 import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -11,23 +11,29 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
 
-  // --- OVĚŘENÍ GOOGLE ADSENSE ---
+  // --- OVĚŘENÍ GOOGLE ADSENSE (META TAG + SCRIPT) ---
   useEffect(() => {
+    // 1. Vložení Meta tagu pro ověření účtu
+    const meta = document.createElement('meta');
+    meta.name = "google-adsense-account";
+    meta.content = "ca-pub-3492240221253160";
+    document.head.appendChild(meta);
+
+    // 2. Vložení hlavního AdSense skriptu
     const script = document.createElement('script');
-    script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3492240221253160";
+    script.src = "https://pagead2.googlesyndication.com";
     script.async = true;
     script.crossOrigin = "anonymous";
     document.head.appendChild(script);
 
     return () => {
-      // Úklid skriptu při opuštění komponenty
-      if (document.head.contains(script)) {
-        document.head.removeChild(script);
-      }
+      // Úklid při opuštění stránky
+      if (document.head.contains(meta)) document.head.removeChild(meta);
+      if (document.head.contains(script)) document.head.removeChild(script);
     };
   }, []);
 
-  // Fake data pro oznámení
+  // Tvůj seznam oznámení (beze změny)
   const notifications = useMemo(() => [
     { name: 'Marek P.', app: 'Air Bank' },
     { name: 'Lucie K.', app: 'Honeygain' },
@@ -149,7 +155,7 @@ export default function Home() {
                     <h3 className="text-2xl font-bold mb-4 text-slate-900 leading-tight">{article.title}</h3>
                     <p className="text-slate-600 mb-6 line-clamp-4 leading-relaxed">{article.content}</p>
                     <div className="flex items-center text-slate-900 font-bold group cursor-pointer">
-                      Přečíst celý článek <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
+                      Přečíst celý článek <ArrowRight className="w-4 h-4 ml-2" />
                     </div>
                   </div>
                 ))}
