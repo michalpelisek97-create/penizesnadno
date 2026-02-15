@@ -10,7 +10,17 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
-  const [isAirBankOpen, setIsAirBankOpen] = useState(false); // Stav pro rozbalení návodu
+  const [isAirBankOpen, setIsAirBankOpen] = useState(false);
+  
+  // 1. Logika pro Live Counter úspor
+  const [savings, setSavings] = useState(142500);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSavings(prev => prev + Math.floor(Math.random() * 80) + 20);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, []);
 
   const notifications = useMemo(() => [
     { name: 'Marek P.', app: 'Air Bank' },
@@ -74,6 +84,21 @@ export default function Home() {
             Vyzkoušej
             <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
           </h1>
+
+          {/* IMPLEMENTACE COUNTERU */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="flex flex-col items-center mt-4"
+          >
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-slate-400 mb-1">
+              Celkem ušetřeno komunitou
+            </span>
+            <div className="text-2xl sm:text-3xl font-black text-emerald-600 tabular-nums drop-shadow-sm">
+              {savings.toLocaleString('cs-CZ')} Kč
+            </div>
+          </motion.div>
         </motion.div>
 
         {/* Social Proof Oznámení */}
@@ -168,30 +193,32 @@ export default function Home() {
                       >
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div className="flex flex-col gap-2">
-                            <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">1</div>
-                            <p className="text-sm font-semibold">Založte si běžný účet online</p>
+                            <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">1</div>
+                            <p className="text-sm font-semibold text-slate-800">Založte si běžný účet online</p>
                           </div>
                           <div className="flex flex-col gap-2">
-                            <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">2</div>
-                            <p className="text-sm font-semibold">Zaplaťte kartou v jakékoliv výši</p>
+                            <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">2</div>
+                            <p className="text-sm font-semibold text-slate-800">Zaplaťte kartou v jakékoliv výši</p>
                           </div>
                           <div className="flex flex-col gap-2">
-                            <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">3</div>
-                            <p className="text-sm font-semibold">Bonus 500 Kč vám banka připíše na účet</p>
+                            <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">3</div>
+                            <p className="text-sm font-semibold text-slate-800">Bonus 500 Kč dorazí na účet</p>
                           </div>
                         </div>
 
-                        <div className="bg-white p-6 rounded-2xl border border-emerald-200 shadow-inner">
-                          <p className="text-sm text-slate-500 mb-3">Váš unikátní registrační odkaz:</p>
-                          <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200 truncate">
-                            <code className="text-emerald-700 font-bold flex-1 truncate">https://www.airbank.cz/pozvani-pratel?referrer=52awyx</code>
+                        <div className="bg-white p-5 rounded-2xl border border-emerald-100 shadow-inner">
+                          <p className="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-wider text-center">Registrační odkaz</p>
+                          <div className="flex flex-col sm:flex-row items-center gap-3">
+                            <code className="text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 text-emerald-700 font-mono w-full truncate">
+                              https://www.airbank.cz
+                            </code>
                             <a 
-                              href="https://www.airbank.cz/pozvani-pratel?referrer=52awyx" 
+                              href="https://www.airbank.cz" 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-emerald-700 transition-colors"
+                              className="w-full sm:w-auto bg-emerald-600 text-white px-6 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-emerald-700 transition-all whitespace-nowrap shadow-lg shadow-emerald-100"
                             >
-                              Otevřít <ArrowRight className="w-4 h-4" />
+                              Získat bonus <ArrowRight className="w-4 h-4" />
                             </a>
                           </div>
                         </div>
@@ -201,33 +228,29 @@ export default function Home() {
 
                   <button 
                     onClick={() => setIsAirBankOpen(!isAirBankOpen)}
-                    className="flex items-center text-emerald-600 font-bold group cursor-pointer"
+                    className="flex items-center text-emerald-600 font-bold hover:underline transition-all"
                   >
-                    {isAirBankOpen ? 'Zavřít návod' : 'Přečíst návod krok za krokem'} 
-                    <ArrowRight className={`w-4 h-4 ml-2 transition-transform ${isAirBankOpen ? 'rotate-90' : 'group-hover:translate-x-1'}`} />
+                    {isAirBankOpen ? 'Zavřít detail' : 'Přečíst návod'} 
+                    <ArrowRight className={`w-4 h-4 ml-2 transition-transform ${isAirBankOpen ? 'rotate-90' : ''}`} />
                   </button>
                 </motion.div>
 
-                {/* DYNAMICKÉ ČLÁNKY */}
-                {isLoadingArticles ? (
-                  [...Array(2)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-3xl" />)
-                ) : (
-                  articles.map((article) => (
-                    <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all group">
-                      <h3 className="text-2xl font-bold mb-4 text-slate-900 leading-tight group-hover:text-purple-600 transition-colors">{article.title}</h3>
-                      <p className="text-slate-600 mb-6 line-clamp-4 leading-relaxed">{article.content}</p>
-                      <div className="flex items-center text-slate-900 font-bold cursor-pointer underline decoration-slate-200 underline-offset-4">
-                        Přečíst celý článek <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                      </div>
+                {/* Dynamické články */}
+                {articles.map((article) => (
+                  <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all">
+                    <h3 className="text-2xl font-bold mb-4 text-slate-900 leading-tight">{article.title}</h3>
+                    <p className="text-slate-600 mb-6 line-clamp-4 leading-relaxed">{article.content}</p>
+                    <div className="flex items-center text-slate-900 font-bold group cursor-pointer">
+                      Přečíst celý článek <ArrowRight className="w-4 h-4 ml-2" />
                     </div>
-                  ))
-                )}
+                  </div>
+                ))}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <footer className="text-center mt-16 pt-8 border-t border-slate-200/60 text-sm text-slate-500">
+        <footer className="text-center mt-16 pt-8 border-t border-slate-200/60 text-sm text-slate-500 font-medium">
           Všechny bonusy jsou aktuální k {new Date().toLocaleDateString('cs-CZ')}.
         </footer>
       </div>
