@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Gift, FileText, ArrowRight, Banknote, CheckCircle2, Copy } from 'lucide-react';
+import { Sparkles, Gift, FileText, ArrowRight, Banknote, CheckCircle2, Share2 } from 'lucide-react';
 import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -12,8 +12,8 @@ export default function Home() {
   const [notifIndex, setNotifIndex] = useState(0);
   const [isAirBankOpen, setIsAirBankOpen] = useState(false);
   
-  // 1. Logika pro Live Counter úspor
-  const [savings, setSavings] = useState(142500);
+  // Logika pro Live Counter úspor
+  const [savings, setSavings] = useState(143202);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -21,6 +21,20 @@ export default function Home() {
     }, 4500);
     return () => clearInterval(interval);
   }, []);
+
+  const handleShare = async () => {
+    try {
+      await navigator.share({
+        title: 'Vyzkoušej & Ušetři',
+        text: 'Koukni na tyhle aktivní bonusy a ušetři taky!',
+        url: window.location.href,
+      });
+    } catch (err) {
+      // Fallback pokud prohlížeč nepodporuje sharing API
+      navigator.clipboard.writeText(window.location.href);
+      alert('Odkaz zkopírován do schránky!');
+    }
+  };
 
   const notifications = useMemo(() => [
     { name: 'Marek P.', app: 'Air Bank' },
@@ -84,21 +98,6 @@ export default function Home() {
             Vyzkoušej
             <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
           </h1>
-
-          {/* IMPLEMENTACE COUNTERU */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="flex flex-col items-center mt-4"
-          >
-            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-slate-400 mb-1">
-              Celkem ušetřeno komunitou
-            </span>
-            <div className="text-2xl sm:text-3xl font-black text-emerald-600 tabular-nums drop-shadow-sm">
-              {savings.toLocaleString('cs-CZ')} Kč
-            </div>
-          </motion.div>
         </motion.div>
 
         {/* Social Proof Oznámení */}
@@ -162,16 +161,16 @@ export default function Home() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 
-                {/* AIR BANK ČLÁNEK S FUNKČNÍM ROZBALENÍM */}
+                {/* AIR BANK ČLÁNEK */}
                 <motion.div 
                   layout
-                  className={`bg-gradient-to-br from-emerald-50 to-white p-8 rounded-3xl border-2 border-emerald-100 shadow-sm transition-all relative overflow-hidden ${isAirBankOpen ? 'md:col-span-2' : ''}`}
+                  className={`bg-white p-8 rounded-3xl border-2 border-emerald-100 shadow-sm transition-all relative overflow-hidden ${isAirBankOpen ? 'md:col-span-2' : ''}`}
                 >
                   <div className="absolute top-0 right-0 p-4 opacity-10">
                     <Banknote className="w-24 h-24 text-emerald-600" />
                   </div>
                   
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold mb-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold mb-4 text-center">
                     PRŮVODCE
                   </div>
 
@@ -206,17 +205,17 @@ export default function Home() {
                           </div>
                         </div>
 
-                        <div className="bg-white p-5 rounded-2xl border border-emerald-100 shadow-inner">
-                          <p className="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-wider text-center">Registrační odkaz</p>
+                        <div className="bg-slate-50 p-5 rounded-2xl border border-emerald-100 text-center sm:text-left">
+                          <p className="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-wider uppercase tracking-widest">Tvůj registrační odkaz</p>
                           <div className="flex flex-col sm:flex-row items-center gap-3">
-                            <code className="text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 text-emerald-700 font-mono w-full truncate">
+                            <code className="text-xs bg-white p-3 rounded-lg border border-slate-100 text-emerald-700 font-mono w-full truncate">
                               https://www.airbank.cz
                             </code>
                             <a 
                               href="https://www.airbank.cz" 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="w-full sm:w-auto bg-emerald-600 text-white px-6 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-emerald-700 transition-all whitespace-nowrap shadow-lg shadow-emerald-100"
+                              className="w-full sm:w-auto bg-emerald-600 text-white px-6 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-emerald-700 transition-all whitespace-nowrap"
                             >
                               Získat bonus <ArrowRight className="w-4 h-4" />
                             </a>
@@ -240,7 +239,7 @@ export default function Home() {
                   <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all">
                     <h3 className="text-2xl font-bold mb-4 text-slate-900 leading-tight">{article.title}</h3>
                     <p className="text-slate-600 mb-6 line-clamp-4 leading-relaxed">{article.content}</p>
-                    <div className="flex items-center text-slate-900 font-bold group cursor-pointer">
+                    <div className="flex items-center text-slate-900 font-bold group cursor-pointer text-center">
                       Přečíst celý článek <ArrowRight className="w-4 h-4 ml-2" />
                     </div>
                   </div>
@@ -250,7 +249,35 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        <footer className="text-center mt-16 pt-8 border-t border-slate-200/60 text-sm text-slate-500 font-medium">
+        {/* --- LIVE COUNTER A SDÍLENÍ --- */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-24 mb-12 flex flex-col items-center py-10 px-6 bg-white rounded-[2.5rem] border border-slate-200 shadow-sm"
+        >
+          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-slate-400 mb-2">
+            Celkem ušetřeno komunitou
+          </span>
+          <div className="text-4xl sm:text-5xl font-black text-emerald-600 tabular-nums tracking-tight mb-6">
+            {savings.toLocaleString('cs-CZ')} Kč
+          </div>
+          
+          <button 
+            onClick={handleShare}
+            className="group flex flex-col items-center gap-3"
+          >
+            <div className="flex items-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 scale-100 hover:scale-105 active:scale-95">
+              <Share2 className="w-5 h-5 text-emerald-400" />
+              Sdílej mezi přáteli ušetříš tím víc
+            </div>
+            <p className="text-xs text-slate-400 font-medium group-hover:text-emerald-500 transition-colors">
+              Právě teď roste díky sdílení
+            </p>
+          </button>
+        </motion.div>
+
+        <footer className="text-center pt-8 border-t border-slate-200/60 text-sm text-slate-500 font-medium">
           Všechny bonusy jsou aktuální k {new Date().toLocaleDateString('cs-CZ')}.
         </footer>
       </div>
