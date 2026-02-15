@@ -102,15 +102,28 @@ export default function Home() {
           {selectedCategory !== 'Článek' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
               {isLoading ? (
-                [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
+                // Opravené skeletony: Zobrazeno 6 kusů pro lepší vizuální zaplnění gridu
+                [...Array(6)].map((_, i) => (
+                  <div key={i} className="flex flex-col space-y-3">
+                    <Skeleton className="h-48 w-full rounded-2xl" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-[250px]" />
+                      <Skeleton className="h-4 w-[200px]" />
+                    </div>
+                  </div>
+                ))
               ) : filteredLinks.map((link, index) => {
                 const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
                 return (
                   <div key={link.id} className="relative">
                     {isFavorite && (
-                      <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
+                      <motion.div 
+                        initial={{ scale: 0.8 }}
+                        animate={{ scale: 1 }}
+                        className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce"
+                      >
                         🔥 NEJOBLÍBENĚJŠÍ
-                      </div>
+                      </motion.div>
                     )}
                     <LinkCard link={link} index={index} />
                   </div>
@@ -129,15 +142,19 @@ export default function Home() {
                 <h2 className="text-3xl font-bold text-slate-900">Návody a články</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {articles.map((article) => (
-                  <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all">
-                    <h3 className="text-2xl font-bold mb-4 text-slate-900 leading-tight">{article.title}</h3>
-                    <p className="text-slate-600 mb-6 line-clamp-4 leading-relaxed">{article.content}</p>
-                    <div className="flex items-center text-slate-900 font-bold group cursor-pointer">
-                      Přečíst celý článek <ArrowRight className="w-4 h-4 ml-2" />
+                {isLoadingArticles ? (
+                  [...Array(4)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-3xl" />)
+                ) : (
+                  articles.map((article) => (
+                    <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all group">
+                      <h3 className="text-2xl font-bold mb-4 text-slate-900 leading-tight group-hover:text-purple-600 transition-colors">{article.title}</h3>
+                      <p className="text-slate-600 mb-6 line-clamp-4 leading-relaxed">{article.content}</p>
+                      <div className="flex items-center text-slate-900 font-bold cursor-pointer">
+                        Přečíst celý článek <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </motion.div>
           )}
