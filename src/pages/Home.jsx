@@ -10,6 +10,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
+  
+  // Identifikační číslo projektu
+  const PROJECT_ID = 31456;
 
   // --- OVĚŘENÍ GOOGLE ADSENSE (META TAG + SCRIPT) ---
   useEffect(() => {
@@ -85,7 +88,7 @@ export default function Home() {
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
             <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span className="text-sm font-medium text-slate-700">Dnes aktivní bonusy pro vás</span>
+            <span className="text-sm font-medium text-slate-700">Dnes aktivní bonusy (ID: {PROJECT_ID})</span>
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
             Vyzkoušej<span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
@@ -139,12 +142,12 @@ export default function Home() {
                 <div className="p-2 rounded-lg bg-emerald-600 text-white shadow-lg"><ClipboardList className="w-5 h-5" /></div>
                 <div>
                   <h2 className="text-3xl font-bold text-slate-900">Placené průzkumy</h2>
-                  <p className="text-slate-500 text-sm font-medium tracking-tight">Získejte odměnu za svůj názor.</p>
+                  <p className="text-slate-500 text-sm font-medium tracking-tight">Získejte odměnu za svůj názor přes ID: {PROJECT_ID}.</p>
                 </div>
               </div>
               <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden min-h-[800px]">
                 <iframe 
-                  src="https://offers.cpx-research.com" 
+                  src={`https://offers.cpx-research.com{PROJECT_ID}`}
                   style={{ width: '100%', height: '800px', border: 'none' }}
                   title="CPX Research Surveys"
                 />
@@ -163,22 +166,18 @@ export default function Home() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {articles.map((article) => (
-                  <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all">
-                    <h3 className="text-2xl font-bold mb-4 text-slate-900 leading-tight">{article.title}</h3>
-                    <p className="text-slate-600 mb-6 line-clamp-4 leading-relaxed">{article.content}</p>
-                    <div className="flex items-center text-slate-900 font-bold group cursor-pointer">
-                      Přečíst celý článek <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </div>
+                  <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200 hover:shadow-xl transition-shadow group">
+                    <h3 className="text-xl font-bold mb-4 group-hover:text-purple-600 transition-colors">{article.title}</h3>
+                    <p className="text-slate-600 mb-6 line-clamp-3">{article.content}</p>
+                    <button className="flex items-center gap-2 text-purple-600 font-bold">
+                      Číst více <ArrowRight className="w-4 h-4" />
+                    </button>
                   </div>
                 ))}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-
-        <footer className="text-center mt-16 pt-8 border-t border-slate-200/60 text-sm text-slate-500 font-medium">
-          Všechny bonusy jsou aktuální k {new Date().toLocaleDateString('cs-CZ')}.
-        </footer>
       </div>
     </div>
   );
