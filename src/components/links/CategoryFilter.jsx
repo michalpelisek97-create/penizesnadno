@@ -7,17 +7,19 @@ import {
   Gamepad2, 
   Smartphone, 
   LayoutGrid,
-  FileText // Importována ikona pro články
+  ClipboardList,
+  FileText
 } from 'lucide-react';
 
 const categories = [
   { id: 'all', label: 'Vše', icon: LayoutGrid },
   { id: 'crypto', label: 'Kryptoměny', icon: Bitcoin },
   { id: 'banks', label: 'Banky', icon: Building2 },
+  { id: 'průzkumy', label: 'Průzkumy', icon: ClipboardList },
   { id: 'cashback', label: 'Cashback', icon: Percent },
   { id: 'games', label: 'Hry', icon: Gamepad2 },
   { id: 'apps', label: 'Aplikace', icon: Smartphone },
-  { id: 'Článek', label: 'Články', icon: FileText }, // Přidaná kategorie článků
+  { id: 'Článek', label: 'Články', icon: FileText },
 ];
 
 export default function CategoryFilter({ selected, onSelect }) {
@@ -50,7 +52,7 @@ export default function CategoryFilter({ selected, onSelect }) {
               />
             )}
             <span className="relative z-10 flex items-center gap-2">
-              <Icon className={`w-4 h-4 ${isSelected ? 'text-white' : 'text-slate-500'}`} />
+              <Icon className={`w-4 h-4 ${isSelected ? 'text-white' : 'text-slate-400'}`} />
               {category.label}
             </span>
           </motion.button>
