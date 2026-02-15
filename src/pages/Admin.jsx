@@ -9,8 +9,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-
-// Importy pro referral odkazy
 import LinkForm from '@/components/admin/LinkForm';
 import LinkTable from '@/components/admin/LinkTable';
 
@@ -21,7 +19,6 @@ export default function Admin() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const queryClient = useQueryClient();
 
-  // Načítáme vše z ReferralLink
   const { data: allItems = [] } = useQuery({
     queryKey: ['admin-links'],
     queryFn: () => base44.entities.ReferralLink.list('sort_order'),
@@ -44,10 +41,11 @@ export default function Admin() {
     
     const data = {
       title: formData.get('title'),
-      description: formData.get('content'), 
+      description: formData.get('content'),
       category: 'Článek',
-      url: '', 
-      reward: '',
+      url: '',      // Musí být prázdné, aby nebyla nula
+      reward: '',   // Musí být prázdné, aby nebyla nula
+      image: '',    // Musí být prázdné
       is_active: true,
       sort_order: 0
     };
@@ -60,92 +58,70 @@ export default function Admin() {
       }
       handleSuccess();
     } catch (error) {
-      console.error(error);
-      alert("Chyba při ukládání článku.");
+      alert("Chyba při ukládání.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Opravdu smazat?")) return;
-    try {
-      await base44.entities.ReferralLink.delete(id);
-      handleSuccess();
-    } catch (e) { alert("Smazání selhalo."); }
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+    <div className="min-h-screen bg-white">
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <Link to={createPageUrl('Home')}>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-            </Link>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900">Správa webu</h1>
-              <p className="text-sm text-slate-500">Odkazy a články</p>
-            </div>
+            <Link to={createPageUrl('Home')}><Button variant="ghost" size="icon"><ArrowLeft /></Button></Link>
+            <h1 className="text-2xl font-bold">Správa obsahu</h1>
           </div>
-          
           {!showForm && (
             <Button onClick={() => { setEditingItem(null); setShowForm(true); }} className="bg-slate-900">
-              <Plus className="w-4 h-4 mr-2" />
-              {activeTab === 'links' ? 'Nový odkaz' : 'Napsat článek'}
+              <Plus className="w-4 h-4 mr-2" /> {activeTab === 'links' ? 'Nový odkaz' : 'Nový článek'}
             </Button>
           )}
         </div>
 
         {!showForm && (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-            <TabsList className="grid w-full grid-cols-2 max-w-[400px]">
-              <TabsTrigger value="links">Odkazy ({links.length})</TabsTrigger>
-              <TabsTrigger value="articles">Články ({articles.length})</TabsTrigger>
+            <TabsList className="w-full max-w-[400px]">
+              <TabsTrigger value="links" className="flex-1">Odkazy</TabsTrigger>
+              <TabsTrigger value="articles" className="flex-1">Články</TabsTrigger>
             </TabsList>
           </Tabs>
         )}
 
         <AnimatePresence mode="wait">
           {showForm ? (
-            <motion.div key="form" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
               {activeTab === 'links' ? (
                 <LinkForm onSuccess={handleSuccess} editingLink={editingItem} onCancel={() => setShowForm(false)} />
               ) : (
-                <form onSubmit={handleArticleSubmit} className="bg-white p-6 rounded-xl border space-y-4">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold">Článek</h2>
-                    <Button type="button" variant="ghost" onClick={() => setShowForm(false)}><X className="w-4 h-4" /></Button>
-                  </div>
-                  <Input name="title" defaultValue={editingItem?.title} required placeholder="Nadpis" />
-                  <Textarea name="content" defaultValue={editingItem?.description} required placeholder="Text..." className="min-h-[300px]" />
-                  <div className="flex gap-3">
-                    <Button type="submit" disabled={isSubmitting} className="bg-slate-900">Uložit</Button>
+                <form onSubmit={handleArticleSubmit} className="space-y-4 border p-6 rounded-xl">
+                  <Input name="title" defaultValue={editingItem?.title} required placeholder="Titulek článku" />
+                  <Textarea name="content" defaultValue={editingItem?.description} required placeholder="Obsah..." className="min-h-[300px]" />
+                  <div className="flex gap-2">
+                    <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Ukládám...' : 'Uložit článek'}</Button>
                     <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Zrušit</Button>
                   </div>
                 </form>
               )}
             </motion.div>
           ) : (
-            <motion.div key={activeTab} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <div key={activeTab}>
               {activeTab === 'links' ? (
                 <LinkTable links={links} onEdit={(item) => { setEditingItem(item); setShowForm(true); }} />
               ) : (
-                <div className="grid gap-4">
+                <div className="space-y-4">
                   {articles.map(art => (
-                    <div key={art.id} className="bg-white p-4 rounded-xl border flex justify-between items-center shadow-sm">
-                      <div className="font-bold">{art.title}</div>
+                    <div key={art.id} className="p-4 border rounded-xl flex justify-between items-center">
+                      <span className="font-medium">{art.title}</span>
                       <div className="flex gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => { setEditingItem(art); setShowForm(true); }}><Edit3 className="w-4 h-4" /></Button>
-                        <Button variant="ghost" size="sm" className="text-red-500" onClick={() => handleDelete(art.id)}><Trash2 className="w-4 h-4" /></Button>
+                        <Button variant="ghost" onClick={() => { setEditingItem(art); setShowForm(true); }}><Edit3 className="w-4 h-4" /></Button>
+                        <Button variant="ghost" className="text-red-500" onClick={async () => { if(confirm('Smazat?')) { await base44.entities.ReferralLink.delete(art.id); handleSuccess(); } }}><Trash2 className="w-4 h-4" /></Button>
                       </div>
                     </div>
                   ))}
                 </div>
               )}
-            </motion.div>
+            </div>
           )}
         </AnimatePresence>
       </div>
