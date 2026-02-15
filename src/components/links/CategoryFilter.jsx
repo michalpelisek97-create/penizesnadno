@@ -15,7 +15,6 @@ const categories = [
   { id: 'all', label: 'Vše', icon: LayoutGrid },
   { id: 'crypto', label: 'Kryptoměny', icon: Bitcoin },
   { id: 'banks', label: 'Banky', icon: Building2 },
-  { id: 'průzkumy', label: 'Průzkumy', icon: ClipboardList },
   { id: 'cashback', label: 'Cashback', icon: Percent },
   { id: 'games', label: 'Hry', icon: Gamepad2 },
   { id: 'apps', label: 'Aplikace', icon: Smartphone },
