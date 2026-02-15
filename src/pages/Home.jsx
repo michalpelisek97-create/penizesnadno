@@ -10,22 +10,20 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
 
-  // Načítáme vše z jedné entity ReferralLink
+  // Načítáme vše z entity ReferralLink
   const { data: allData = [], isLoading } = useQuery({
     queryKey: ['referral-links'],
     queryFn: () => base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order'),
   });
 
-  // 1. ODKAZY (vše kromě kategorie Článek)
+  // Rozdělení na Odkazy a Články (podle kategorie nastavené v adminu)
   const allLinks = allData.filter(item => item.category !== 'Článek');
-  
-  // 2. ČLÁNKY (pouze kategorie Článek)
   const articles = allData.filter(item => item.category === 'Článek');
 
-  // Filtrování odkazů (pokud je vybráno 'all', ukážeme odkazy. Pokud 'Článek', neukážeme v mřížce nic)
+  // Filtrování odkazů (pro kategorie: Kryptoměny, Banky, Cashback, Hry)
   const filteredLinks = selectedCategory === 'all' 
     ? allLinks 
-    : allLinks.filter(link => link.categories?.includes(selectedCategory) || link.category === selectedCategory);
+    : allLinks.filter(link => link.category === selectedCategory);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
@@ -50,14 +48,12 @@ export default function Home() {
         {/* Category Filter */}
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* ODKAZY GRID - Zobrazí se jen když NENÍ vybraná kategorie Článek */}
+        {/* SEKCE ODKAZY - Zobrazí se pro Vše, Kryptoměny, Banky, atd. (ale NE pro Článek) */}
         <AnimatePresence mode="wait">
           {selectedCategory !== 'Článek' && (
             <motion.div 
-              key="links-section"
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
-              exit={{ opacity: 0 }}
+              key="links-grid"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="mb-20"
             >
               {isLoading ? (
@@ -71,58 +67,59 @@ export default function Home() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-10 text-slate-500">V této kategorii zatím nic není.</div>
+                <div className="text-center py-20 text-slate-400">V této kategorii zatím nejsou žádné bonusy.</div>
               )}
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* ČLÁNKY SEKCE - Zobrazí se jen při volbě 'all' nebo 'Článek' */}
+        {/* SEKCE ČLÁNKY - Zobrazí se POUZE při kliknutí na kategorii 'Článek' */}
         <AnimatePresence mode="wait">
-          {(selectedCategory === 'all' || selectedCategory === 'Článek') && articles.length > 0 && (
+          {selectedCategory === 'Článek' && (
             <motion.div 
-              key="articles-section"
-              initial={{ opacity: 0, y: 20 }} 
-              animate={{ opacity: 1, y: 0 }}
+              key="articles-grid"
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               className="space-y-8"
             >
-              <div className="flex items-center gap-3 mb-6 border-t pt-12 border-slate-200">
+              <div className="flex items-center gap-3 mb-8">
                   <div className="p-2 rounded-lg bg-slate-900 text-white">
                       <FileText className="w-5 h-5" />
                   </div>
-                  <h2 className="text-2xl font-bold text-slate-900">
-                    {selectedCategory === 'Článek' ? 'Všechny články' : 'Nejnovější články'}
-                  </h2>
+                  <h2 className="text-3xl font-bold text-slate-900">Návody a zajímavosti</h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {articles.map((article) => (
-                  <motion.div 
-                    key={article.id}
-                    whileHover={{ y: -5 }}
-                    className="group bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all cursor-pointer"
-                  >
-                    <div className="flex justify-between items-start mb-4">
-                      <span className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-xs font-bold uppercase">Návod</span>
-                      <span className="text-xs text-slate-400">{new Date(article.created_at).toLocaleDateString('cs-CZ')}</span>
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-purple-600 transition-colors">{article.title}</h3>
-                    <p className="text-slate-600 text-sm line-clamp-3 mb-4 leading-relaxed">{article.description}</p>
-                    <div className="flex items-center text-sm font-bold text-slate-900">
-                      Číst více <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+              {articles.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {articles.map((article) => (
+                    <motion.div 
+                      key={article.id}
+                      whileHover={{ y: -5 }}
+                      className="group bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-xl transition-all"
+                    >
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-xs font-bold uppercase tracking-wider">Návod</span>
+                        <span className="text-xs text-slate-400">{new Date(article.created_at).toLocaleDateString('cs-CZ')}</span>
+                      </div>
+                      <h3 className="text-2xl font-bold text-slate-900 mb-4 group-hover:text-purple-600 transition-colors leading-tight">{article.title}</h3>
+                      <p className="text-slate-600 mb-6 line-clamp-4 leading-relaxed">{article.description}</p>
+                      <div className="flex items-center text-sm font-bold text-slate-900">
+                        Přečíst celý článek <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-100 text-slate-400 font-medium">
+                  Zatím jsme nenapsali žádné články. Brzy se tu ale objeví!
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
 
         {/* Footer */}
-        <footer className="text-center mt-16 pt-8 border-t border-slate-200/60">
-          <p className="text-sm text-slate-500">
-            Tyto odkazy jsou affiliate/referenční. Při registraci přes ně získáváš bonus a já malou provizi.
-          </p>
+        <footer className="text-center mt-24 pt-8 border-t border-slate-200/60 text-sm text-slate-500">
+          Tyto odkazy jsou affiliate/referenční. Při registraci přes ně získáváte bonus a já malou provizi.
         </footer>
       </div>
     </div>
