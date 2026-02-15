@@ -104,7 +104,7 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* ODKAZY */}
+        {/* SEKCE ODKAZY */}
         <AnimatePresence mode="wait">
           {selectedCategory !== 'Článek' && selectedCategory !== 'průzkumy' && (
             <motion.div key="links-grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
@@ -127,7 +127,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* PRŮZKUMY - OPRAVENÁ URL STRUKTURA */}
+        {/* SEKCE PRŮZKUMY - POUŽITÍ PŘÍMÉHO ODKAZU BEZ PROMĚNNÝCH */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'průzkumy' && (
             <motion.div key="surveys-section" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-8 mb-20">
@@ -135,7 +135,7 @@ export default function Home() {
                 <div className="p-2 rounded-lg bg-emerald-600 text-white shadow-lg"><ClipboardList className="w-5 h-5" /></div>
                 <div>
                   <h2 className="text-3xl font-bold text-slate-900">Placené průzkumy</h2>
-                  <p className="text-slate-500 text-sm font-medium tracking-tight">Získejte odměnu za svůj názor (ID: 31456).</p>
+                  <p className="text-slate-500 text-sm font-medium tracking-tight">Získejte odměnu za svůj názor.</p>
                 </div>
               </div>
               <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden min-h-[800px]">
