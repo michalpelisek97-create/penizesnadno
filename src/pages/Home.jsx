@@ -10,9 +10,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
-  
-  // Vaše ověřené údaje z CPX Research
-  const CPX_APP_ID = "31456";
 
   // --- GOOGLE ADSENSE & META ---
   useEffect(() => {
@@ -56,7 +53,6 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [notifications.length]);
 
-  // DATA FETCHING
   const { data: allData = [], isLoading } = useQuery({
     queryKey: ['referral-links'],
     queryFn: () => base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order'),
@@ -132,7 +128,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* SEKCE PRŮZKUMY (CPX Research) */}
+        {/* SEKCE PRŮZKUMY (Opraveno na statický text) */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'průzkumy' && (
             <motion.div key="surveys-section" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-8 mb-20">
@@ -140,12 +136,12 @@ export default function Home() {
                 <div className="p-2 rounded-lg bg-emerald-600 text-white shadow-lg"><ClipboardList className="w-5 h-5" /></div>
                 <div>
                   <h2 className="text-3xl font-bold text-slate-900">Placené průzkumy</h2>
-                  <p className="text-slate-500 text-sm font-medium tracking-tight">Vydělávejte peníze za svůj názor.</p>
+                  <p className="text-slate-500 text-sm font-medium tracking-tight">Vydělávejte peníze za svůj názor (ID: 31456).</p>
                 </div>
               </div>
               <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden min-h-[800px]">
                 <iframe 
-                  src={`https://offers.cpx-research.com{CPX_APP_ID}&ext_user_id=guest_${Date.now()}`}
+                  src="https://offers.cpx-research.com"
                   style={{ width: '100%', height: '800px', border: 'none' }}
                   title="CPX Research Surveys"
                 />
@@ -164,7 +160,7 @@ export default function Home() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {articles.map((article) => (
-                  <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200 hover:shadow-xl transition-shadow group cursor-pointer">
+                  <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200 hover:shadow-xl transition-shadow group">
                     <h3 className="text-xl font-bold mb-4 group-hover:text-purple-600 transition-colors">{article.title}</h3>
                     <p className="text-slate-600 mb-6 line-clamp-3">{article.content}</p>
                     <button className="flex items-center gap-2 text-purple-600 font-bold">
