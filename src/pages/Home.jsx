@@ -28,26 +28,6 @@ export default function Home() {
     };
   }, []);
 
-  const notifications = useMemo(() => [
-    { name: 'Marek P.', app: 'Air Bank' },
-    { name: 'Lucie K.', app: 'Honeygain' },
-    { name: 'Jakub S.', app: 'Raiffeisenbank' },
-    { name: 'Petr M.', app: 'Revolut' },
-    { name: 'Veronika T.', app: 'Aircash' },
-    { name: 'Honza B.', app: 'Binance' },
-    { name: 'Klára V.', app: 'Tipli' },
-    { name: 'Martin D.', app: 'Attapoll' },
-    { name: 'Jana R.', app: 'Plná Peněženka' },
-    { name: 'Tomáš L.', app: 'Youhodler.com' },
-    { name: 'Eva S.', app: 'CT Pool' },
-    { name: 'Filip N.', app: 'RollerCoin' }
-  ], []);
-
-  useEffect(() => {
-    const timer = setInterval(() => setNotifIndex((prev) => (prev + 1) % notifications.length), 4000);
-    return () => clearInterval(timer);
-  }, [notifications.length]);
-
   const { data: allData = [], isLoading } = useQuery({
     queryKey: ['referral-links'],
     queryFn: () => base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order'),
@@ -77,7 +57,7 @@ export default function Home() {
         <div className="text-center mb-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
             <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span className="text-sm font-medium text-slate-700">Aktivní bonusy (ID 31456)</span>
+            <span className="text-sm font-medium text-slate-700">Aktivní bonusy (Project: 31456)</span>
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
             Vyzkoušej<span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
@@ -99,25 +79,25 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* PRŮZKUMY - ČISTÉ HTML ŘEŠENÍ */}
+        {/* PRŮZKUMY - NOVÁ URL STRUKTURA */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'průzkumy' && (
-            <motion.div key="surveys-section" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 mb-20">
+            <motion.div key="surveys-section" className="space-y-8 mb-20">
               <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
                 <div className="p-2 rounded-lg bg-emerald-600 text-white shadow-lg"><ClipboardList className="w-5 h-5" /></div>
                 <h2 className="text-3xl font-bold text-slate-900">Placené průzkumy</h2>
               </div>
               
-              <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden">
+              <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden min-h-[600px]">
                 {/* 
-                   POZOR: Zde je URL vložená jako prostý text. 
-                   Pokud ani toto nepůjde, problém je v zabezpečení vašeho serveru (Content Security Policy), 
-                   který zakazuje načítání cizích stránek.
+                   POUŽITÍ ALTERNATIVNÍHO ODKAZU PRO CPX
+                   Změněno na: https://offers.cpx-research.com 
                 */}
                 <iframe 
                   src="https://offers.cpx-research.com"
                   style={{ width: '100%', height: '800px', border: 'none' }}
-                  title="Surveys"
+                  title="CPX"
+                  allow="payment"
                 />
               </div>
             </motion.div>
@@ -127,12 +107,7 @@ export default function Home() {
         {/* SEKCE ČLÁNKY */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'Článek' && (
-            <motion.div key="articles-section" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-               <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
-                <FileText className="w-6 h-6 text-purple-600" />
-                <h2 className="text-3xl font-bold text-slate-900">Návody a články</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <motion.div key="articles-section" className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {articles.map((article) => (
                   <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200">
                     <h3 className="text-xl font-bold mb-4">{article.title}</h3>
@@ -140,7 +115,6 @@ export default function Home() {
                     <button className="flex items-center gap-2 text-purple-600 font-bold">Číst více <ArrowRight className="w-4 h-4" /></button>
                   </div>
                 ))}
-              </div>
             </motion.div>
           )}
         </AnimatePresence>
