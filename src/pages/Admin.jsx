@@ -1,129 +1,103 @@
-import React, { useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import React, { useState, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Link2, ArrowLeft, FileText, Save, X, Trash2, Edit3 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
-import LinkForm from '@/components/admin/LinkForm';
-import LinkTable from '@/components/admin/LinkTable';
+import { Gift, FileText, ArrowRight } from 'lucide-react';
+import LinkCard from '@/components/links/LinkCard';
+import CategoryFilter from '@/components/links/CategoryFilter';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export default function Admin() {
-  const [activeTab, setActiveTab] = useState('links');
-  const [showForm, setShowForm] = useState(false);
-  const [editingItem, setEditingItem] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const queryClient = useQueryClient();
+export default function Home() {
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
-  const { data: allItems = [] } = useQuery({
-    queryKey: ['admin-links'],
-    queryFn: () => base44.entities.ReferralLink.list('sort_order'),
+  const { data: allData = [], isLoading } = useQuery({
+    queryKey: ['referral-links'],
+    queryFn: () => base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order'),
   });
 
-  const links = allItems.filter(item => item.category !== 'Článek');
-  const articles = allItems.filter(item => item.category === 'Článek');
+  // 1. Rozdělení dat
+  const linksOnly = useMemo(() => allData.filter(item => item.category !== 'Článek'), [allData]);
+  const articlesOnly = useMemo(() => allData.filter(item => item.category === 'Článek'), [allData]);
 
-  const handleSuccess = () => {
-    queryClient.invalidateQueries({ queryKey: ['admin-links'] });
-    queryClient.invalidateQueries({ queryKey: ['referral-links'] });
-    setShowForm(false);
-    setEditingItem(null);
-  };
-
-  const handleArticleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    const formData = new FormData(e.currentTarget);
-    
-    const data = {
-      title: formData.get('title'),
-      description: formData.get('content'),
-      category: 'Článek',
-      url: '',      // Musí být prázdné, aby nebyla nula
-      reward: '',   // Musí být prázdné, aby nebyla nula
-      image: '',    // Musí být prázdné
-      is_active: true,
-      sort_order: 0
-    };
-
-    try {
-      if (editingItem) {
-        await base44.entities.ReferralLink.update(editingItem.id, data);
-      } else {
-        await base44.entities.ReferralLink.create(data);
-      }
-      handleSuccess();
-    } catch (error) {
-      alert("Chyba při ukládání.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  // 2. Logika pro zobrazení odkazů v kategoriích
+  const filteredLinks = useMemo(() => {
+    if (selectedCategory === 'all') return linksOnly;
+    if (selectedCategory === 'Článek') return []; // Na záložce článků nechceme odkazy
+    return linksOnly.filter(link => 
+      link.category === selectedCategory || (link.categories && link.categories.includes(selectedCategory))
+    );
+  }, [selectedCategory, linksOnly]);
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <Link to={createPageUrl('Home')}><Button variant="ghost" size="icon"><ArrowLeft /></Button></Link>
-            <h1 className="text-2xl font-bold">Správa obsahu</h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+      <div className="relative max-w-6xl mx-auto px-4 py-12 sm:py-16">
+        
+        {/* Header */}
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
+            <Gift className="w-4 h-4 text-purple-600" />
+            <span className="text-sm font-medium text-slate-700">Exkluzivní bonusy & slevy</span>
           </div>
-          {!showForm && (
-            <Button onClick={() => { setEditingItem(null); setShowForm(true); }} className="bg-slate-900">
-              <Plus className="w-4 h-4 mr-2" /> {activeTab === 'links' ? 'Nový odkaz' : 'Nový článek'}
-            </Button>
-          )}
-        </div>
+          <h1 className="text-4xl font-bold text-slate-900 mb-4">
+            Vyzkoušej<span className="bg-gradient-to-r from-purple-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
+          </h1>
+        </motion.div>
 
-        {!showForm && (
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-            <TabsList className="w-full max-w-[400px]">
-              <TabsTrigger value="links" className="flex-1">Odkazy</TabsTrigger>
-              <TabsTrigger value="articles" className="flex-1">Články</TabsTrigger>
-            </TabsList>
-          </Tabs>
-        )}
+        {/* Category Filter */}
+        <CategoryFilter 
+          selected={selectedCategory} 
+          onSelect={setSelectedCategory} 
+        />
 
+        {/* MŘÍŽKA ODKAZŮ (Zobrazí se všude kromě kategorie Článek) */}
         <AnimatePresence mode="wait">
-          {showForm ? (
-            <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              {activeTab === 'links' ? (
-                <LinkForm onSuccess={handleSuccess} editingLink={editingItem} onCancel={() => setShowForm(false)} />
-              ) : (
-                <form onSubmit={handleArticleSubmit} className="space-y-4 border p-6 rounded-xl">
-                  <Input name="title" defaultValue={editingItem?.title} required placeholder="Titulek článku" />
-                  <Textarea name="content" defaultValue={editingItem?.description} required placeholder="Obsah..." className="min-h-[300px]" />
-                  <div className="flex gap-2">
-                    <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Ukládám...' : 'Uložit článek'}</Button>
-                    <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Zrušit</Button>
-                  </div>
-                </form>
-              )}
+          {selectedCategory !== 'Článek' && (
+            <motion.div 
+              key="links"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20"
+            >
+              {isLoading ? (
+                [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
+              ) : filteredLinks.map((link, index) => (
+                <LinkCard key={link.id} link={link} index={index} />
+              ))}
             </motion.div>
-          ) : (
-            <div key={activeTab}>
-              {activeTab === 'links' ? (
-                <LinkTable links={links} onEdit={(item) => { setEditingItem(item); setShowForm(true); }} />
-              ) : (
-                <div className="space-y-4">
-                  {articles.map(art => (
-                    <div key={art.id} className="p-4 border rounded-xl flex justify-between items-center">
-                      <span className="font-medium">{art.title}</span>
-                      <div className="flex gap-2">
-                        <Button variant="ghost" onClick={() => { setEditingItem(art); setShowForm(true); }}><Edit3 className="w-4 h-4" /></Button>
-                        <Button variant="ghost" className="text-red-500" onClick={async () => { if(confirm('Smazat?')) { await base44.entities.ReferralLink.delete(art.id); handleSuccess(); } }}><Trash2 className="w-4 h-4" /></Button>
+          )}
+        </AnimatePresence>
+
+        {/* SEKCE ČLÁNKŮ (Zobrazí se POUZE při vybrané kategorii Článek) */}
+        <AnimatePresence mode="wait">
+          {selectedCategory === 'Článek' && (
+            <motion.div 
+              key="articles"
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              className="space-y-8"
+            >
+              <div className="flex items-center gap-3 mb-8 border-b pb-6">
+                <FileText className="w-6 h-6 text-purple-600" />
+                <h2 className="text-3xl font-bold text-slate-900">Návody a články</h2>
+              </div>
+
+              {articlesOnly.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {articlesOnly.map((article) => (
+                    <div key={article.id} className="bg-white p-8 rounded-3xl border shadow-sm hover:shadow-md transition-all">
+                      <h3 className="text-2xl font-bold mb-4">{article.title}</h3>
+                      <p className="text-slate-600 mb-6 line-clamp-4">{article.description}</p>
+                      <div className="flex items-center text-purple-600 font-bold">
+                        Číst více <ArrowRight className="w-4 h-4 ml-2" />
                       </div>
                     </div>
                   ))}
                 </div>
+              ) : (
+                <div className="text-center py-20 text-slate-400 italic">Zatím nejsou napsány žádné články.</div>
               )}
-            </div>
+            </motion.div>
           )}
         </AnimatePresence>
+
       </div>
     </div>
   );
