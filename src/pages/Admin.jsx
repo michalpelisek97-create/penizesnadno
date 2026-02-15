@@ -2,50 +2,58 @@ import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Link2, LayoutGrid, Settings, ArrowLeft } from 'lucide-react';
+import { Plus, Link2, LayoutGrid, Settings, ArrowLeft, FileText } from 'lucide-react'; // Přidáno FileText
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import LinkForm from '@/components/admin/LinkForm';
-import LinkTable from '@/components/admin/LinkTable';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
+// Importy pro Odkazy
+import LinkForm from '@/components/admin/LinkForm';
+import LinkTable from '@/components/admin/LinkTable';
+
+// --- PŘEDPOKLAD: Vytvoř si podobné komponenty pro články ---
+// import ArticleForm from '@/components/admin/ArticleForm';
+// import ArticleTable from '@/components/admin/ArticleTable';
+
 export default function Admin() {
+  const [activeTab, setActiveTab] = useState('links');
   const [showForm, setShowForm] = useState(false);
-  const [editingLink, setEditingLink] = useState(null);
+  const [editingItem, setEditingItem] = useState(null); // Přejmenováno z editingLink pro obecnost
   const queryClient = useQueryClient();
 
-  const { data: links = [], isLoading } = useQuery({
+  // Query pro Odkazy
+  const { data: links = [] } = useQuery({
     queryKey: ['admin-links'],
     queryFn: () => base44.entities.ReferralLink.list('sort_order'),
   });
 
+  // Query pro Články
+  const { data: articles = [] } = useQuery({
+    queryKey: ['admin-articles'],
+    queryFn: () => base44.entities.Article.list('-created_at'), // Řazení od nejnovějších
+  });
+
   const handleSuccess = () => {
-    queryClient.invalidateQueries({ queryKey: ['admin-links'] });
-    queryClient.invalidateQueries({ queryKey: ['referral-links'] });
+    queryClient.invalidateQueries({ queryKey: [activeTab === 'links' ? 'admin-links' : 'admin-articles'] });
     setShowForm(false);
-    setEditingLink(null);
+    setEditingItem(null);
   };
 
-  const handleEdit = (link) => {
-    setEditingLink(link);
+  const handleEdit = (item) => {
+    setEditingItem(item);
     setShowForm(true);
   };
 
   const handleCancel = () => {
     setShowForm(false);
-    setEditingLink(null);
-  };
-
-  const stats = {
-    total: links.length,
-    active: links.filter(l => l.is_active).length,
-    categories: [...new Set(links.map(l => l.category))].length
+    setEditingItem(null);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
       <div className="max-w-5xl mx-auto px-4 py-8">
+        
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
@@ -55,74 +63,37 @@ export default function Admin() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">Správa odkazů</h1>
-              <p className="text-sm text-slate-500">Přidávej a upravuj referenční odkazy</p>
+              <h1 className="text-2xl font-bold text-slate-900">Správa obsahu</h1>
+              <p className="text-sm text-slate-500">Spravuj své odkazy a články na jednom místě</p>
             </div>
           </div>
           
-          <Button 
-            onClick={() => { setEditingLink(null); setShowForm(true); }}
-            className="bg-slate-900 hover:bg-slate-800"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Přidat odkaz
-          </Button>
+          {!showForm && (
+            <Button 
+              onClick={() => { setEditingItem(null); setShowForm(true); }}
+              className="bg-slate-900 hover:bg-slate-800"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              {activeTab === 'links' ? 'Přidat odkaz' : 'Napsat článek'}
+            </Button>
+          )}
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl p-5 border border-slate-200/60 shadow-sm"
-          >
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-lg bg-slate-100">
-                <Link2 className="w-5 h-5 text-slate-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-slate-900">{stats.total}</p>
-                <p className="text-xs text-slate-500">Celkem odkazů</p>
-              </div>
-            </div>
-          </motion.div>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-white rounded-xl p-5 border border-slate-200/60 shadow-sm"
-          >
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-lg bg-emerald-100">
-                <Settings className="w-5 h-5 text-emerald-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-slate-900">{stats.active}</p>
-                <p className="text-xs text-slate-500">Aktivních</p>
-              </div>
-            </div>
-          </motion.div>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-white rounded-xl p-5 border border-slate-200/60 shadow-sm"
-          >
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-lg bg-purple-100">
-                <LayoutGrid className="w-5 h-5 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-slate-900">{stats.categories}</p>
-                <p className="text-xs text-slate-500">Kategorií</p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
+        {/* Přepínač sekcí */}
+        {!showForm && (
+          <Tabs defaultValue="links" className="mb-8" onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2 max-w-[400px]">
+              <TabsTrigger value="links" className="flex gap-2">
+                <Link2 className="w-4 h-4" /> Odkazy
+              </TabsTrigger>
+              <TabsTrigger value="articles" className="flex gap-2">
+                <FileText className="w-4 h-4" /> Články
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        )}
 
-        {/* Form / Table */}
+        {/* Obsah (Formuláře / Tabulky) */}
         <AnimatePresence mode="wait">
           {showForm ? (
             <motion.div
@@ -130,31 +101,38 @@ export default function Admin() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
             >
-              <LinkForm 
-                onSuccess={handleSuccess} 
-                editingLink={editingLink}
-                onCancel={handleCancel}
-              />
+              {activeTab === 'links' ? (
+                <LinkForm onSuccess={handleSuccess} editingLink={editingItem} onCancel={handleCancel} />
+              ) : (
+                /* Zde bude tvůj ArticleForm */
+                <div className="bg-white p-8 rounded-xl border">Formulář pro články (ArticleForm) zatím není vytvořen.</div>
+              )}
             </motion.div>
           ) : (
             <motion.div
-              key="table"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
+              key={activeTab}
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
             >
-              <LinkTable 
-                links={links} 
-                onEdit={handleEdit}
-                onRefresh={() => queryClient.invalidateQueries({ queryKey: ['admin-links'] })}
-              />
+              {activeTab === 'links' ? (
+                <LinkTable 
+                  links={links} 
+                  onEdit={handleEdit}
+                  onRefresh={() => queryClient.invalidateQueries({ queryKey: ['admin-links'] })}
+                />
+              ) : (
+                /* Zde bude tvá ArticleTable */
+                <div className="bg-white p-8 rounded-xl border text-center text-slate-500">
+                  Tabulka článků (ArticleTable) zatím není vytvořena. <br/>
+                  Počet článků v databázi: {articles.length}
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
       </div>
     </div>
   );
-} 
+}
