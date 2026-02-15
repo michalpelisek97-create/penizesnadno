@@ -11,32 +11,31 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
   
-  // Generování nebo načtení unikátního ID pro anonymního uživatele
-  const userId = useMemo(() => {
+  // Bezpečné vytvoření ID uživatele
+  const [uId, setUId] = useState('guest1');
+
+  useEffect(() => {
     if (typeof window !== 'undefined') {
-      let id = localStorage.getItem('cpx_user_id');
-      if (!id) {
-        id = 'user_' + Math.random().toString(36).substr(2, 9) + Date.now();
-        localStorage.setItem('cpx_user_id', id);
+      let storedId = localStorage.getItem('cpx_user_id');
+      if (!storedId) {
+        storedId = 'user_' + Math.floor(Math.random() * 1000000);
+        localStorage.setItem('cpx_user_id', storedId);
       }
-      return id;
+      setUId(storedId);
     }
-    return 'guest';
   }, []);
 
-  // --- GOOGLE ADSENSE & META ---
+  // --- GOOGLE ADSENSE ---
   useEffect(() => {
     const meta = document.createElement('meta');
     meta.name = "google-adsense-account";
     meta.content = "ca-pub-3492240221253160";
     document.head.appendChild(meta);
-
     const script = document.createElement('script');
     script.src = "https://pagead2.googlesyndication.com";
     script.async = true;
     script.crossOrigin = "anonymous";
     document.head.appendChild(script);
-
     return () => {
       if (document.head.contains(meta)) document.head.removeChild(meta);
       if (document.head.contains(script)) document.head.removeChild(script);
@@ -59,9 +58,7 @@ export default function Home() {
   ], []);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setNotifIndex((prev) => (prev + 1) % notifications.length);
-    }, 4000);
+    const timer = setInterval(() => setNotifIndex((prev) => (prev + 1) % notifications.length), 4000);
     return () => clearInterval(timer);
   }, [notifications.length]);
 
@@ -91,25 +88,25 @@ export default function Home() {
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-12 sm:py-16">
         
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-6">
+        <div className="text-center mb-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
             <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span className="text-sm font-medium text-slate-700">Dnes aktivní bonusy pro vás</span>
+            <span className="text-sm font-medium text-slate-700">Aktivní bonusy (ID: 31456)</span>
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
             Vyzkoušej<span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
           </h1>
-        </motion.div>
+        </div>
 
         {/* Social Proof */}
         <div className="flex justify-center mb-12 h-10">
           <AnimatePresence mode="wait">
-            <motion.div key={notifIndex} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.1 }}
-              className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white border border-emerald-100 shadow-sm shadow-emerald-100/30"
+            <motion.div key={notifIndex} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white border border-emerald-100 shadow-sm"
             >
               <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-sm font-medium text-slate-700 text-center">
-                <span className="font-bold">{notifications[notifIndex].name}</span> získal(a) bonus u <span className="text-emerald-600 font-bold">{notifications[notifIndex].app}</span>
+              <p className="text-sm font-medium text-slate-700">
+                <span className="font-bold">{notifications[notifIndex].name}</span> u <span className="text-emerald-600 font-bold">{notifications[notifIndex].app}</span>
               </p>
             </motion.div>
           </AnimatePresence>
@@ -117,44 +114,34 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* SEKCE ODKAZY */}
+        {/* ODKAZY */}
         <AnimatePresence mode="wait">
           {selectedCategory !== 'Článek' && selectedCategory !== 'průzkumy' && (
-            <motion.div key="links-grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+            <motion.div key="links-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
               {isLoading ? (
                 [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
-              ) : filteredLinks.map((link, index) => {
-                const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
-                return (
-                  <div key={link.id} className="relative">
-                    {isFavorite && (
-                      <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
-                        🔥 NEJOBLÍBENĚJŠÍ
-                      </div>
-                    )}
-                    <LinkCard link={link} index={index} />
-                  </div>
-                );
-              })}
+              ) : filteredLinks.map((link, index) => (
+                <LinkCard key={link.id} link={link} index={index} />
+              ))}
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* SEKCE PRŮZKUMY - S UNIKÁTNÍM ID UŽIVATELE */}
+        {/* PRŮZKUMY - OPRAVENÁ URL BEZ ZPĚTNÝCH UVOZOVEK */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'průzkumy' && (
-            <motion.div key="surveys-section" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-8 mb-20">
+            <motion.div key="surveys-section" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 mb-20">
               <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
                 <div className="p-2 rounded-lg bg-emerald-600 text-white shadow-lg"><ClipboardList className="w-5 h-5" /></div>
                 <div>
                   <h2 className="text-3xl font-bold text-slate-900">Placené průzkumy</h2>
-                  <p className="text-slate-500 text-sm font-medium tracking-tight">Vydělávejte za svůj názor (ID uživatele: {userId})</p>
+                  <p className="text-slate-500 text-sm">Vydělávejte s ID: {uId}</p>
                 </div>
               </div>
               <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden min-h-[800px]">
                 <iframe 
-                  src={`https://offers.cpx-research.com{userId}`}
-                  style={{ width: "100%", height: "800px", border: "none" }}
+                  src={"https://offers.cpx-research.com" + uId} 
+                  style={{ width: '100%', height: '800px', border: 'none' }}
                   title="CPX Research Surveys"
                 />
               </div>
@@ -162,7 +149,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* SEKCE ČLÁNKY */}
+        {/* ČLÁNKY */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'Článek' && (
             <motion.div key="articles-section" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
@@ -172,12 +159,10 @@ export default function Home() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {articles.map((article) => (
-                  <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200 hover:shadow-xl transition-shadow group">
-                    <h3 className="text-xl font-bold mb-4 group-hover:text-purple-600 transition-colors">{article.title}</h3>
+                  <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200">
+                    <h3 className="text-xl font-bold mb-4">{article.title}</h3>
                     <p className="text-slate-600 mb-6 line-clamp-3">{article.content}</p>
-                    <button className="flex items-center gap-2 text-purple-600 font-bold">
-                      Číst více <ArrowRight className="w-4 h-4" />
-                    </button>
+                    <button className="flex items-center gap-2 text-purple-600 font-bold">Číst více <ArrowRight className="w-4 h-4" /></button>
                   </div>
                 ))}
               </div>
