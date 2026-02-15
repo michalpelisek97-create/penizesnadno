@@ -10,6 +10,19 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
+  
+  // Generování nebo načtení unikátního ID pro anonymního uživatele
+  const userId = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      let id = localStorage.getItem('cpx_user_id');
+      if (!id) {
+        id = 'user_' + Math.random().toString(36).substr(2, 9) + Date.now();
+        localStorage.setItem('cpx_user_id', id);
+      }
+      return id;
+    }
+    return 'guest';
+  }, []);
 
   // --- GOOGLE ADSENSE & META ---
   useEffect(() => {
@@ -127,7 +140,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* SEKCE PRŮZKUMY - POUŽITÍ PŘÍMÉHO ODKAZU BEZ PROMĚNNÝCH */}
+        {/* SEKCE PRŮZKUMY - S UNIKÁTNÍM ID UŽIVATELE */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'průzkumy' && (
             <motion.div key="surveys-section" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-8 mb-20">
@@ -135,12 +148,12 @@ export default function Home() {
                 <div className="p-2 rounded-lg bg-emerald-600 text-white shadow-lg"><ClipboardList className="w-5 h-5" /></div>
                 <div>
                   <h2 className="text-3xl font-bold text-slate-900">Placené průzkumy</h2>
-                  <p className="text-slate-500 text-sm font-medium tracking-tight">Získejte odměnu za svůj názor.</p>
+                  <p className="text-slate-500 text-sm font-medium tracking-tight">Vydělávejte za svůj názor (ID uživatele: {userId})</p>
                 </div>
               </div>
               <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden min-h-[800px]">
                 <iframe 
-                  src="https://offers.cpx-research.com"
+                  src={`https://offers.cpx-research.com{userId}`}
                   style={{ width: "100%", height: "800px", border: "none" }}
                   title="CPX Research Surveys"
                 />
