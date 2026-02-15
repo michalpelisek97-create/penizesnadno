@@ -11,18 +11,18 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
   
-  // Bezpečné vytvoření ID uživatele
-  const [uId, setUId] = useState('guest1');
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      let storedId = localStorage.getItem('cpx_user_id');
-      if (!storedId) {
-        storedId = 'user_' + Math.floor(Math.random() * 1000000);
-        localStorage.setItem('cpx_user_id', storedId);
-      }
-      setUId(storedId);
+  // 1. VYTVOŘENÍ UNIKÁTNÍHO ODKAZU
+  const cpxUrl = useMemo(() => {
+    if (typeof window === 'undefined') return "";
+    
+    let storedId = localStorage.getItem('cpx_user_id');
+    if (!storedId) {
+      storedId = 'user_' + Math.floor(Math.random() * 1000000);
+      localStorage.setItem('cpx_user_id', storedId);
     }
+    
+    // Kompletní adresa složená předem jako jeden řetězec
+    return "https://offers.cpx-research.com" + storedId;
   }, []);
 
   // --- GOOGLE ADSENSE ---
@@ -91,7 +91,7 @@ export default function Home() {
         <div className="text-center mb-6">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
             <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span className="text-sm font-medium text-slate-700">Aktivní bonusy (ID: 31456)</span>
+            <span className="text-sm font-medium text-slate-700">Dnes aktivní bonusy pro vás</span>
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
             Vyzkoušej<span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
@@ -127,7 +127,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* PRŮZKUMY - OPRAVENÁ URL BEZ ZPĚTNÝCH UVOZOVEK */}
+        {/* SEKCE PRŮZKUMY */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'průzkumy' && (
             <motion.div key="surveys-section" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 mb-20">
@@ -135,12 +135,13 @@ export default function Home() {
                 <div className="p-2 rounded-lg bg-emerald-600 text-white shadow-lg"><ClipboardList className="w-5 h-5" /></div>
                 <div>
                   <h2 className="text-3xl font-bold text-slate-900">Placené průzkumy</h2>
-                  <p className="text-slate-500 text-sm">Vydělávejte s ID: {uId}</p>
+                  <p className="text-slate-500 text-sm font-medium tracking-tight">Získejte odměnu za svůj názor.</p>
                 </div>
               </div>
               <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden min-h-[800px]">
+                {/* POUŽITÍ PŘEDEM PŘIPRAVENÉ PROMĚNNÉ */}
                 <iframe 
-                  src={"https://offers.cpx-research.com" + uId} 
+                  src={cpxUrl} 
                   style={{ width: '100%', height: '800px', border: 'none' }}
                   title="CPX Research Surveys"
                 />
