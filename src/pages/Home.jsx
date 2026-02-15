@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Gift, FileText, ArrowRight, UserCheck } from 'lucide-react';
+import { Sparkles, Gift, FileText, ArrowRight } from 'lucide-react';
 import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -11,19 +11,23 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
 
-  // Data pro fake oznámení
+  // Seznam tvých reálných nabídek pro fake oznámení
   const notifications = useMemo(() => [
     { name: 'Marek P.', app: 'Air Bank' },
     { name: 'Lucie K.', app: 'Honeygain' },
-    { name: 'Jakub S.', app: 'mBank' },
+    { name: 'Jakub S.', app: 'Raiffeisenbank' },
     { name: 'Petr M.', app: 'Revolut' },
-    { name: 'Veronika T.', app: 'Skip Pay' },
-    { name: 'Honza B.', app: 'Raiffeisenbank' },
-    { name: 'Klára V.', app: 'VÚB Banku' },
-    { name: 'Martin D.', app: 'Zonky' }
+    { name: 'Veronika T.', app: 'Aircash' },
+    { name: 'Honza B.', app: 'Binance' },
+    { name: 'Klára V.', app: 'Tipli' },
+    { name: 'Martin D.', app: 'Attapoll' },
+    { name: 'Jana R.', app: 'Plná Peněženka' },
+    { name: 'Tomáš L.', app: 'Youhodler.com' },
+    { name: 'Eva S.', app: 'CT Pool' },
+    { name: 'Filip N.', app: 'RollerCoin' }
   ], []);
 
-  // Interval pro střídání oznámení
+  // Interval pro automatické střídání oznámení každé 4 sekundy
   useEffect(() => {
     const timer = setInterval(() => {
       setNotifIndex((prev) => (prev + 1) % notifications.length);
@@ -31,7 +35,7 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [notifications.length]);
 
-  // Načítání dat
+  // Načítání dat z Base44
   const { data: links = [], isLoading: isLoadingLinks } = useQuery({
     queryKey: ['referral-links'],
     queryFn: () => base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order'),
@@ -42,17 +46,21 @@ export default function Home() {
     queryFn: () => base44.entities.Article.filter({ is_active: true }, '-created_at'),
   });
 
+  // Filtrace pro mřížku odkazů
   const filteredLinks = useMemo(() => {
     if (selectedCategory === 'all') return links;
     if (selectedCategory === 'Článek') return [];
-    return links.filter(link => link.category === selectedCategory || link.categories?.includes(selectedCategory));
+    return links.filter(link => 
+      link.category === selectedCategory || 
+      (Array.isArray(link.categories) && link.categories.includes(selectedCategory))
+    );
   }, [selectedCategory, links]);
 
   const isLoading = isLoadingLinks || isLoadingArticles;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      {/* Dekorativní pozadí */}
+      {/* Dekorativní pozadí (Animované kuličky) */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" />
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" style={{ animationDelay: '2s' }} />
@@ -61,7 +69,7 @@ export default function Home() {
 
       <div className="relative max-w-6xl mx-auto px-4 py-12 sm:py-16">
         
-        {/* HLAVNÍ NADPIS */}
+        {/* Hlavní nadpis webu */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -83,7 +91,7 @@ export default function Home() {
           </p>
         </motion.div>
 
-        {/* FAKE OZNÁMENÍ O REGISTRACÍCH */}
+        {/* Sekce Fake Oznámení (Social Proof) */}
         <div className="flex justify-center mb-12 h-10">
           <AnimatePresence mode="wait">
             <motion.div
@@ -110,7 +118,7 @@ export default function Home() {
         {/* Filtr kategorií */}
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* SEKCE ODKAZY */}
+        {/* Zobrazení Odkazů (Referraly) */}
         <AnimatePresence mode="wait">
           {selectedCategory !== 'Článek' && (
             <motion.div 
@@ -120,14 +128,20 @@ export default function Home() {
             >
               {isLoading ? (
                 [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
-              ) : filteredLinks.map((link, index) => (
-                <LinkCard key={link.id} link={link} index={index} />
-              ))}
+              ) : filteredLinks.length > 0 ? (
+                filteredLinks.map((link, index) => (
+                  <LinkCard key={link.id} link={link} index={index} />
+                ))
+              ) : (
+                <div className="col-span-full text-center py-20 text-slate-400 italic">
+                  V této kategorii zatím nejsou žádné nabídky.
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* SEKCE ČLÁNKY */}
+        {/* Zobrazení Článků */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'Článek' && (
             <motion.div 
@@ -163,7 +177,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* Footer */}
+        {/* Footer webu */}
         <footer className="text-center mt-16 pt-8 border-t border-slate-200/60 text-sm text-slate-500">
           Tyto odkazy jsou affiliate/referenční. Při registraci přes ně získáváte bonus a já malou provizi.
         </footer>
