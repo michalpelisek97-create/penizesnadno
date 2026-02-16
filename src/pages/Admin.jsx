@@ -1,176 +1,122 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Gift, FileText, ArrowRight, Banknote, CheckCircle2, Share2, ClipboardList } from 'lucide-react';
-import LinkCard from '@/components/links/LinkCard';
-import CategoryFilter from '@/components/links/CategoryFilter';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Plus, Link2, FileText, ArrowLeft, Save, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
-export default function Home() {
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [notifIndex, setNotifIndex] = useState(0);
-  const [isAirBankOpen, setIsAirBankOpen] = useState(false);
-  
-  // Logika pro Live Counter úspor
-  const [savings, setSavings] = useState(143202);
+import LinkForm from '@/components/admin/LinkForm';
+import LinkTable from '@/components/admin/LinkTable';
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSavings(prev => prev + Math.floor(Math.random() * 80) + 20);
-    }, 4500);
-    return () => clearInterval(interval);
-  }, []);
+export default function Admin() {
+  const [activeTab, setActiveTab] = useState('links');
+  const [showForm, setShowForm] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+  const queryClient = useQueryClient();
 
-  const handleShare = async () => {
-    try {
-      await navigator.share({
-        title: 'Vyzkoušej & Ušetři',
-        text: 'Koukni na tyhle aktivní bonusy a ušetři taky!',
-        url: window.location.href,
-      });
-    } catch (err) {
-      navigator.clipboard.writeText(window.location.href);
-      alert('Odkaz zkopírován do schránky!');
-    }
+  // Query pro Odkazy
+  const { data: links = [] } = useQuery({
+    queryKey: ['admin-links'],
+    queryFn: () => base44.entities.ReferralLink.list('sort_order'),
+  });
+
+  // Query pro Články (nová entita)
+  const { data: articles = [] } = useQuery({
+    queryKey: ['admin-articles'],
+    queryFn: () => base44.entities.Article.list('-created_at'),
+  });
+
+  const handleSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ['admin-links'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-articles'] });
+    setShowForm(false);
+    setEditingItem(null);
   };
 
-  const notifications = useMemo(() => [
-    { name: 'Marek P.', app: 'Air Bank' },
-    { name: 'Lucie K.', app: 'Honeygain' },
-    { name: 'Jakub S.', app: 'Raiffeisenbank' },
-    { name: 'Petr M.', app: 'Revolut' },
-    { name: 'Veronika T.', app: 'Aircash' },
-    { name: 'Honza B.', app: 'Binance' },
-    { name: 'Klára V.', app: 'Tipli' },
-    { name: 'Martin D.', app: 'Attapoll' },
-    { name: 'Jana R.', app: 'Plná Peněženka' },
-    { name: 'Tomáš L.', app: 'Youhodler.com' },
-    { name: 'Eva S.', app: 'CT Pool' },
-    { name: 'Filip N.', app: 'RollerCoin' }
-  ], []);
+  const handleArticleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      title: formData.get('title'),
+      content: formData.get('content'),
+      is_active: true,
+    };
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setNotifIndex((prev) => (prev + 1) % notifications.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [notifications.length]);
-
-  const { data: links = [], isLoading: isLoadingLinks } = useQuery({
-    queryKey: ['referral-links'],
-    queryFn: () => base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order'),
-  });
-
-  const { data: articles = [], isLoading: isLoadingArticles } = useQuery({
-    queryKey: ['articles'],
-    queryFn: () => base44.entities.Article.filter({ is_active: true }, '-created_at'),
-  });
-
-  const filteredLinks = useMemo(() => {
-    if (selectedCategory === 'all') return links;
-    if (selectedCategory === 'Článek' || selectedCategory === 'Průzkumy') return [];
-    return links.filter(link => 
-      link.category === selectedCategory || 
-      (Array.isArray(link.categories) && link.categories.includes(selectedCategory))
-    );
-  }, [selectedCategory, links]);
-
-  const isLoading = isLoadingLinks || isLoadingArticles;
+    try {
+      if (editingItem) {
+        await base44.entities.Article.update(editingItem.id, data);
+      } else {
+        await base44.entities.Article.create(data);
+      }
+      handleSuccess();
+    } catch (e) { alert("Chyba při ukládání článku."); }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 overflow-hidden">
-      <div className="relative z-10 max-w-6xl mx-auto px-4 py-12 sm:py-16">
-        
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-6"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
-            <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span className="text-sm font-medium text-slate-700">Dnes aktivní bonusy pro vás</span>
+    <div className="min-h-screen bg-slate-50 py-8">
+      <div className="max-w-5xl mx-auto px-4">
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center gap-4">
+            <Link to={createPageUrl('Home')}><Button variant="ghost"><ArrowLeft /></Button></Link>
+            <h1 className="text-2xl font-bold">Administrace</h1>
           </div>
-          
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
-            Vyzkoušej
-            <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
-          </h1>
-        </motion.div>
-
-        {/* Social Proof */}
-        <div className="flex justify-center mb-12 h-10">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={notifIndex}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.1 }}
-              className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white border border-emerald-100 shadow-sm shadow-emerald-100/30"
-            >
-              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-sm font-medium text-slate-700 text-center">
-                <span className="font-bold">{notifications[notifIndex].name}</span> získal(a) bonus u <span className="text-emerald-600 font-bold">{notifications[notifIndex].app}</span>
-              </p>
-            </motion.div>
-          </AnimatePresence>
+          {!showForm && (
+            <Button onClick={() => { setEditingItem(null); setShowForm(true); }}>
+              <Plus className="mr-2 h-4 w-4" /> {activeTab === 'links' ? 'Nový odkaz' : 'Nový článek'}
+            </Button>
+          )}
         </div>
 
-        <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
-
-        {/* SEKCE PRŮZKUMY - OPRAVENÝ IFRAME */}
-        <AnimatePresence mode="wait">
-          {selectedCategory === 'Průzkumy' && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }} 
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="w-full bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden mb-20 mt-8"
-            >
-              <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
-                <ClipboardList className="w-6 h-6 text-indigo-600" />
-                <h2 className="text-xl font-bold text-slate-900">Placené průzkumy</h2>
-              </div>
-              <iframe 
-                width="100%" 
-                frameBorder="0" 
-                height="2000px"  
-                src="https://offers.cpx-research.com{unique_user_id}&secure_hash={secure_hash}&username={user_name}&email={user_email}&subid_1=&subid_2"
-                title="CPX Surveys"
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* SEKCE ODKAZY */}
-        <AnimatePresence mode="wait">
-          {selectedCategory !== 'Článek' && selectedCategory !== 'Průzkumy' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20 mt-8">
-              {isLoading ? (
-                [...Array(6)].map((_, i) => (
-                  <Skeleton key={i} className="h-48 w-full rounded-2xl" />
-                ))
-              ) : filteredLinks.map((link, index) => (
-                <LinkCard key={link.id} link={link} index={index} />
-              ))}
-            </div>
-          )}
-        </AnimatePresence>
-
-        {/* SEKCE ČLÁNKY */}
-        {selectedCategory === 'Článek' && (
-          <div className="mt-8 space-y-8">
-            <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
-              <FileText className="w-6 h-6 text-purple-600" />
-              <h2 className="text-3xl font-bold text-slate-900">Návody</h2>
-            </div>
-            <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-              <h3 className="text-2xl font-bold mb-4">Jak získat 500 Kč od Air Bank?</h3>
-              <p className="text-slate-600 leading-relaxed">Air Bank aktuálně nabízí odměnu pro nové klienty...</p>
-            </div>
-          </div>
+        {!showForm && (
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
+            <TabsList className="w-[400px]">
+              <TabsTrigger value="links" className="flex-1"><Link2 className="mr-2 h-4 w-4" /> Odkazy</TabsTrigger>
+              <TabsTrigger value="articles" className="flex-1"><FileText className="mr-2 h-4 w-4" /> Články</TabsTrigger>
+            </TabsList>
+          </Tabs>
         )}
+
+        <AnimatePresence mode="wait">
+          {showForm ? (
+            <motion.div key="form" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+              {activeTab === 'links' ? (
+                <LinkForm onSuccess={handleSuccess} editingLink={editingItem} onCancel={() => setShowForm(false)} />
+              ) : (
+                <form onSubmit={handleArticleSubmit} className="bg-white p-6 rounded-xl border space-y-4">
+                  <Input name="title" defaultValue={editingItem?.title} placeholder="Název článku" required />
+                  <Textarea name="content" defaultValue={editingItem?.content} placeholder="Obsah..." className="min-h-[300px]" required />
+                  <div className="flex gap-2">
+                    <Button type="submit">Uložit článek</Button>
+                    <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Zrušit</Button>
+                  </div>
+                </form>
+              )}
+            </motion.div>
+          ) : (
+            <div key={activeTab}>
+              {activeTab === 'links' ? (
+                <LinkTable links={links} onEdit={(item) => { setEditingItem(item); setShowForm(true); }} />
+              ) : (
+                <div className="space-y-4">
+                  {articles.map(art => (
+                    <div key={art.id} className="bg-white p-4 rounded-xl border flex justify-between items-center">
+                      <span className="font-bold">{art.title}</span>
+                      <div className="flex gap-2">
+                        <Button variant="ghost" size="sm" onClick={() => { setEditingItem(art); setShowForm(true); }}>Upravit</Button>
+                        <Button variant="ghost" size="sm" className="text-red-500" onClick={() => { if(confirm('Smazat?')) { base44.entities.Article.delete(art.id).then(handleSuccess); } }}>Smazat</Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
