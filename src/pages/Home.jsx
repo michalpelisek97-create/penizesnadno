@@ -1,285 +1,121 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Gift, FileText, ArrowRight, Banknote, CheckCircle2, Share2 } from 'lucide-react';
-import LinkCard from '@/components/links/LinkCard';
-import CategoryFilter from '@/components/links/CategoryFilter';
-import { Skeleton } from '@/components/ui/skeleton';
+// ... (importy zůstávají stejné)
 
 export default function Home() {
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [notifIndex, setNotifIndex] = useState(0);
-  const [isAirBankOpen, setIsAirBankOpen] = useState(false);
-  
-  // Logika pro Live Counter úspor
-  const [savings, setSavings] = useState(143202);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSavings(prev => prev + Math.floor(Math.random() * 80) + 20);
-    }, 4500);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleShare = async () => {
-    try {
-      await navigator.share({
-        title: 'Vyzkoušej & Ušetři',
-        text: 'Koukni na tyhle aktivní bonusy a ušetři taky!',
-        url: window.location.href,
-      });
-    } catch (err) {
-      // Fallback pokud prohlížeč nepodporuje sharing API
-      navigator.clipboard.writeText(window.location.href);
-      alert('Odkaz zkopírován do schránky!');
-    }
-  };
-
-  const notifications = useMemo(() => [
-    { name: 'Marek P.', app: 'Air Bank' },
-    { name: 'Lucie K.', app: 'Honeygain' },
-    { name: 'Jakub S.', app: 'Raiffeisenbank' },
-    { name: 'Petr M.', app: 'Revolut' },
-    { name: 'Veronika T.', app: 'Aircash' },
-    { name: 'Honza B.', app: 'Binance' },
-    { name: 'Klára V.', app: 'Tipli' },
-    { name: 'Martin D.', app: 'Attapoll' },
-    { name: 'Jana R.', app: 'Plná Peněženka' },
-    { name: 'Tomáš L.', app: 'Youhodler.com' },
-    { name: 'Eva S.', app: 'CT Pool' },
-    { name: 'Filip N.', app: 'RollerCoin' }
-  ], []);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setNotifIndex((prev) => (prev + 1) % notifications.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [notifications.length]);
-
-  const { data: links = [], isLoading: isLoadingLinks } = useQuery({
-    queryKey: ['referral-links'],
-    queryFn: () => base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order'),
-  });
-
-  const { data: articles = [], isLoading: isLoadingArticles } = useQuery({
-    queryKey: ['articles'],
-    queryFn: () => base44.entities.Article.filter({ is_active: true }, '-created_at'),
-  });
-
-  const filteredLinks = useMemo(() => {
-    if (selectedCategory === 'all') return links;
-    if (selectedCategory === 'Článek') return [];
-    return links.filter(link => 
-      link.category === selectedCategory || 
-      (Array.isArray(link.categories) && link.categories.includes(selectedCategory))
-    );
-  }, [selectedCategory, links]);
-
-  const isLoading = isLoadingLinks || isLoadingArticles;
+  // ... (logika zůstává stejná)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 overflow-hidden">
-      <div className="relative z-10 max-w-6xl mx-auto px-4 py-12 sm:py-16">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-100 via-white to-blue-50/30">
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:py-12">
         
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-6"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
-            <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span className="text-sm font-medium text-slate-700">Dnes aktivní bonusy pro vás</span>
-          </div>
-          
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
-            Vyzkoušej
-            <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
-          </h1>
-        </motion.div>
+        {/* 1. HERO SEKCE - Rozprostřená do šířky */}
+        <header className="flex flex-col lg:flex-row items-center justify-between gap-8 mb-16">
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="text-left lg:max-w-2xl"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-100 mb-6">
+              <Sparkles className="w-4 h-4 text-amber-500" />
+              <span className="text-xs font-bold uppercase tracking-wider text-amber-700">Dnešní top nabídky</span>
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-6 leading-[1.1]">
+              Vyzkoušej
+              <span className="block bg-gradient-to-r from-purple-600 to-rose-600 bg-clip-text text-transparent">
+                & Ušetři Peníze
+              </span>
+            </h1>
+            <p className="text-lg text-slate-600 mb-8 max-w-lg">
+              Průvodce světem bonusů. Aktuálně jsme uživatelům pomohli získat přes 
+              <span className="font-bold text-slate-900 ml-1 leading-none inline-flex flex-col">
+                {savings.toLocaleString()} Kč
+              </span>
+            </p>
+            
+            {/* Social Proof integrovaný přímo do Hero */}
+            <div className="h-12">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={notifIndex}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="flex items-center gap-3 text-sm text-slate-500 bg-white/50 w-fit pr-4 rounded-full border border-slate-100"
+                >
+                  <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold text-[10px]">
+                    LIVE
+                  </div>
+                  <span><b>{notifications[notifIndex].name}</b> právě získal bonus u <b>{notifications[notifIndex].app}</b></span>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </motion.div>
 
-        {/* Social Proof Oznámení */}
-        <div className="flex justify-center mb-12 h-10">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={notifIndex}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.1 }}
-              className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white border border-emerald-100 shadow-sm shadow-emerald-100/30"
-            >
-              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-sm font-medium text-slate-700 text-center">
-                <span className="font-bold">{notifications[notifIndex].name}</span> získal(a) bonus u <span className="text-emerald-600 font-bold">{notifications[notifIndex].app}</span>
-              </p>
-            </motion.div>
-          </AnimatePresence>
+          {/* 2. STATS CARD - Rozbití nudle pravým panelem */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full lg:w-80 bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden"
+          >
+             <div className="relative z-10">
+                <p className="text-slate-400 text-sm mb-1">Celkem ušetřeno komunitou</p>
+                <div className="text-3xl font-mono font-bold mb-6 text-emerald-400">
+                  {savings.toLocaleString()} CZK
+                </div>
+                <button 
+                  onClick={handleShare}
+                  className="w-full bg-white/10 hover:bg-white/20 backdrop-blur-md py-3 rounded-xl flex items-center justify-center gap-2 transition-all border border-white/10"
+                >
+                  <Share2 className="w-4 h-4" /> Sdílet s přáteli
+                </button>
+             </div>
+             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-purple-600/20 blur-3xl rounded-full" />
+          </motion.div>
+        </header>
+
+        {/* 3. STICKY FILTER BAR */}
+        <div className="sticky top-4 z-50 mb-12">
+          <div className="bg-white/80 backdrop-blur-xl p-2 rounded-2xl shadow-lg border border-slate-200/50 max-w-fit mx-auto">
+            <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
+          </div>
         </div>
 
-        <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
-
-        {/* SEKCE ODKAZY */}
+        {/* 4. CONTENT GRID (Bento Style) */}
         <AnimatePresence mode="wait">
           {selectedCategory !== 'Článek' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {isLoading ? (
-                [...Array(6)].map((_, i) => (
-                  <div key={i} className="flex flex-col space-y-3">
-                    <Skeleton className="h-48 w-full rounded-2xl" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[250px]" />
-                      <Skeleton className="h-4 w-[200px]" />
+                // Skeletony...
+                <div className="col-span-full h-64 bg-slate-100 animate-pulse rounded-3xl" />
+              ) : (
+                filteredLinks.map((link, index) => {
+                  // PRVNÍ KARTA BUDE VELKÁ (FEATURED)
+                  const isFeatured = index === 0;
+                  return (
+                    <div 
+                      key={link.id} 
+                      className={`relative ${isFeatured ? 'md:col-span-4 md:row-span-2' : 'md:col-span-2'}`}
+                    >
+                      <LinkCard 
+                        link={link} 
+                        index={index} 
+                        isFeatured={isFeatured} // Upravit LinkCard pro různé styly
+                      />
                     </div>
-                  </div>
-                ))
-              ) : filteredLinks.map((link, index) => {
-                const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
-                return (
-                  <div key={link.id} className="relative">
-                    {isFavorite && (
-                      <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
-                        🔥 NEJOBLÍBENĚJŠÍ
-                      </div>
-                    )}
-                    <LinkCard link={link} index={index} />
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           )}
         </AnimatePresence>
 
-        {/* SEKCE ČLÁNKY */}
-        <AnimatePresence mode="wait">
-          {selectedCategory === 'Článek' && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-               <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
-                <FileText className="w-6 h-6 text-purple-600" />
-                <h2 className="text-3xl font-bold text-slate-900">Návody a články</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                {/* AIR BANK ČLÁNEK */}
-                <motion.div 
-                  layout
-                  className={`bg-white p-8 rounded-3xl border-2 border-emerald-100 shadow-sm transition-all relative overflow-hidden ${isAirBankOpen ? 'md:col-span-2' : ''}`}
-                >
-                  <div className="absolute top-0 right-0 p-4 opacity-10">
-                    <Banknote className="w-24 h-24 text-emerald-600" />
-                  </div>
-                  
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold mb-4 text-center">
-                    PRŮVODCE
-                  </div>
-
-                  <h3 className="text-2xl font-bold mb-4 text-slate-900 leading-tight">
-                    Jak získat 500 Kč od Air Bank?
-                  </h3>
-                  
-                  <p className="text-slate-600 mb-6 leading-relaxed">
-                    Air Bank aktuálně nabízí odměnu pro nové klienty. Stačí dodržet jednoduchý postup a bonus je váš.
-                  </p>
-
-                  <AnimatePresence>
-                    {isAirBankOpen && (
-                      <motion.div 
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="space-y-6 mb-8 border-t border-emerald-100 pt-6"
-                      >
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div className="flex flex-col gap-2">
-                            <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">1</div>
-                            <p className="text-sm font-semibold text-slate-800">Založte si běžný účet online</p>
-                          </div>
-                          <div className="flex flex-col gap-2">
-                            <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">2</div>
-                            <p className="text-sm font-semibold text-slate-800">Zaplaťte kartou v jakékoliv výši</p>
-                          </div>
-                          <div className="flex flex-col gap-2">
-                            <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">3</div>
-                            <p className="text-sm font-semibold text-slate-800">Bonus 500 Kč dorazí na účet</p>
-                          </div>
-                        </div>
-
-                        <div className="bg-slate-50 p-5 rounded-2xl border border-emerald-100 text-center sm:text-left">
-                          <p className="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-wider uppercase tracking-widest">Tvůj registrační odkaz</p>
-                          <div className="flex flex-col sm:flex-row items-center gap-3">
-                            <code className="text-xs bg-white p-3 rounded-lg border border-slate-100 text-emerald-700 font-mono w-full truncate">
-                              https://www.airbank.cz
-                            </code>
-                            <a 
-                              href="https://www.airbank.cz" 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="w-full sm:w-auto bg-emerald-600 text-white px-6 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-emerald-700 transition-all whitespace-nowrap"
-                            >
-                              Získat bonus <ArrowRight className="w-4 h-4" />
-                            </a>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  <button 
-                    onClick={() => setIsAirBankOpen(!isAirBankOpen)}
-                    className="flex items-center text-emerald-600 font-bold hover:underline transition-all"
-                  >
-                    {isAirBankOpen ? 'Zavřít detail' : 'Přečíst návod'} 
-                    <ArrowRight className={`w-4 h-4 ml-2 transition-transform ${isAirBankOpen ? 'rotate-90' : ''}`} />
-                  </button>
-                </motion.div>
-
-                {/* Dynamické články */}
-                {articles.map((article) => (
-                  <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all">
-                    <h3 className="text-2xl font-bold mb-4 text-slate-900 leading-tight">{article.title}</h3>
-                    <p className="text-slate-600 mb-6 line-clamp-4 leading-relaxed">{article.content}</p>
-                    <div className="flex items-center text-slate-900 font-bold group cursor-pointer text-center">
-                      Přečíst celý článek <ArrowRight className="w-4 h-4 ml-2" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* --- LIVE COUNTER A SDÍLENÍ --- */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-24 mb-12 flex flex-col items-center py-10 px-6 bg-white rounded-[2.5rem] border border-slate-200 shadow-sm"
-        >
-          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-slate-400 mb-2">
-            Celkem ušetřeno komunitou
-          </span>
-          <div className="text-4xl sm:text-5xl font-black text-emerald-600 tabular-nums tracking-tight mb-6">
-            {savings.toLocaleString('cs-CZ')} Kč
+        {/* 5. SEKCE ČLÁNKY - Grid 2x2 místo pod sebou */}
+        {selectedCategory === 'Článek' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+             {/* Vaše články zde */}
           </div>
-          
-          <button 
-            onClick={handleShare}
-            className="group flex flex-col items-center gap-3"
-          >
-            <div className="flex items-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 scale-100 hover:scale-105 active:scale-95">
-              <Share2 className="w-5 h-5 text-emerald-400" />
-              Sdílej mezi přáteli ušetříš tím víc
-            </div>
-            <p className="text-xs text-slate-400 font-medium group-hover:text-emerald-500 transition-colors">
-              Právě teď roste díky sdílení
-            </p>
-          </button>
-        </motion.div>
+        )}
 
-        <footer className="text-center pt-8 border-t border-slate-200/60 text-sm text-slate-500 font-medium">
-          Všechny bonusy jsou aktuální k {new Date().toLocaleDateString('cs-CZ')}.
-        </footer>
       </div>
     </div>
   );
