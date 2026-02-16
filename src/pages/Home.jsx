@@ -103,10 +103,10 @@ export default function Home() {
         {/* Social Proof */}
         <div className="flex justify-center mb-12 h-10">
           <AnimatePresence mode="wait">
-            <motion.div key={notifIndex} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white border border-emerald-100 shadow-sm">
+            <motion.div key={notifIndex} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white border border-emerald-100 shadow-sm shadow-emerald-100/30">
               <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-sm font-medium text-slate-700 text-center">
-                <span className="font-bold">{notifications[notifIndex].name}</span> ušetřil(a) s <span className="text-emerald-600 font-bold">{notifications[notifIndex].app}</span>
+              <p className="text-sm font-medium text-slate-700">
+                <span className="font-bold">{notifications[notifIndex].name}</span> získal(a) bonus u <span className="text-emerald-600 font-bold">{notifications[notifIndex].app}</span>
               </p>
             </motion.div>
           </AnimatePresence>
@@ -114,59 +114,65 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* --- SEKCE PRŮZKUMY --- */}
+        {/* --- PRŮZKUMY SEKCE --- */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'Průzkumy' && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl overflow-hidden mb-12 mt-8">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden mb-12 mt-8">
               <div className="p-8 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white relative overflow-hidden">
                 <div className="relative z-10">
-                  <div className="flex items-center gap-2 mb-3 text-indigo-100 font-bold text-xs uppercase tracking-[0.2em]">
-                    <TrendingUp className="w-4 h-4" /> Bonusové výdělky
+                  <div className="flex items-center gap-2 mb-3 text-indigo-100 font-bold text-xs uppercase tracking-widest leading-none">
+                    <TrendingUp className="w-4 h-4" /> Bonusová sekce
                   </div>
-                  <h2 className="text-3xl md:text-4xl font-black mb-3">Vydělávejte s CPX Research</h2>
-                  <p className="text-indigo-100 max-w-xl text-lg leading-relaxed">Vyplňujte jednoduché dotazníky a získejte okamžité odměny.</p>
+                  <h2 className="text-3xl font-black mb-3">Vydělávejte s CPX Research</h2>
+                  <p className="text-indigo-100 max-w-xl">Vyplňte dotazník a získejte okamžitou odměnu. Každý názor má svou cenu!</p>
                 </div>
                 <ClipboardList className="absolute right-[-20px] top-[-20px] w-64 h-64 opacity-10 rotate-12" />
               </div>
-              <div className="bg-slate-50 p-4 md:p-8">
-                <iframe width="100%" frameBorder="0" height="1200px" src={cpxUrl} title="CPX Research" className="rounded-2xl shadow-inner bg-white" />
-              </div>
+              <iframe width="100%" frameBorder="0" height="1200px" src={cpxUrl} title="CPX Research" className="bg-slate-50" />
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* SEKCE ODKAZY */}
+        {/* --- ODKAZY SEKCE --- */}
         {selectedCategory !== 'Článek' && selectedCategory !== 'Průzkumy' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 mt-8">
             {isLoading ? <Skeleton className="h-48 w-full rounded-2xl" /> : filteredLinks.map((link, index) => <LinkCard key={link.id} link={link} index={index} />)}
           </div>
         )}
 
-        {/* --- SEKCE FINANCE A SDÍLENÍ (ZPĚT DOLE) --- */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 mb-20">
-          {/* Live Counter */}
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm flex flex-col justify-center items-center text-center">
-            <div className="p-3 bg-emerald-50 rounded-2xl mb-4">
-              <Banknote className="w-8 h-8 text-emerald-600" />
+        {/* --- PŮVODNÍ PANEL PENÍZE A SDÍLENÍ --- */}
+        <div className="space-y-6 mt-12 mb-20">
+          {/* Live Counter Savings */}
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-10 rounded-3xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4 text-left">
+              <div className="p-4 bg-emerald-50 rounded-2xl">
+                <Banknote className="w-8 h-8 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Celkem ušetřeno komunitou</p>
+                <div className="text-4xl font-mono font-bold text-slate-900 tracking-tighter">
+                  {savings.toLocaleString()} <span className="text-xl">Kč</span>
+                </div>
+              </div>
             </div>
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Ušetřeno komunitou</p>
-            <div className="text-4xl font-mono font-bold text-slate-900">
-              {savings.toLocaleString()} <span className="text-xl">Kč</span>
+            <div className="hidden md:block h-12 w-px bg-slate-100" />
+            <div className="text-slate-500 text-sm max-w-[200px] text-center md:text-left">
+              Částka, kterou uživatelé již reálně vybrali z aktivních bonusů.
             </div>
-          </div>
+          </motion.div>
 
           {/* Share Card */}
-          <div className="bg-slate-900 p-8 rounded-[2.5rem] text-white flex flex-col justify-center items-center text-center relative overflow-hidden">
-            <div className="relative z-10">
-              <h3 className="text-2xl font-bold mb-2">Líbí se ti web?</h3>
-              <p className="text-slate-400 mb-6 text-sm">Sdílej ho s přáteli a pomoz jim taky ušetřit.</p>
-              <button onClick={handleShare} className="bg-white text-slate-900 px-8 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-slate-100 transition-colors">
-                <Share2 className="w-5 h-5" /> Sdílet odkaz
-              </button>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-slate-900 p-10 rounded-3xl text-white flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+            <div className="relative z-10 text-center md:text-left">
+              <h3 className="text-2xl font-bold mb-2 tracking-tight">Pomozte ušetřit i ostatním</h3>
+              <p className="text-slate-400 text-sm">Sdílejte tento web s přáteli a rodinou. Bonusy platí pro každého!</p>
             </div>
-            <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-indigo-600/20 blur-[60px] rounded-full" />
-          </div>
-        </motion.div>
+            <button onClick={handleShare} className="relative z-10 bg-white text-slate-900 px-10 py-4 rounded-2xl font-black flex items-center gap-3 hover:scale-105 transition-all shadow-xl active:scale-95 shrink-0">
+              <Share2 className="w-5 h-5" /> Sdílet s přáteli
+            </button>
+            <div className="absolute top-[-50%] right-[-10%] w-80 h-80 bg-indigo-600/20 blur-[100px] rounded-full" />
+          </motion.div>
+        </div>
 
       </div>
     </div>
