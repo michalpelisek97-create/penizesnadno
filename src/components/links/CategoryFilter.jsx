@@ -1,15 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { 
-  Bitcoin, 
-  Building2, 
-  Percent, 
-  Gamepad2, 
-  Smartphone, 
-  LayoutGrid,
-  ClipboardList,
-  FileText
-} from 'lucide-react';
+// ... (ostatní importy stejné)
 
 const categories = [
   { id: 'all', label: 'Vše', icon: LayoutGrid },
@@ -18,7 +7,7 @@ const categories = [
   { id: 'cashback', label: 'Cashback', icon: Percent },
   { id: 'games', label: 'Hry', icon: Gamepad2 },
   { id: 'apps', label: 'Aplikace', icon: Smartphone },
-  { id: 'Průzkumy', label: 'Průzkumy', icon: ClipboardList }, // Přidáno zde
+  { id: 'Průzkumy', label: 'Průzkumy', icon: ClipboardList, hot: true }, // Přidán příznak hot
   { id: 'Článek', label: 'Články', icon: FileText },
 ];
 
@@ -33,28 +22,29 @@ export default function CategoryFilter({ selected, onSelect }) {
           <motion.button
             key={category.id}
             onClick={() => onSelect(category.id)}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             className={`
-              relative px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-300
-              flex items-center gap-2
+              relative px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-300
+              flex items-center gap-2 overflow-visible
               ${isSelected 
-                ? 'bg-slate-900 text-white shadow-lg' 
-                : 'bg-white/60 text-slate-600 hover:bg-white hover:text-slate-900 border border-slate-200/60'
+                ? 'bg-slate-900 text-white shadow-[0_10px_20px_rgba(0,0,0,0.2)]' 
+                : 'bg-white text-slate-600 border border-slate-200 hover:border-indigo-300'
               }
+              ${category.hot && !isSelected ? 'ring-2 ring-indigo-500/20 animate-pulse' : ''}
             `}
           >
-            {isSelected && (
-              <motion.div
-                layoutId="activeCategory"
-                className="absolute inset-0 bg-slate-900 rounded-xl"
-                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-              />
-            )}
             <span className="relative z-10 flex items-center gap-2">
-              <Icon className={`w-4 h-4 ${isSelected ? 'text-white' : 'text-slate-400'}`} />
+              <Icon className={`w-4 h-4 ${isSelected ? 'text-indigo-400' : 'text-slate-400'}`} />
               {category.label}
             </span>
+
+            {/* Tenhle badge to zvýrazní */}
+            {category.hot && (
+              <span className="absolute -top-2 -right-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-[10px] text-white px-2 py-0.5 rounded-full shadow-md font-black z-20 animate-bounce">
+                TOP
+              </span>
+            )}
           </motion.button>
         );
       })}
