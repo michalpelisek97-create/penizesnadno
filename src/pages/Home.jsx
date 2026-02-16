@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Gift, FileText, ArrowRight, Banknote, CheckCircle2, Share2 } from 'lucide-react';
+import { Sparkles, Gift, FileText, ArrowRight, Banknote, CheckCircle2, Share2, ClipboardList } from 'lucide-react';
 import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -30,7 +30,6 @@ export default function Home() {
         url: window.location.href,
       });
     } catch (err) {
-      // Fallback pokud prohlížeč nepodporuje sharing API
       navigator.clipboard.writeText(window.location.href);
       alert('Odkaz zkopírován do schránky!');
     }
@@ -70,7 +69,7 @@ export default function Home() {
 
   const filteredLinks = useMemo(() => {
     if (selectedCategory === 'all') return links;
-    if (selectedCategory === 'Článek') return [];
+    if (selectedCategory === 'Článek' || selectedCategory === 'Průzkumy') return [];
     return links.filter(link => 
       link.category === selectedCategory || 
       (Array.isArray(link.categories) && link.categories.includes(selectedCategory))
@@ -120,9 +119,36 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
+        {/* --- SEKCE PRŮZKUMY (Tvůj Iframe) --- */}
+        <AnimatePresence mode="wait">
+          {selectedCategory === 'Průzkumy' && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="w-full bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden mb-20 mt-8"
+            >
+              <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
+                <ClipboardList className="w-6 h-6 text-indigo-600" />
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900">Vydělávejte průzkumy</h2>
+                  <p className="text-sm text-slate-500">Vyplňte dotazník a získejte okamžitou odměnu</p>
+                </div>
+              </div>
+              <iframe 
+                width="100%" 
+                frameBorder="0" 
+                height="2000px"  
+                src="https://offers.cpx-research.com{unique_user_id}&secure_hash={secure_hash}&username={user_name}&email={user_email}&subid_1=&subid_2"
+                title="CPX Research Surveys"
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* SEKCE ODKAZY */}
         <AnimatePresence mode="wait">
-          {selectedCategory !== 'Článek' && (
+          {selectedCategory !== 'Článek' && selectedCategory !== 'Průzkumy' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
               {isLoading ? (
                 [...Array(6)].map((_, i) => (
@@ -181,105 +207,11 @@ export default function Home() {
                   <p className="text-slate-600 mb-6 leading-relaxed">
                     Air Bank aktuálně nabízí odměnu pro nové klienty. Stačí dodržet jednoduchý postup a bonus je váš.
                   </p>
-
-                  <AnimatePresence>
-                    {isAirBankOpen && (
-                      <motion.div 
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="space-y-6 mb-8 border-t border-emerald-100 pt-6"
-                      >
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div className="flex flex-col gap-2">
-                            <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">1</div>
-                            <p className="text-sm font-semibold text-slate-800">Založte si běžný účet online</p>
-                          </div>
-                          <div className="flex flex-col gap-2">
-                            <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">2</div>
-                            <p className="text-sm font-semibold text-slate-800">Zaplaťte kartou v jakékoliv výši</p>
-                          </div>
-                          <div className="flex flex-col gap-2">
-                            <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">3</div>
-                            <p className="text-sm font-semibold text-slate-800">Bonus 500 Kč dorazí na účet</p>
-                          </div>
-                        </div>
-
-                        <div className="bg-slate-50 p-5 rounded-2xl border border-emerald-100 text-center sm:text-left">
-                          <p className="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-wider uppercase tracking-widest">Tvůj registrační odkaz</p>
-                          <div className="flex flex-col sm:flex-row items-center gap-3">
-                            <code className="text-xs bg-white p-3 rounded-lg border border-slate-100 text-emerald-700 font-mono w-full truncate">
-                              https://www.airbank.cz
-                            </code>
-                            <a 
-                              href="https://www.airbank.cz" 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="w-full sm:w-auto bg-emerald-600 text-white px-6 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-emerald-700 transition-all whitespace-nowrap"
-                            >
-                              Získat bonus <ArrowRight className="w-4 h-4" />
-                            </a>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  <button 
-                    onClick={() => setIsAirBankOpen(!isAirBankOpen)}
-                    className="flex items-center text-emerald-600 font-bold hover:underline transition-all"
-                  >
-                    {isAirBankOpen ? 'Zavřít detail' : 'Přečíst návod'} 
-                    <ArrowRight className={`w-4 h-4 ml-2 transition-transform ${isAirBankOpen ? 'rotate-90' : ''}`} />
-                  </button>
                 </motion.div>
-
-                {/* Dynamické články */}
-                {articles.map((article) => (
-                  <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all">
-                    <h3 className="text-2xl font-bold mb-4 text-slate-900 leading-tight">{article.title}</h3>
-                    <p className="text-slate-600 mb-6 line-clamp-4 leading-relaxed">{article.content}</p>
-                    <div className="flex items-center text-slate-900 font-bold group cursor-pointer text-center">
-                      Přečíst celý článek <ArrowRight className="w-4 h-4 ml-2" />
-                    </div>
-                  </div>
-                ))}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* --- LIVE COUNTER A SDÍLENÍ --- */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-24 mb-12 flex flex-col items-center py-10 px-6 bg-white rounded-[2.5rem] border border-slate-200 shadow-sm"
-        >
-          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-slate-400 mb-2">
-            Celkem ušetřeno komunitou
-          </span>
-          <div className="text-4xl sm:text-5xl font-black text-emerald-600 tabular-nums tracking-tight mb-6">
-            {savings.toLocaleString('cs-CZ')} Kč
-          </div>
-          
-          <button 
-            onClick={handleShare}
-            className="group flex flex-col items-center gap-3"
-          >
-            <div className="flex items-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 scale-100 hover:scale-105 active:scale-95">
-              <Share2 className="w-5 h-5 text-emerald-400" />
-              Sdílej mezi přáteli ušetříš tím víc
-            </div>
-            <p className="text-xs text-slate-400 font-medium group-hover:text-emerald-500 transition-colors">
-              Právě teď roste díky sdílení
-            </p>
-          </button>
-        </motion.div>
-
-        <footer className="text-center pt-8 border-t border-slate-200/60 text-sm text-slate-500 font-medium">
-          Všechny bonusy jsou aktuální k {new Date().toLocaleDateString('cs-CZ')}.
-        </footer>
       </div>
     </div>
   );
