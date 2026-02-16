@@ -11,6 +11,8 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
   const [isAirBankOpen, setIsAirBankOpen] = useState(false);
+  
+  // Logika pro Live Counter úspor
   const [savings, setSavings] = useState(143202);
 
   useEffect(() => {
@@ -81,13 +83,19 @@ export default function Home() {
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-12 sm:py-16">
         
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-6">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-6"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
             <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
             <span className="text-sm font-medium text-slate-700">Dnes aktivní bonusy pro vás</span>
           </div>
+          
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
-            Vyzkoušej<span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
+            Vyzkoušej
+            <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
           </h1>
         </motion.div>
 
@@ -111,7 +119,7 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* --- SEKCE PRŮZKUMY (OPRAVENO) --- */}
+        {/* SEKCE PRŮZKUMY - OPRAVENÝ IFRAME */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'Průzkumy' && (
             <motion.div 
@@ -122,14 +130,14 @@ export default function Home() {
             >
               <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
                 <ClipboardList className="w-6 h-6 text-indigo-600" />
-                <h2 className="text-xl font-bold text-slate-900">Vydělávejte průzkumy</h2>
+                <h2 className="text-xl font-bold text-slate-900">Placené průzkumy</h2>
               </div>
               <iframe 
                 width="100%" 
                 frameBorder="0" 
                 height="2000px"  
-                src={`https://offers.cpx-research.com{unique_user_id}&secure_hash={secure_hash}&username={user_name}&email={user_email}&subid_1=&subid_2`}
-                title="CPX Research Surveys"
+                src="https://offers.cpx-research.com{unique_user_id}&secure_hash={secure_hash}&username={user_name}&email={user_email}&subid_1=&subid_2"
+                title="CPX Surveys"
               />
             </motion.div>
           )}
@@ -140,34 +148,29 @@ export default function Home() {
           {selectedCategory !== 'Článek' && selectedCategory !== 'Průzkumy' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20 mt-8">
               {isLoading ? (
-                [...Array(6)].map((_, i) => <Skeleton key={i} className="h-48 w-full rounded-2xl" />)
+                [...Array(6)].map((_, i) => (
+                  <Skeleton key={i} className="h-48 w-full rounded-2xl" />
+                ))
               ) : filteredLinks.map((link, index) => (
-                <div key={link.id} className="relative">
-                  <LinkCard link={link} index={index} />
-                </div>
+                <LinkCard key={link.id} link={link} index={index} />
               ))}
             </div>
           )}
         </AnimatePresence>
 
         {/* SEKCE ČLÁNKY */}
-        <AnimatePresence mode="wait">
-          {selectedCategory === 'Článek' && (
-            <div className="mt-8 space-y-8">
-               <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
-                <FileText className="w-6 h-6 text-purple-600" />
-                <h2 className="text-3xl font-bold text-slate-900">Návody</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-white p-8 rounded-3xl border-2 border-emerald-100 shadow-sm relative overflow-hidden">
-                  <Banknote className="absolute top-0 right-0 p-4 opacity-10 w-24 h-24 text-emerald-600" />
-                  <h3 className="text-2xl font-bold mb-4 text-slate-900 leading-tight">Jak získat 500 Kč od Air Bank?</h3>
-                  <p className="text-slate-600 mb-6 leading-relaxed">Air Bank aktuálně nabízí odměnu pro nové klienty. Stačí dodržet jednoduchý postup.</p>
-                </div>
-              </div>
+        {selectedCategory === 'Článek' && (
+          <div className="mt-8 space-y-8">
+            <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
+              <FileText className="w-6 h-6 text-purple-600" />
+              <h2 className="text-3xl font-bold text-slate-900">Návody</h2>
             </div>
-          )}
-        </AnimatePresence>
+            <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+              <h3 className="text-2xl font-bold mb-4">Jak získat 500 Kč od Air Bank?</h3>
+              <p className="text-slate-600 leading-relaxed">Air Bank aktuálně nabízí odměnu pro nové klienty...</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
