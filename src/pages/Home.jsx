@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Gift, FileText, ArrowRight, Banknote, CheckCircle2, Share2, ClipboardList } from 'lucide-react';
+import { Sparkles, Gift, FileText, ArrowRight, Banknote, CheckCircle2, Share2, ClipboardList, TrendingUp } from 'lucide-react';
 import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -78,7 +78,7 @@ export default function Home() {
 
   const isLoading = isLoadingLinks || isLoadingArticles;
 
-  // --- OPRAVA URL PRO CPX ---
+  // --- OPRAVA URL PRO CPX (Přidáno index.php a ?) ---
   const cpxUrl = "https://offers.cpx-research.com" + 
                  "?app_id=31477" + 
                  "&ext_user_id={unique_user_id}" + 
@@ -115,25 +115,40 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* --- SEKCE PRŮZKUMY --- */}
+        {/* --- ZVÝRAZNĚNÁ SEKCE PRŮZKUMY --- */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'Průzkumy' && (
             <motion.div 
               initial={{ opacity: 0, y: 20 }} 
               animate={{ opacity: 1, y: 0 }}
-              className="w-full bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden mb-20 mt-8"
+              className="w-full bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl overflow-hidden mb-20 mt-8"
             >
-              <div className="p-6 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
-                <ClipboardList className="w-6 h-6 text-indigo-600" />
-                <h2 className="text-xl font-bold text-slate-900">Placené průzkumy</h2>
+              {/* Prémiový Banner */}
+              <div className="p-8 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white relative overflow-hidden">
+                <div className="relative z-10">
+                  <div className="flex items-center gap-2 mb-3 text-indigo-100 font-bold text-xs uppercase tracking-[0.2em]">
+                    <TrendingUp className="w-4 h-4" /> Bonusové výdělky
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-black mb-3">Vydělávejte s CPX Research</h2>
+                  <p className="text-indigo-100 max-w-xl text-lg leading-relaxed">
+                    Váš názor má cenu zlata! Vyplňujte jednoduché dotazníky a získejte okamžité odměny přímo do své peněženky.
+                  </p>
+                </div>
+                {/* Ikona na pozadí */}
+                <ClipboardList className="absolute right-[-20px] top-[-20px] w-64 h-64 opacity-10 rotate-12" />
               </div>
-              <iframe 
-                width="100%" 
-                frameBorder="0" 
-                height="1200px"  
-                src={cpxUrl}
-                title="CPX Research"
-              />
+
+              {/* Samotný Iframe */}
+              <div className="bg-slate-50 p-4 md:p-8">
+                <iframe 
+                  width="100%" 
+                  frameBorder="0" 
+                  height="1200px"  
+                  src={cpxUrl}
+                  title="CPX Research"
+                  className="rounded-2xl shadow-inner bg-white"
+                />
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
