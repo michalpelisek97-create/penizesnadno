@@ -1,4 +1,16 @@
-// ... (ostatní importy stejné)
+import React from 'react';
+import { motion } from 'framer-motion';
+// Tady musí být LayoutGrid v seznamu:
+import { 
+  Bitcoin, 
+  Building2, 
+  Percent, 
+  Gamepad2, 
+  Smartphone, 
+  LayoutGrid, 
+  ClipboardList,
+  FileText
+} from 'lucide-react';
 
 const categories = [
   { id: 'all', label: 'Vše', icon: LayoutGrid },
@@ -7,7 +19,7 @@ const categories = [
   { id: 'cashback', label: 'Cashback', icon: Percent },
   { id: 'games', label: 'Hry', icon: Gamepad2 },
   { id: 'apps', label: 'Aplikace', icon: Smartphone },
-  { id: 'Průzkumy', label: 'Průzkumy', icon: ClipboardList, hot: true }, // Přidán příznak hot
+  { id: 'Průzkumy', label: 'Průzkumy', icon: ClipboardList, hot: true },
   { id: 'Článek', label: 'Články', icon: FileText },
 ];
 
@@ -28,7 +40,7 @@ export default function CategoryFilter({ selected, onSelect }) {
               relative px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-300
               flex items-center gap-2 overflow-visible
               ${isSelected 
-                ? 'bg-slate-900 text-white shadow-[0_10px_20px_rgba(0,0,0,0.2)]' 
+                ? 'bg-slate-900 text-white shadow-lg' 
                 : 'bg-white text-slate-600 border border-slate-200 hover:border-indigo-300'
               }
               ${category.hot && !isSelected ? 'ring-2 ring-indigo-500/20 animate-pulse' : ''}
@@ -39,7 +51,6 @@ export default function CategoryFilter({ selected, onSelect }) {
               {category.label}
             </span>
 
-            {/* Tenhle badge to zvýrazní */}
             {category.hot && (
               <span className="absolute -top-2 -right-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-[10px] text-white px-2 py-0.5 rounded-full shadow-md font-black z-20 animate-bounce">
                 TOP
