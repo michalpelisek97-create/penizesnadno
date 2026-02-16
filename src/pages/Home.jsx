@@ -215,4 +215,11 @@ export default function Home() {
       </div>
     </div>
   );
-}
+}<iframe 
+  width="100%" 
+  frameBorder="0" 
+  height="2000px"  
+  src={`https://offers.cpx-research.com{unique_user_id}&secure_hash={secure_hash}&username={user_name}&email={user_email}&subid_1=&subid_2`}
+  title="CPX Research Surveys"
+/>
+
