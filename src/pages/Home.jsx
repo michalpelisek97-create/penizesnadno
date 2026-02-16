@@ -106,7 +106,7 @@ export default function Home() {
             <motion.div key={notifIndex} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white border border-emerald-100 shadow-sm shadow-emerald-100/30">
               <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               <p className="text-sm font-medium text-slate-700">
-                <span className="font-bold">{notifications[notifIndex].name}</span> ušetřil(a) s <span className="text-emerald-600 font-bold">{notifications[notifIndex].app}</span>
+                <span className="font-bold">{notifications[notifIndex].name}</span> získal(a) bonus u <span className="text-emerald-600 font-bold">{notifications[notifIndex].app}</span>
               </p>
             </motion.div>
           </AnimatePresence>
@@ -140,47 +140,38 @@ export default function Home() {
           </div>
         )}
 
-        {/* --- SPODNÍ PANEL (OPRAVENO NA PŮVODNÍ DESIGN) --- */}
-        <div className="mt-16 space-y-6">
-          
-          {/* Live Counter Card */}
-          <div className="bg-white px-8 py-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-5">
-              <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0">
-                <Banknote className="w-6 h-6 text-emerald-500" />
+        {/* --- PŮVODNÍ PANEL PENÍZE A SDÍLENÍ --- */}
+        <div className="space-y-6 mt-12 mb-20">
+          {/* Live Counter Savings */}
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-10 rounded-3xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4 text-left">
+              <div className="p-4 bg-emerald-50 rounded-2xl">
+                <Banknote className="w-8 h-8 text-emerald-600" />
               </div>
-              <div className="text-left">
-                <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.15em] mb-0.5">Celkem ušetřeno komunitou</p>
-                <div className="text-3xl font-bold text-slate-900 tabular-nums">
-                  {savings.toLocaleString()} <span className="text-lg font-medium text-slate-400 ml-0.5">Kč</span>
+              <div>
+                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Celkem ušetřeno komunitou</p>
+                <div className="text-4xl font-mono font-bold text-slate-900 tracking-tighter">
+                  {savings.toLocaleString()} <span className="text-xl">Kč</span>
                 </div>
               </div>
             </div>
-            <div className="text-[13px] text-slate-400 md:max-w-[240px] text-center md:text-right leading-relaxed">
+            <div className="hidden md:block h-12 w-px bg-slate-100" />
+            <div className="text-slate-500 text-sm max-w-[200px] text-center md:text-left">
               Částka, kterou uživatelé již reálně vybrali z aktivních bonusů.
             </div>
-          </div>
+          </motion.div>
 
           {/* Share Card */}
-          <div className="bg-slate-900 px-8 py-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
-            <div className="flex items-center gap-5 relative z-10">
-              <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center shrink-0">
-                <Share2 className="w-5 h-5 text-white" />
-              </div>
-              <div className="text-left">
-                <h3 className="text-lg font-bold text-white leading-tight">Líbí se vám web?</h3>
-                <p className="text-slate-400 text-sm">Pomozte ušetřit i vašim přátelům.</p>
-              </div>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-slate-900 p-10 rounded-3xl text-white flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+            <div className="relative z-10 text-center md:text-left">
+              <h3 className="text-2xl font-bold mb-2 tracking-tight">Pomozte ušetřit i ostatním</h3>
+              <p className="text-slate-400 text-sm">Sdílejte tento web s přáteli a rodinou. Bonusy platí pro každého!</p>
             </div>
-            <button 
-              onClick={handleShare}
-              className="relative z-10 bg-white text-slate-900 px-8 py-3 rounded-xl font-bold text-sm hover:bg-slate-100 transition-all active:scale-95 shrink-0 shadow-lg"
-            >
-              Sdílet s přáteli
+            <button onClick={handleShare} className="relative z-10 bg-white text-slate-900 px-10 py-4 rounded-2xl font-black flex items-center gap-3 hover:scale-105 transition-all shadow-xl active:scale-95 shrink-0">
+              <Share2 className="w-5 h-5" /> Sdílet s přáteli
             </button>
-            <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-indigo-500/10 to-transparent pointer-events-none" />
-          </div>
-
+            <div className="absolute top-[-50%] right-[-10%] w-80 h-80 bg-indigo-600/20 blur-[100px] rounded-full" />
+          </motion.div>
         </div>
 
       </div>
