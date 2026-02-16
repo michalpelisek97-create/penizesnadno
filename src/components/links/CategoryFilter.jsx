@@ -18,6 +18,7 @@ const categories = [
   { id: 'cashback', label: 'Cashback', icon: Percent },
   { id: 'games', label: 'Hry', icon: Gamepad2 },
   { id: 'apps', label: 'Aplikace', icon: Smartphone },
+  { id: 'Průzkumy', label: 'Průzkumy', icon: ClipboardList }, // Přidáno zde
   { id: 'Článek', label: 'Články', icon: FileText },
 ];
 
