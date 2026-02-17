@@ -15,11 +15,10 @@ import {
 const categories = [
   { id: 'all', label: 'Vše', icon: LayoutGrid },
   { id: 'crypto', label: 'Kryptoměny', icon: Bitcoin },
-  { id: 'banks', label: 'Banky', icon: Building2 },
+  { id: 'banks', label: 'Banky', icon: Building2, hot: true },
   { id: 'cashback', label: 'Cashback', icon: Percent },
   { id: 'games', label: 'Hry', icon: Gamepad2 },
   { id: 'apps', label: 'Aplikace', icon: Smartphone },
-  { id: 'Průzkumy', label: 'Průzkumy', icon: ClipboardList, hot: true },
   { id: 'Článek', label: 'Články', icon: FileText },
 ];
 
