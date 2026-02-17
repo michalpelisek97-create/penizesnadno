@@ -15,49 +15,21 @@ import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
 
-// 1. Pomocná komponenta pro plynulé načítání peněz
-const AnimatedCounter = ({ targetValue }) => {
-  const [count, setCount] = useState(0);
-  const [hasStarted, setHasStarted] = useState(false);
-  const countRef = useRef(null);
+// 1. Komponenta pro NEKONEČNĚ STOUPAJÍCÍ počítadlo
+const InfiniteCounter = ({ startValue }) => {
+  const [count, setCount] = useState(startValue);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setHasStarted(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
+    // Každé 3 sekundy přičteme náhodnou malou částku (např. 2 až 15 Kč)
+    const interval = setInterval(() => {
+      setCount(prev => prev + Math.floor(Math.random() * 13) + 2);
+    }, 3000);
 
-    if (countRef.current) observer.observe(countRef.current);
-    return () => observer.disconnect();
+    return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (!hasStarted) return;
-
-    let start = 0;
-    const end = targetValue;
-    const duration = 2500; 
-    const increment = end / (duration / 16);
-
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= end) {
-        setCount(end);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, 16);
-
-    return () => clearInterval(timer);
-  }, [hasStarted, targetValue]);
-
   return (
-    <span ref={countRef} className="tabular-nums">
+    <span className="tabular-nums">
       {count.toLocaleString('cs-CZ')} Kč
     </span>
   );
@@ -67,7 +39,7 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
 
-  // 2. Google AdSense
+  // 2. Google AdSense Verifikace
   useEffect(() => {
     const meta = document.createElement('meta');
     meta.name = "google-adsense-account";
@@ -109,7 +81,7 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [notifications.length]);
 
-  // 4. Data Fetching
+  // 4. API Data Fetching
   const { data: links = [], isLoading: isLoadingLinks } = useQuery({
     queryKey: ['referral-links'],
     queryFn: () => base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order'),
@@ -131,22 +103,23 @@ export default function Home() {
 
   const isLoading = isLoadingLinks || isLoadingArticles;
 
-  // 5. Funkce sdílení
+  // 5. Marketingové sdílení
   const handleShare = async () => {
     const shareData = {
       title: 'Vyzkoušej & Ušetři',
       text: 'Koukni na tyhle super bonusy a odměny, které můžeš snadno získat!',
       url: window.location.href,
     };
+
     try {
       if (navigator.share) {
         await navigator.share(shareData);
       } else {
         await navigator.clipboard.writeText(window.location.href);
-        alert('Odkaz byl zkopírován!');
+        alert('Odkaz byl zkopírován do schránky!');
       }
     } catch (err) {
-      console.log('Error sharing', err);
+      console.log('Chyba při sdílení', err);
     }
   };
 
@@ -237,42 +210,41 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* --- STYLOVÉ ZELENÉ POČÍTADLO A SDÍLENÍ --- */}
+        {/* --- DYNAMICKÁ PATIČKA --- */}
         <footer className="mt-24 pt-16 border-t border-slate-200/60">
           <div className="flex flex-col items-center">
             
-            {/* Animované počítadlo v zeleném bloku */}
             <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="w-full max-w-2xl bg-emerald-50/50 border border-emerald-100 rounded-[3rem] p-12 text-center mb-16"
+              className="w-full max-w-2xl bg-emerald-50/50 border border-emerald-100 rounded-[3rem] p-12 text-center mb-16 shadow-inner"
             >
+              {/* Toto číslo neustále roste */}
               <div className="text-5xl md:text-7xl font-black text-emerald-600 mb-4 tracking-tighter leading-none">
-                <AnimatedCounter targetValue={142500} />
+                <InfiniteCounter startValue={142500} />
               </div>
               <p className="text-xl md:text-2xl font-bold text-emerald-800/80">
                 Celkem ušetřeno díky naší komunitě
               </p>
             </motion.div>
 
-            {/* Marketingové sdílení */}
             <div className="text-center space-y-8">
               <div className="space-y-3">
-                <h3 className="text-2xl font-bold text-slate-900">Pomoz přátelům ušetřit taky!</h3>
-                <p className="text-slate-500 text-lg">Sdílej bonusy se svou rodinou a známými.</p>
+                <h3 className="text-2xl font-bold text-slate-900 font-sans">Pomoz přátelům ušetřit taky!</h3>
+                <p className="text-slate-500 text-lg leading-relaxed">Pověz o nás dál a získejte další bonusy společně.</p>
               </div>
 
               <button 
                 onClick={handleShare}
-                className="group flex items-center gap-3 px-12 py-5 bg-slate-900 hover:bg-emerald-600 text-white rounded-3xl font-black text-lg transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95 shadow-slate-200"
+                className="group flex items-center gap-3 px-12 py-5 bg-slate-900 hover:bg-emerald-600 text-white rounded-3xl font-black text-lg transition-all duration-300 shadow-xl hover:scale-105"
               >
                 <Share2 className="w-6 h-6 group-hover:rotate-12 transition-transform" />
                 Sdílet s přáteli
               </button>
 
-              <div className="pt-12 text-slate-400 text-sm">
-                Poslední kontrola bonusů: {new Date().toLocaleDateString('cs-CZ')}
+              <div className="pt-12 text-slate-400 text-sm italic">
+                Dnes je {new Date().toLocaleDateString('cs-CZ')} | Systém běží v reálném čase
               </div>
             </div>
           </div>
