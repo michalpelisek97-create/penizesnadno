@@ -15,7 +15,7 @@ import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
 
-// 1. Pomocná komponenta pro animované počítadlo (čistý JS + Intersection Observer)
+// 1. Pomocná komponenta pro plynulé načítání peněz
 const AnimatedCounter = ({ targetValue }) => {
   const [count, setCount] = useState(0);
   const [hasStarted, setHasStarted] = useState(false);
@@ -31,10 +31,7 @@ const AnimatedCounter = ({ targetValue }) => {
       { threshold: 0.1 }
     );
 
-    if (countRef.current) {
-      observer.observe(countRef.current);
-    }
-
+    if (countRef.current) observer.observe(countRef.current);
     return () => observer.disconnect();
   }, []);
 
@@ -43,7 +40,7 @@ const AnimatedCounter = ({ targetValue }) => {
 
     let start = 0;
     const end = targetValue;
-    const duration = 2500; // Čas v ms (2.5 sekundy pro plynulý efekt)
+    const duration = 2500; 
     const increment = end / (duration / 16);
 
     const timer = setInterval(() => {
@@ -59,14 +56,18 @@ const AnimatedCounter = ({ targetValue }) => {
     return () => clearInterval(timer);
   }, [hasStarted, targetValue]);
 
-  return <span ref={countRef}>{count.toLocaleString('cs-CZ')} Kč</span>;
+  return (
+    <span ref={countRef} className="tabular-nums">
+      {count.toLocaleString('cs-CZ')} Kč
+    </span>
+  );
 };
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
 
-  // 2. Google AdSense Verifikace
+  // 2. Google AdSense
   useEffect(() => {
     const meta = document.createElement('meta');
     meta.name = "google-adsense-account";
@@ -85,7 +86,7 @@ export default function Home() {
     };
   }, []);
 
-  // 3. Social Proof Notifikace
+  // 3. Social Proof Oznámení
   const notifications = useMemo(() => [
     { name: 'Marek P.', app: 'Air Bank' },
     { name: 'Lucie K.', app: 'Honeygain' },
@@ -108,7 +109,7 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [notifications.length]);
 
-  // 4. API Data Fetching
+  // 4. Data Fetching
   const { data: links = [], isLoading: isLoadingLinks } = useQuery({
     queryKey: ['referral-links'],
     queryFn: () => base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order'),
@@ -130,23 +131,22 @@ export default function Home() {
 
   const isLoading = isLoadingLinks || isLoadingArticles;
 
-  // 5. Marketingové sdílení
+  // 5. Funkce sdílení
   const handleShare = async () => {
     const shareData = {
       title: 'Vyzkoušej & Ušetři',
       text: 'Koukni na tyhle super bonusy a odměny, které můžeš snadno získat!',
       url: window.location.href,
     };
-
     try {
       if (navigator.share) {
         await navigator.share(shareData);
       } else {
         await navigator.clipboard.writeText(window.location.href);
-        alert('Odkaz na stránku byl zkopírován!');
+        alert('Odkaz byl zkopírován!');
       }
     } catch (err) {
-      console.log('Chyba při sdílení', err);
+      console.log('Error sharing', err);
     }
   };
 
@@ -191,7 +191,7 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* Odkazy */}
+        {/* Sekce Odkazy */}
         <AnimatePresence mode="wait">
           {selectedCategory !== 'Článek' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
@@ -214,7 +214,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* Články */}
+        {/* Sekce Články */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'Článek' && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
@@ -237,47 +237,42 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* ZELENÁ PATIČKA S POČÍTADLEM A SDÍLENÍM */}
-        <footer className="mt-24 pt-12 border-t border-slate-200/60">
-          <div className="flex flex-col items-center text-center">
+        {/* --- STYLOVÉ ZELENÉ POČÍTADLO A SDÍLENÍ --- */}
+        <footer className="mt-24 pt-16 border-t border-slate-200/60">
+          <div className="flex flex-col items-center">
             
+            {/* Animované počítadlo v zeleném bloku */}
             <motion.div 
-              initial={{ scale: 0.95, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-emerald-50 border border-emerald-100 rounded-[2.5rem] p-10 shadow-sm max-w-lg w-full mb-12"
+              className="w-full max-w-2xl bg-emerald-50/50 border border-emerald-100 rounded-[3rem] p-12 text-center mb-16"
             >
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-emerald-100 rounded-full mb-4">
-                <TrendingUp className="w-6 h-6 text-emerald-600" />
-              </div>
-              <div className="text-5xl md:text-6xl font-black text-emerald-600 mb-3 tracking-tighter">
+              <div className="text-5xl md:text-7xl font-black text-emerald-600 mb-4 tracking-tighter leading-none">
                 <AnimatedCounter targetValue={142500} />
               </div>
-              <p className="text-emerald-800 text-lg font-semibold">
+              <p className="text-xl md:text-2xl font-bold text-emerald-800/80">
                 Celkem ušetřeno díky naší komunitě
               </p>
-              <div className="flex items-center justify-center gap-2 mt-4 text-emerald-600/70 text-xs font-bold uppercase tracking-widest">
-                <CheckCircle2 className="w-4 h-4" />
-                Bonusy jsou pravidelně ověřovány
-              </div>
             </motion.div>
 
-            <div className="space-y-6 max-w-sm pb-10">
-              <div className="space-y-2">
-                <h3 className="text-xl font-bold text-slate-900">Chceš pomoci i ostatním?</h3>
-                <p className="text-slate-500">Sdílej tuto stránku a pomoz přátelům získat jejich první bonusy.</p>
+            {/* Marketingové sdílení */}
+            <div className="text-center space-y-8">
+              <div className="space-y-3">
+                <h3 className="text-2xl font-bold text-slate-900">Pomoz přátelům ušetřit taky!</h3>
+                <p className="text-slate-500 text-lg">Sdílej bonusy se svou rodinou a známými.</p>
               </div>
-              
+
               <button 
                 onClick={handleShare}
-                className="group inline-flex items-center gap-3 px-10 py-4 bg-slate-900 hover:bg-emerald-600 text-white rounded-2xl font-bold transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-xl shadow-slate-200 hover:shadow-emerald-100"
+                className="group flex items-center gap-3 px-12 py-5 bg-slate-900 hover:bg-emerald-600 text-white rounded-3xl font-black text-lg transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95 shadow-slate-200"
               >
-                <Share2 className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                <Share2 className="w-6 h-6 group-hover:rotate-12 transition-transform" />
                 Sdílet s přáteli
               </button>
 
-              <div className="pt-8 text-xs text-slate-400 italic">
-                Poslední aktualizace systému: {new Date().toLocaleDateString('cs-CZ')}
+              <div className="pt-12 text-slate-400 text-sm">
+                Poslední kontrola bonusů: {new Date().toLocaleDateString('cs-CZ')}
               </div>
             </div>
           </div>
