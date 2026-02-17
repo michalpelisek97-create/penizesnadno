@@ -15,6 +15,32 @@ import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
 
+// Pomocná komponenta pro animované počítadlo
+const AnimatedCounter = ({ targetValue }: { targetValue: number }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const end = targetValue;
+    const duration = 2000; // Délka animace v ms
+    const increment = end / (duration / 16); // 60 FPS
+
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        setCount(end);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+
+    return () => clearInterval(timer);
+  }, [targetValue]);
+
+  return <span>{count.toLocaleString('cs-CZ')} Kč</span>;
+};
+
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
@@ -190,11 +216,11 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* --- PATIČKA S POČÍTADLEM A SDÍLENÍM --- */}
+        {/* --- PATIČKA S ANIMOVANÝM POČÍTADLEM A SDÍLENÍM --- */}
         <footer className="mt-24 pt-12 border-t border-slate-200/60">
           <div className="flex flex-col items-center text-center">
             
-            {/* Zelené stylové počítadlo */}
+            {/* Zelené stylové počítadlo s plynulým nárůstem */}
             <motion.div 
               initial={{ scale: 0.95, opacity: 0 }}
               whileInView={{ scale: 1, opacity: 1 }}
@@ -205,22 +231,22 @@ export default function Home() {
                 <TrendingUp className="w-6 h-6 text-emerald-600" />
               </div>
               <div className="text-5xl md:text-6xl font-black text-emerald-600 mb-3 tracking-tighter">
-                142 500 Kč+
+                <AnimatedCounter targetValue={142500} />
               </div>
               <p className="text-emerald-800 text-lg font-semibold">
                 Celkem ušetřeno díky naší komunitě
               </p>
               <div className="flex items-center justify-center gap-2 mt-4 text-emerald-600/70 text-xs font-bold uppercase tracking-widest">
                 <CheckCircle2 className="w-4 h-4" />
-                Ověřené bonusy
+                Bonusy jsou pravidelně ověřovány
               </div>
             </motion.div>
 
             {/* Sdílení s přáteli */}
-            <div className="space-y-6 max-w-sm">
+            <div className="space-y-6 max-w-sm pb-10">
               <div className="space-y-2">
                 <h3 className="text-xl font-bold text-slate-900">Chceš pomoci i ostatním?</h3>
-                <p className="text-slate-500">Sdílej stránku se svými přáteli a rodinou, ať také nepřicházejí o peníze.</p>
+                <p className="text-slate-500">Sdílej tuto stránku a pomoz přátelům ušetřit první peníze.</p>
               </div>
               
               <button 
@@ -232,7 +258,7 @@ export default function Home() {
               </button>
 
               <div className="pt-8 text-xs text-slate-400">
-                Poslední aktualizace bonusů: {new Date().toLocaleDateString('cs-CZ')}
+                Data aktualizována k {new Date().toLocaleDateString('cs-CZ')}
               </div>
             </div>
 
