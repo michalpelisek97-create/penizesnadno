@@ -2,7 +2,15 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Gift, FileText, ArrowRight } from 'lucide-react';
+import { 
+  Sparkles, 
+  Gift, 
+  FileText, 
+  ArrowRight, 
+  Share2, 
+  TrendingUp, 
+  CheckCircle2 
+} from 'lucide-react';
 import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -11,15 +19,13 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
 
-  // --- OVĚŘENÍ GOOGLE ADSENSE (META TAG + SCRIPT) ---
+  // --- OVĚŘENÍ GOOGLE ADSENSE ---
   useEffect(() => {
-    // 1. Vložení Meta tagu pro ověření účtu
     const meta = document.createElement('meta');
     meta.name = "google-adsense-account";
     meta.content = "ca-pub-3492240221253160";
     document.head.appendChild(meta);
 
-    // 2. Vložení hlavního AdSense skriptu
     const script = document.createElement('script');
     script.src = "https://pagead2.googlesyndication.com";
     script.async = true;
@@ -27,13 +33,12 @@ export default function Home() {
     document.head.appendChild(script);
 
     return () => {
-      // Úklid při opuštění stránky
       if (document.head.contains(meta)) document.head.removeChild(meta);
       if (document.head.contains(script)) document.head.removeChild(script);
     };
   }, []);
 
-  // Tvůj seznam oznámení (beze změny)
+  // Seznam oznámení
   const notifications = useMemo(() => [
     { name: 'Marek P.', app: 'Air Bank' },
     { name: 'Lucie K.', app: 'Honeygain' },
@@ -56,6 +61,7 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [notifications.length]);
 
+  // Data z API
   const { data: links = [], isLoading: isLoadingLinks } = useQuery({
     queryKey: ['referral-links'],
     queryFn: () => base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order'),
@@ -76,6 +82,26 @@ export default function Home() {
   }, [selectedCategory, links]);
 
   const isLoading = isLoadingLinks || isLoadingArticles;
+
+  // Funkce pro marketingové sdílení
+  const handleShare = async () => {
+    const shareData = {
+      title: 'Vyzkoušej & Ušetři',
+      text: 'Koukni na tyhle super bonusy a odměny, které můžeš snadno získat!',
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Odkaz na stránku byl zkopírován!');
+      }
+    } catch (err) {
+      console.log('Chyba při sdílení', err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 overflow-hidden">
@@ -164,8 +190,53 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        <footer className="text-center mt-16 pt-8 border-t border-slate-200/60 text-sm text-slate-500">
-          Všechny bonusy jsou aktuální k {new Date().toLocaleDateString('cs-CZ')}.
+        {/* --- PATIČKA S POČÍTADLEM A SDÍLENÍM --- */}
+        <footer className="mt-24 pt-12 border-t border-slate-200/60">
+          <div className="flex flex-col items-center text-center">
+            
+            {/* Zelené stylové počítadlo */}
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              className="bg-emerald-50 border border-emerald-100 rounded-[2.5rem] p-10 shadow-sm max-w-lg w-full mb-12"
+            >
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-emerald-100 rounded-full mb-4">
+                <TrendingUp className="w-6 h-6 text-emerald-600" />
+              </div>
+              <div className="text-5xl md:text-6xl font-black text-emerald-600 mb-3 tracking-tighter">
+                142 500 Kč+
+              </div>
+              <p className="text-emerald-800 text-lg font-semibold">
+                Celkem ušetřeno díky naší komunitě
+              </p>
+              <div className="flex items-center justify-center gap-2 mt-4 text-emerald-600/70 text-xs font-bold uppercase tracking-widest">
+                <CheckCircle2 className="w-4 h-4" />
+                Ověřené bonusy
+              </div>
+            </motion.div>
+
+            {/* Sdílení s přáteli */}
+            <div className="space-y-6 max-w-sm">
+              <div className="space-y-2">
+                <h3 className="text-xl font-bold text-slate-900">Chceš pomoci i ostatním?</h3>
+                <p className="text-slate-500">Sdílej stránku se svými přáteli a rodinou, ať také nepřicházejí o peníze.</p>
+              </div>
+              
+              <button 
+                onClick={handleShare}
+                className="group inline-flex items-center gap-3 px-10 py-4 bg-slate-900 hover:bg-emerald-600 text-white rounded-2xl font-bold transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-xl shadow-slate-200 hover:shadow-emerald-100"
+              >
+                <Share2 className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                Sdílet s přáteli
+              </button>
+
+              <div className="pt-8 text-xs text-slate-400">
+                Poslední aktualizace bonusů: {new Date().toLocaleDateString('cs-CZ')}
+              </div>
+            </div>
+
+          </div>
         </footer>
       </div>
     </div>
