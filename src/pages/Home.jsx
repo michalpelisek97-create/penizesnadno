@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -15,15 +15,36 @@ import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
 
-// Pomocná komponenta pro animované počítadlo (opraveno pro JavaScript)
+// 1. Pomocná komponenta pro animované počítadlo (čistý JS + Intersection Observer)
 const AnimatedCounter = ({ targetValue }) => {
   const [count, setCount] = useState(0);
+  const [hasStarted, setHasStarted] = useState(false);
+  const countRef = useRef(null);
 
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasStarted(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (countRef.current) {
+      observer.observe(countRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!hasStarted) return;
+
     let start = 0;
     const end = targetValue;
-    const duration = 2000; 
-    const increment = end / (duration / 16); 
+    const duration = 2500; // Čas v ms (2.5 sekundy pro plynulý efekt)
+    const increment = end / (duration / 16);
 
     const timer = setInterval(() => {
       start += increment;
@@ -36,16 +57,16 @@ const AnimatedCounter = ({ targetValue }) => {
     }, 16);
 
     return () => clearInterval(timer);
-  }, [targetValue]);
+  }, [hasStarted, targetValue]);
 
-  return <span>{count.toLocaleString('cs-CZ')} Kč</span>;
+  return <span ref={countRef}>{count.toLocaleString('cs-CZ')} Kč</span>;
 };
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
 
-  // --- OVĚŘENÍ GOOGLE ADSENSE ---
+  // 2. Google AdSense Verifikace
   useEffect(() => {
     const meta = document.createElement('meta');
     meta.name = "google-adsense-account";
@@ -64,6 +85,7 @@ export default function Home() {
     };
   }, []);
 
+  // 3. Social Proof Notifikace
   const notifications = useMemo(() => [
     { name: 'Marek P.', app: 'Air Bank' },
     { name: 'Lucie K.', app: 'Honeygain' },
@@ -86,6 +108,7 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [notifications.length]);
 
+  // 4. API Data Fetching
   const { data: links = [], isLoading: isLoadingLinks } = useQuery({
     queryKey: ['referral-links'],
     queryFn: () => base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order'),
@@ -107,6 +130,7 @@ export default function Home() {
 
   const isLoading = isLoadingLinks || isLoadingArticles;
 
+  // 5. Marketingové sdílení
   const handleShare = async () => {
     const shareData = {
       title: 'Vyzkoušej & Ušetři',
@@ -147,7 +171,7 @@ export default function Home() {
           </h1>
         </motion.div>
 
-        {/* Social Proof Oznámení */}
+        {/* Notifikace */}
         <div className="flex justify-center mb-12 h-10">
           <AnimatePresence mode="wait">
             <motion.div
@@ -167,7 +191,7 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* SEKCE ODKAZY */}
+        {/* Odkazy */}
         <AnimatePresence mode="wait">
           {selectedCategory !== 'Článek' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
@@ -190,7 +214,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* SEKCE ČLÁNKY */}
+        {/* Články */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'Článek' && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
@@ -213,7 +237,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* PATIČKA */}
+        {/* ZELENÁ PATIČKA S POČÍTADLEM A SDÍLENÍM */}
         <footer className="mt-24 pt-12 border-t border-slate-200/60">
           <div className="flex flex-col items-center text-center">
             
@@ -241,7 +265,7 @@ export default function Home() {
             <div className="space-y-6 max-w-sm pb-10">
               <div className="space-y-2">
                 <h3 className="text-xl font-bold text-slate-900">Chceš pomoci i ostatním?</h3>
-                <p className="text-slate-500">Sdílej tuto stránku a pomoz přátelům ušetřit první peníze.</p>
+                <p className="text-slate-500">Sdílej tuto stránku a pomoz přátelům získat jejich první bonusy.</p>
               </div>
               
               <button 
@@ -252,11 +276,10 @@ export default function Home() {
                 Sdílet s přáteli
               </button>
 
-              <div className="pt-8 text-xs text-slate-400">
-                Data aktualizována k {new Date().toLocaleDateString('cs-CZ')}
+              <div className="pt-8 text-xs text-slate-400 italic">
+                Poslední aktualizace systému: {new Date().toLocaleDateString('cs-CZ')}
               </div>
             </div>
-
           </div>
         </footer>
       </div>
