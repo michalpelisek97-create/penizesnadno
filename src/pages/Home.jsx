@@ -15,15 +15,15 @@ import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
 
-// Pomocná komponenta pro animované počítadlo
-const AnimatedCounter = ({ targetValue }: { targetValue: number }) => {
+// Pomocná komponenta pro animované počítadlo (opraveno pro JavaScript)
+const AnimatedCounter = ({ targetValue }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
     let start = 0;
     const end = targetValue;
-    const duration = 2000; // Délka animace v ms
-    const increment = end / (duration / 16); // 60 FPS
+    const duration = 2000; 
+    const increment = end / (duration / 16); 
 
     const timer = setInterval(() => {
       start += increment;
@@ -64,7 +64,6 @@ export default function Home() {
     };
   }, []);
 
-  // Seznam oznámení
   const notifications = useMemo(() => [
     { name: 'Marek P.', app: 'Air Bank' },
     { name: 'Lucie K.', app: 'Honeygain' },
@@ -87,7 +86,6 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [notifications.length]);
 
-  // Data z API
   const { data: links = [], isLoading: isLoadingLinks } = useQuery({
     queryKey: ['referral-links'],
     queryFn: () => base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order'),
@@ -109,7 +107,6 @@ export default function Home() {
 
   const isLoading = isLoadingLinks || isLoadingArticles;
 
-  // Funkce pro marketingové sdílení
   const handleShare = async () => {
     const shareData = {
       title: 'Vyzkoušej & Ušetři',
@@ -216,11 +213,10 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* --- PATIČKA S ANIMOVANÝM POČÍTADLEM A SDÍLENÍM --- */}
+        {/* PATIČKA */}
         <footer className="mt-24 pt-12 border-t border-slate-200/60">
           <div className="flex flex-col items-center text-center">
             
-            {/* Zelené stylové počítadlo s plynulým nárůstem */}
             <motion.div 
               initial={{ scale: 0.95, opacity: 0 }}
               whileInView={{ scale: 1, opacity: 1 }}
@@ -242,7 +238,6 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* Sdílení s přáteli */}
             <div className="space-y-6 max-w-sm pb-10">
               <div className="space-y-2">
                 <h3 className="text-xl font-bold text-slate-900">Chceš pomoci i ostatním?</h3>
