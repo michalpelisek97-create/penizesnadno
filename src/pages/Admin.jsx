@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Link2, FileText, ArrowLeft, Save, Trash2 } from 'lucide-react';
+import { Plus, Link2, FileText, ArrowLeft, ShoppingBag } from 'lucide-react'; // Přidána ikona
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
@@ -25,7 +25,7 @@ export default function Admin() {
     queryFn: () => base44.entities.ReferralLink.list('sort_order'),
   });
 
-  // Query pro Články (nová entita)
+  // Query pro Články
   const { data: articles = [] } = useQuery({
     queryKey: ['admin-articles'],
     queryFn: () => base44.entities.Article.list('-created_at'),
@@ -66,31 +66,43 @@ export default function Admin() {
             <h1 className="text-2xl font-bold">Administrace</h1>
           </div>
           {!showForm && (
-            <Button onClick={() => { setEditingItem(null); setShowForm(true); }}>
-              <Plus className="mr-2 h-4 w-4" /> {activeTab === 'links' ? 'Nový odkaz' : 'Nový článek'}
+            <Button 
+              onClick={() => { setEditingItem(null); setShowForm(true); }}
+              className={activeTab === 'links' ? "bg-indigo-600 hover:bg-indigo-700" : ""}
+            >
+              <Plus className="mr-2 h-4 w-4" /> 
+              {activeTab === 'links' ? 'Nový odkaz' : 'Nový článek'}
             </Button>
           )}
         </div>
 
         {!showForm && (
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-            <TabsList className="w-[400px]">
-              <TabsTrigger value="links" className="flex-1"><Link2 className="mr-2 h-4 w-4" /> Odkazy</TabsTrigger>
-              <TabsTrigger value="articles" className="flex-1"><FileText className="mr-2 h-4 w-4" /> Články</TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="flex gap-4 mb-8">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="grid w-full max-w-md grid-cols-2">
+                <TabsTrigger value="links"><Link2 className="mr-2 h-4 w-4" /> Odkazy</TabsTrigger>
+                <TabsTrigger value="articles"><FileText className="mr-2 h-4 w-4" /> Články</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         )}
 
         <AnimatePresence mode="wait">
           {showForm ? (
             <motion.div key="form" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
               {activeTab === 'links' ? (
-                <LinkForm onSuccess={handleSuccess} editingLink={editingItem} onCancel={() => setShowForm(false)} />
+                /* LinkForm musí obsahovat Select/Input pro kategorii "Nákup levně" */
+                <LinkForm 
+                  onSuccess={handleSuccess} 
+                  editingLink={editingItem} 
+                  onCancel={() => { setShowForm(false); setEditingItem(null); }} 
+                />
               ) : (
-                <form onSubmit={handleArticleSubmit} className="bg-white p-6 rounded-xl border space-y-4">
-                  <Input name="title" defaultValue={editingItem?.title} placeholder="Název článku" required />
-                  <Textarea name="content" defaultValue={editingItem?.content} placeholder="Obsah..." className="min-h-[300px]" required />
-                  <div className="flex gap-2">
+                <form onSubmit={handleArticleSubmit} className="bg-white p-6 rounded-xl border shadow-sm space-y-4">
+                   <h2 className="text-xl font-bold mb-4">{editingItem ? 'Upravit článek' : 'Nový článek'}</h2>
+                  <Input name="title" defaultValue={editingItem?.title} placeholder="Název článku" required className="text-lg font-semibold" />
+                  <Textarea name="content" defaultValue={editingItem?.content} placeholder="Obsah článku (podporuje HTML)..." className="min-h-[400px] font-mono text-sm" required />
+                  <div className="flex gap-2 pt-4">
                     <Button type="submit">Uložit článek</Button>
                     <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Zrušit</Button>
                   </div>
@@ -100,18 +112,36 @@ export default function Admin() {
           ) : (
             <div key={activeTab}>
               {activeTab === 'links' ? (
-                <LinkTable links={links} onEdit={(item) => { setEditingItem(item); setShowForm(true); }} />
+                <div className="space-y-2">
+                  <LinkTable 
+                    links={links} 
+                    onEdit={(item) => { setEditingItem(item); setShowForm(true); }} 
+                  />
+                  {links.length === 0 && (
+                    <div className="text-center py-12 bg-white rounded-xl border border-dashed text-slate-400">
+                      Zatím žádné odkazy.
+                    </div>
+                  )}
+                </div>
               ) : (
-                <div className="space-y-4">
+                <div className="grid gap-4">
                   {articles.map(art => (
-                    <div key={art.id} className="bg-white p-4 rounded-xl border flex justify-between items-center">
-                      <span className="font-bold">{art.title}</span>
+                    <div key={art.id} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center hover:border-indigo-300 transition-colors">
+                      <div className="flex flex-col">
+                        <span className="font-bold text-slate-800">{art.title}</span>
+                        <span className="text-xs text-slate-400">Vytvořeno: {new Date(art.created_at).toLocaleDateString('cs-CZ')}</span>
+                      </div>
                       <div className="flex gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => { setEditingItem(art); setShowForm(true); }}>Upravit</Button>
-                        <Button variant="ghost" size="sm" className="text-red-500" onClick={() => { if(confirm('Smazat?')) { base44.entities.Article.delete(art.id).then(handleSuccess); } }}>Smazat</Button>
+                        <Button variant="outline" size="sm" onClick={() => { setEditingItem(art); setShowForm(true); }}>Upravit</Button>
+                        <Button variant="ghost" size="sm" className="text-red-500 hover:bg-red-50 hover:text-red-600" onClick={() => { if(confirm('Opravdu smazat tento článek?')) { base44.entities.Article.delete(art.id).then(handleSuccess); } }}>Smazat</Button>
                       </div>
                     </div>
                   ))}
+                  {articles.length === 0 && (
+                    <div className="text-center py-12 bg-white rounded-xl border border-dashed text-slate-400">
+                      Zatím žádné články.
+                    </div>
+                  )}
                 </div>
               )}
             </div>
