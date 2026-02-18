@@ -4,13 +4,9 @@ import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sparkles, 
-  Gift, 
   FileText, 
   ArrowRight, 
-  Share2, 
-  TrendingUp, 
-  CheckCircle2,
-  ShoppingBag 
+  ShoppingBag
 } from 'lucide-react';
 import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
@@ -78,7 +74,7 @@ export default function Home() {
       setNotifIndex((prev) => (prev + 1) % notifications.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, [notifications]);
+  }, [notifications.length]);
 
   // 4. API Data Fetching
   const { data: links = [], isLoading: isLoadingLinks } = useQuery({
@@ -91,11 +87,19 @@ export default function Home() {
     queryFn: () => base44.entities.Article.filter({ is_active: true }, '-created_at'),
   });
 
-  // LOGIKA FILTROVÁNÍ VČETNĚ NOVÉ KATEGORIE
+  // KLÍČOVÁ LOGIKA FILTROVÁNÍ: Skrytí "Nákup levně" ze sekce "Vše"
   const filteredLinks = useMemo(() => {
-    if (selectedCategory === 'all') return links;
-    if (selectedCategory === 'Článek') return [];
+    if (selectedCategory === 'all') {
+      // Zobrazíme vše KROMĚ kategorie "Nákup levně"
+      return links.filter(link => 
+        link.category !== 'Nákup levně' && 
+        !(Array.isArray(link.categories) && link.categories.includes('Nákup levně'))
+      );
+    }
     
+    if (selectedCategory === 'Článek') return [];
+
+    // Pokud je vybrána konkrétní kategorie (např. Nákup levně), zobrazíme jen ty, co tam patří
     return links.filter(link => 
       link.category === selectedCategory || 
       (Array.isArray(link.categories) && link.categories.includes(selectedCategory))
@@ -116,7 +120,7 @@ export default function Home() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
             <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span className="text-sm font-medium text-slate-700">Dnes ušetřeno uživateli: <InfiniteCounter startValue={124550} /></span>
+            <span className="text-sm font-medium text-slate-700">Uživatelé celkem získali: <InfiniteCounter startValue={124550} /></span>
           </div>
           
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
@@ -143,15 +147,14 @@ export default function Home() {
           </AnimatePresence>
         </div>
 
-        {/* Filtr s kategoriemi */}
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* Sekce Odkazy (Zobrazuje se pro Vše a pro konkrétní kategorie jako Nákup levně) */}
+        {/* Sekce Odkazy */}
         <AnimatePresence mode="wait">
           {selectedCategory !== 'Článek' && (
             <motion.div 
               initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20"
             >
@@ -169,9 +172,9 @@ export default function Home() {
                           🔥 NEJOBLÍBENĚJŠÍ
                         </div>
                       )}
-                      {isCheapPurchase && !isFavorite && (
-                        <div className="absolute -top-3 -right-2 z-20 bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white">
-                          🛒 NÁKUP LEVNĚ
+                      {isCheapPurchase && (
+                         <div className="absolute -top-3 -left-2 z-20 bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white">
+                          🛒 VÝHODNÝ NÁKUP
                         </div>
                       )}
                       <LinkCard link={link} index={index} />
@@ -189,10 +192,9 @@ export default function Home() {
             <motion.div 
               initial={{ opacity: 0, y: 20 }} 
               animate={{ opacity: 1, y: 0 }} 
-              exit={{ opacity: 0, y: -20 }}
               className="space-y-8"
             >
-              <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
+               <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
                 <FileText className="w-6 h-6 text-purple-600" />
                 <h2 className="text-3xl font-bold text-slate-900">Návody a články</h2>
               </div>
@@ -200,9 +202,11 @@ export default function Home() {
                 {articles.map((article) => (
                   <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all group">
                     <h3 className="text-2xl font-bold mb-4 text-slate-900 group-hover:text-purple-600 transition-colors">{article.title}</h3>
-                    <p className="text-slate-600 mb-6 line-clamp-3 leading-relaxed">{article.content?.replace(/<[^>]*>?/gm, '')}</p>
+                    <p className="text-slate-600 mb-6 line-clamp-4 leading-relaxed">
+                      {article.content?.replace(/<[^>]*>?/gm, '')}
+                    </p>
                     <div className="flex items-center text-purple-600 font-semibold gap-2">
-                      Přečíst článek <ArrowRight className="w-4 h-4" />
+                      Číst více <ArrowRight className="w-4 h-4" />
                     </div>
                   </div>
                 ))}
