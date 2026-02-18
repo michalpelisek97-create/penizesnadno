@@ -1,12 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Gift, Sparkles } from 'lucide-react';
+import { ExternalLink, Gift, Sparkles, ShoppingBag } from 'lucide-react'; // Přidána ikona
 import { Button } from '@/components/ui/button';
 
 const categoryColors = {
   crypto: 'from-amber-500 to-orange-600',
   banks: 'from-emerald-500 to-teal-600',
   cashback: 'from-pink-500 to-rose-600',
+  'Nákup levně': 'from-blue-500 to-cyan-600', // Barva pro novou kategorii
   games: 'from-purple-500 to-violet-600',
   apps: 'from-blue-500 to-indigo-600',
   other: 'from-slate-500 to-slate-600'
@@ -16,13 +17,15 @@ const categoryLabels = {
   crypto: 'Kryptoměny',
   banks: 'Banky',
   cashback: 'Cashback',
+  'Nákup levně': 'Nákup levně', // Štítek pro novou kategorii
   games: 'Hry',
   apps: 'Aplikace',
   other: 'Ostatní'
 };
 
 export default function LinkCard({ link, index }) {
-  const primaryCategory = link.categories?.[0] || link.category || 'other';
+  // Upravená logika pro získání barvy a labelu
+  const primaryCategory = link.category || (Array.isArray(link.categories) ? link.categories[0] : 'other');
   const gradientClass = categoryColors[primaryCategory] || categoryColors.other;
 
   return (
@@ -46,18 +49,23 @@ export default function LinkCard({ link, index }) {
             />
           ) : (
             <div className={`w-full h-full bg-gradient-to-br ${gradientClass} flex items-center justify-center`}>
-              <Gift className="w-16 h-16 text-white/80" />
+              {primaryCategory === 'Nákup levně' ? (
+                <ShoppingBag className="w-16 h-16 text-white/80" />
+              ) : (
+                <Gift className="w-16 h-16 text-white/80" />
+              )}
             </div>
           )}
           
           {/* Category Badges */}
           <div className="absolute top-3 left-3 flex flex-wrap gap-1">
-            {(link.categories || [primaryCategory]).map((cat) => (
+            {/* Zobrazíme buď pole kategorií, nebo jen tu jednu hlavní */}
+            {(Array.isArray(link.categories) && link.categories.length > 0 ? link.categories : [primaryCategory]).map((cat) => (
               <div 
                 key={cat}
                 className={`px-2.5 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r ${categoryColors[cat] || categoryColors.other} shadow-lg`}
               >
-                {categoryLabels[cat]}
+                {categoryLabels[cat] || cat}
               </div>
             ))}
           </div>
