@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,7 +9,8 @@ import {
   ArrowRight, 
   Share2, 
   TrendingUp, 
-  CheckCircle2 
+  CheckCircle2,
+  ShoppingBag 
 } from 'lucide-react';
 import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
@@ -20,11 +21,9 @@ const InfiniteCounter = ({ startValue }) => {
   const [count, setCount] = useState(startValue);
 
   useEffect(() => {
-    // Každé 3 sekundy přičteme náhodnou malou částku (např. 2 až 15 Kč)
     const interval = setInterval(() => {
       setCount(prev => prev + Math.floor(Math.random() * 13) + 2);
     }, 3000);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -79,7 +78,7 @@ export default function Home() {
       setNotifIndex((prev) => (prev + 1) % notifications.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, [notifications.length]);
+  }, [notifications]);
 
   // 4. API Data Fetching
   const { data: links = [], isLoading: isLoadingLinks } = useQuery({
@@ -92,9 +91,11 @@ export default function Home() {
     queryFn: () => base44.entities.Article.filter({ is_active: true }, '-created_at'),
   });
 
+  // LOGIKA FILTROVÁNÍ VČETNĚ NOVÉ KATEGORIE
   const filteredLinks = useMemo(() => {
     if (selectedCategory === 'all') return links;
     if (selectedCategory === 'Článek') return [];
+    
     return links.filter(link => 
       link.category === selectedCategory || 
       (Array.isArray(link.categories) && link.categories.includes(selectedCategory))
@@ -102,26 +103,6 @@ export default function Home() {
   }, [selectedCategory, links]);
 
   const isLoading = isLoadingLinks || isLoadingArticles;
-
-  // 5. Marketingové sdílení
-  const handleShare = async () => {
-    const shareData = {
-      title: 'Vyzkoušej & Ušetři',
-      text: 'Koukni na tyhle super bonusy a odměny, které můžeš snadno získat!',
-      url: window.location.href,
-    };
-
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(window.location.href);
-        alert('Odkaz byl zkopírován do schránky!');
-      }
-    } catch (err) {
-      console.log('Chyba při sdílení', err);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 overflow-hidden">
@@ -135,7 +116,7 @@ export default function Home() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
             <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span className="text-sm font-medium text-slate-700">Dnes aktivní bonusy pro vás</span>
+            <span className="text-sm font-medium text-slate-700">Dnes ušetřeno uživateli: <InfiniteCounter startValue={124550} /></span>
           </div>
           
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
@@ -162,46 +143,66 @@ export default function Home() {
           </AnimatePresence>
         </div>
 
+        {/* Filtr s kategoriemi */}
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* Sekce Odkazy */}
+        {/* Sekce Odkazy (Zobrazuje se pro Vše a pro konkrétní kategorie jako Nákup levně) */}
         <AnimatePresence mode="wait">
           {selectedCategory !== 'Článek' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20"
+            >
               {isLoading ? (
-                [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
-              ) : filteredLinks.map((link, index) => {
-                const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
-                return (
-                  <div key={link.id} className="relative">
-                    {isFavorite && (
-                      <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
-                        🔥 NEJOBLÍBENĚJŠÍ
-                      </div>
-                    )}
-                    <LinkCard link={link} index={index} />
-                  </div>
-                );
-              })}
-            </div>
+                [...Array(6)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
+              ) : (
+                filteredLinks.map((link, index) => {
+                  const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
+                  const isCheapPurchase = link.category === 'Nákup levně' || (Array.isArray(link.categories) && link.categories.includes('Nákup levně'));
+                  
+                  return (
+                    <div key={link.id} className="relative">
+                      {isFavorite && (
+                        <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
+                          🔥 NEJOBLÍBENĚJŠÍ
+                        </div>
+                      )}
+                      {isCheapPurchase && !isFavorite && (
+                        <div className="absolute -top-3 -right-2 z-20 bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white">
+                          🛒 NÁKUP LEVNĚ
+                        </div>
+                      )}
+                      <LinkCard link={link} index={index} />
+                    </div>
+                  );
+                })
+              )}
+            </motion.div>
           )}
         </AnimatePresence>
 
         {/* Sekce Články */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'Článek' && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-               <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-8"
+            >
+              <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
                 <FileText className="w-6 h-6 text-purple-600" />
                 <h2 className="text-3xl font-bold text-slate-900">Návody a články</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {articles.map((article) => (
-                  <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all">
-                    <h3 className="text-2xl font-bold mb-4 text-slate-900 leading-tight">{article.title}</h3>
-                    <p className="text-slate-600 mb-6 line-clamp-4 leading-relaxed">{article.content}</p>
-                    <div className="flex items-center text-slate-900 font-bold group cursor-pointer">
-                      Přečíst celý článek <ArrowRight className="w-4 h-4 ml-2" />
+                  <div key={article.id} className="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all group">
+                    <h3 className="text-2xl font-bold mb-4 text-slate-900 group-hover:text-purple-600 transition-colors">{article.title}</h3>
+                    <p className="text-slate-600 mb-6 line-clamp-3 leading-relaxed">{article.content?.replace(/<[^>]*>?/gm, '')}</p>
+                    <div className="flex items-center text-purple-600 font-semibold gap-2">
+                      Přečíst článek <ArrowRight className="w-4 h-4" />
                     </div>
                   </div>
                 ))}
@@ -209,46 +210,6 @@ export default function Home() {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* --- DYNAMICKÁ PATIČKA --- */}
-        <footer className="mt-24 pt-16 border-t border-slate-200/60">
-          <div className="flex flex-col items-center">
-            
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="w-full max-w-2xl bg-emerald-50/50 border border-emerald-100 rounded-[3rem] p-12 text-center mb-16 shadow-inner"
-            >
-              {/* Toto číslo neustále roste */}
-              <div className="text-5xl md:text-7xl font-black text-emerald-600 mb-4 tracking-tighter leading-none">
-                <InfiniteCounter startValue={142500} />
-              </div>
-              <p className="text-xl md:text-2xl font-bold text-emerald-800/80">
-                Celkem ušetřeno díky naší komunitě
-              </p>
-            </motion.div>
-
-            <div className="text-center space-y-8">
-              <div className="space-y-3">
-                <h3 className="text-2xl font-bold text-slate-900 font-sans">Pomoz přátelům ušetřit taky!</h3>
-                <p className="text-slate-500 text-lg leading-relaxed">Pověz o nás dál a získejte další bonusy společně.</p>
-              </div>
-
-              <button 
-                onClick={handleShare}
-                className="group flex items-center gap-3 px-12 py-5 bg-slate-900 hover:bg-emerald-600 text-white rounded-3xl font-black text-lg transition-all duration-300 shadow-xl hover:scale-105"
-              >
-                <Share2 className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-                Sdílet s přáteli
-              </button>
-
-              <div className="pt-12 text-slate-400 text-sm italic">
-                Dnes je {new Date().toLocaleDateString('cs-CZ')} | Systém běží v reálném čase
-              </div>
-            </div>
-          </div>
-        </footer>
       </div>
     </div>
   );
