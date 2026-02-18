@@ -9,12 +9,11 @@ import { Loader2, Link2, Sparkles, Globe, Image as ImageIcon } from 'lucide-reac
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
-// PŘIDÁNA KATEGORIE NÁKUP LEVNĚ
 const categories = [
   { id: 'banks', label: 'Banky' },
   { id: 'crypto', label: 'Kryptoměny' },
   { id: 'cashback', label: 'Cashback' },
-  { id: 'Nákup levně', label: 'Nákup levně' }, // Musí se shodovat s ID v Home.jsx
+  { id: 'Nákup levně', label: 'Nákup levně' },
   { id: 'games', label: 'Hry' },
   { id: 'apps', label: 'Aplikace' },
   { id: 'other', label: 'Ostatní' },
@@ -26,8 +25,8 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
     title: '',
     description: '',
     image_url: '',
-    category: '', // Hlavní kategorie pro filtrování
-    categories: [], // Pole pro zobrazení štítků
+    category: '', 
+    categories: [], 
     cta_text: 'Získat bonus',
     is_active: true,
     sort_order: 0
@@ -43,7 +42,7 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
     setIsFetchingMeta(true);
     try {
       const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `Extract Open Graph metadata from this URL: ${formData.url}. Return title, description (max 150 chars), and image_url.`,
+        prompt: `Extract Open Graph metadata from this URL: ${formData.url}. Return title, description, and image_url.`,
         add_context_from_internet: true,
         response_json_schema: {
           type: "object",
@@ -62,7 +61,7 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
       }));
       toast.success('Metadata načtena');
     } catch (e) {
-      toast.error('Nepodařilo se načíst metadata');
+      toast.error('Chyba při načítání metadat');
     } finally {
       setIsFetchingMeta(false);
     }
@@ -72,20 +71,23 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
     e.preventDefault();
     setIsLoading(true);
 
-    // ZAJIŠTĚNÍ, ŽE HLAVNÍ KATEGORIE JE TA PRVNÍ VYBRANÁ
-    // To je klíčové pro filtrování na Home stránce
+    // DŮLEŽITÉ: Nastavíme hlavní 'category' podle prvního zaškrtnutého políčka.
+    // Pokud je zaškrtnuto "Nákup levně", v Home.jsx se díky filtru 'link.category === selectedCategory'
+    // tato položka zobrazí JEN tehdy, když je vybrána tato kategorie.
+    const mainCat = formData.categories.length > 0 ? formData.categories[0] : 'other';
+    
     const finalData = {
       ...formData,
-      category: formData.categories[0] || 'other'
+      category: mainCat
     };
 
     try {
       if (editingLink) {
         await base44.entities.ReferralLink.update(editingLink.id, finalData);
-        toast.success('Odkaz byl aktualizován');
+        toast.success('Aktualizováno');
       } else {
         await base44.entities.ReferralLink.create(finalData);
-        toast.success('Odkaz byl přidán');
+        toast.success('Vytvořeno');
       }
       onSuccess();
     } catch (e) {
@@ -96,41 +98,35 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
   };
 
   return (
-    <Card className="border-slate-200/60 shadow-lg">
-      <CardHeader className="border-b border-slate-100">
-        <CardTitle className="flex items-center gap-2 text-xl">
-          <Link2 className="w-5 h-5 text-slate-600" />
-          {editingLink ? 'Upravit odkaz' : 'Přidat nový odkaz'}
+    <Card className="border-slate-200 shadow-lg">
+      <CardHeader className="border-b">
+        <CardTitle className="flex items-center gap-2">
+          <Link2 className="w-5 h-5" />
+          {editingLink ? 'Upravit' : 'Nový odkaz'}
         </CardTitle>
       </CardHeader>
-      <CardContent className="pt-6">
+      <CardContent className="pt-6 space-y-5">
         <form onSubmit={handleSubmit} className="space-y-5">
           
           <div className="space-y-2">
-            <Label htmlFor="url" className="text-slate-700">URL adresa *</Label>
+            <Label>URL adresa *</Label>
             <div className="flex gap-2">
-              <div className="relative flex-1">
-                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <Input
-                  id="url"
-                  type="url"
-                  placeholder="https://levnynakup.cz"
-                  value={formData.url}
-                  onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                  className="pl-10"
-                  required
-                />
-              </div>
+              <Input
+                type="url"
+                value={formData.url}
+                onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                placeholder="https://..."
+                required
+              />
               <Button type="button" variant="outline" onClick={fetchOpenGraphData} disabled={isFetchingMeta}>
-                {isFetchingMeta ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Načíst data'}
+                {isFetchingMeta ? <Loader2 className="animate-spin h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
               </Button>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="title" className="text-slate-700">Název *</Label>
+            <Label>Název *</Label>
             <Input
-              id="title"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               required
@@ -138,33 +134,46 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description" className="text-slate-700">Popis</Label>
+            <Label>Popis</Label>
             <Textarea
-              id="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              rows={3}
             />
           </div>
 
+          {/* VRÁCENÉ POLE PRO OBRÁZEK */}
           <div className="space-y-2">
-            <Label className="text-slate-700">Kategorie * (pro Nákup levně vyberte pouze tuto možnost)</Label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 border rounded-lg bg-slate-50/50">
+            <Label>URL Obrázku</Label>
+            <div className="relative">
+              <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Input
+                className="pl-10"
+                value={formData.image_url}
+                onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                placeholder="https://img.com"
+              />
+            </div>
+            {formData.image_url && (
+              <img src={formData.image_url} className="mt-2 h-20 w-full object-cover rounded-md border" alt="Preview" />
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-red-500 font-bold">Kategorie (Pokud chceš, aby to bylo JEN v Nákup levně, zaškrtni JEN tu jednu)</Label>
+            <div className="grid grid-cols-2 gap-2 p-3 border rounded-lg bg-slate-50">
               {categories.map((cat) => (
-                <div key={cat.id} className="flex items-center space-x-2 bg-white p-2 rounded border border-slate-100 shadow-sm">
+                <div key={cat.id} className="flex items-center space-x-2">
                   <Checkbox
                     id={`cat-${cat.id}`}
                     checked={formData.categories?.includes(cat.id)}
                     onCheckedChange={(checked) => {
-                      const newCategories = checked
-                        ? [...(formData.categories || []), cat.id]
-                        : (formData.categories || []).filter(c => c !== cat.id);
-                      setFormData({ ...formData, categories: newCategories });
+                      const newCats = checked
+                        ? [...formData.categories, cat.id]
+                        : formData.categories.filter(c => c !== cat.id);
+                      setFormData({ ...formData, categories: newCats });
                     }}
                   />
-                  <label htmlFor={`cat-${cat.id}`} className="text-xs font-bold cursor-pointer select-none">
-                    {cat.label}
-                  </label>
+                  <Label htmlFor={`cat-${cat.id}`} className="text-sm cursor-pointer">{cat.label}</Label>
                 </div>
               ))}
             </div>
@@ -172,30 +181,27 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="cta_text">Text tlačítka</Label>
+              <Label>Text tlačítka</Label>
               <Input
-                id="cta_text"
                 value={formData.cta_text}
                 onChange={(e) => setFormData({ ...formData, cta_text: e.target.value })}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="sort_order">Pořadí (číslo)</Label>
+              <Label>Pořadí</Label>
               <Input
-                id="sort_order"
                 type="number"
                 value={formData.sort_order}
-                onChange={(e) => setFormData({ ...formData, sort_order: parseInt(e.target.value) })}
+                onChange={(e) => setFormData({ ...formData, sort_order: parseInt(e.target.value) || 0 })}
               />
             </div>
           </div>
 
-          <div className="flex gap-3 pt-4 border-t">
-            <Button type="submit" className="flex-1 bg-indigo-600 hover:bg-indigo-700" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {editingLink ? 'Uložit změny' : 'Vytvořit odkaz'}
+          <div className="flex gap-2 pt-4">
+            <Button type="submit" className="flex-1" disabled={isLoading}>
+              {isLoading ? 'Ukládám...' : 'Uložit'}
             </Button>
-            <Button type="button" variant="outline" onClick={onCancel}>Zrušit</Button>
+            <Button type="button" variant="ghost" onClick={onCancel}>Zrušit</Button>
           </div>
         </form>
       </CardContent>
