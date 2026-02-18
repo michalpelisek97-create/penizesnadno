@@ -21,7 +21,7 @@ const InfiniteCounter = ({ startValue }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCount(prev => prev + Math.floor(Math.random() * 5) + 1);
-    }, 5000); // Pomalejší přičítání
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -35,6 +35,15 @@ const InfiniteCounter = ({ startValue }) => {
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
+
+  // Funkce pro získání dnešního data
+  const getFormattedDate = () => {
+    return new Date().toLocaleDateString('cs-CZ', {
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric'
+    });
+  };
 
   // 2. Google AdSense Verifikace
   useEffect(() => {
@@ -137,7 +146,9 @@ export default function Home() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
             <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span className="text-sm font-medium text-slate-700">Dnes aktivní bonusy pro vás</span>
+            <span className="text-sm font-medium text-slate-700">
+              Dnes aktivní bonusy pro vás ({getFormattedDate()})
+            </span>
           </div>
           
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
