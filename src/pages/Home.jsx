@@ -20,8 +20,8 @@ const InfiniteCounter = ({ startValue }) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCount(prev => prev + Math.floor(Math.random() * 13) + 2);
-    }, 3000);
+      setCount(prev => prev + Math.floor(Math.random() * 5) + 1);
+    }, 5000); // Pomalejší přičítání
     return () => clearInterval(interval);
   }, []);
 
@@ -89,7 +89,7 @@ export default function Home() {
     queryFn: () => base44.entities.Article.filter({ is_active: true }, '-created_at'),
   });
 
-  // LOGIKA: "Nákup levně" se NEZOBRAZUJE v "Vše"
+  // FILTRACE: Nákup levně se NEZOBRAZUJE ve "Vše"
   const filteredLinks = useMemo(() => {
     if (selectedCategory === 'all') {
       return links.filter(link => 
@@ -210,7 +210,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* FINANČNÍ STATISTIKY & SDÍLENÍ (DOLE) */}
+        {/* FINANČNÍ STATISTIKY & SDÍLENÍ */}
         <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 bg-white rounded-3xl p-8 border border-slate-200/60 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">
@@ -220,7 +220,7 @@ export default function Home() {
               <div>
                 <p className="text-sm font-medium text-slate-500">Uživatelé celkem ušetřili</p>
                 <p className="text-2xl font-bold text-slate-900">
-                  <InfiniteCounter startValue={842500} />
+                  <InfiniteCounter startValue={12500} />
                 </p>
               </div>
             </div>
@@ -229,8 +229,8 @@ export default function Home() {
                 <CheckCircle2 className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-500">Aktivních bonusů</p>
-                <p className="text-2xl font-bold text-slate-900">{links.length + 5} nabídek</p>
+                <p className="text-sm font-medium text-slate-500">Dnes aktivní bonusy</p>
+                <p className="text-2xl font-bold text-slate-900">{links.length} nabídek</p>
               </div>
             </div>
           </div>
@@ -244,7 +244,7 @@ export default function Home() {
             </div>
             <div>
               <p className="font-bold">Sdílet s přáteli</p>
-              <p className="text-xs text-slate-400">Pomozte ostatním šetřit</p>
+              <p className="text-xs text-slate-400">Šetřete společně</p>
             </div>
           </button>
         </div>
