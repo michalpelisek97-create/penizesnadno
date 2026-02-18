@@ -231,7 +231,7 @@ export default function Home() {
               <div>
                 <p className="text-sm font-medium text-slate-500">Uživatelé celkem ušetřili</p>
                 <p className="text-2xl font-bold text-slate-900">
-                  <InfiniteCounter startValue={12500} />
+                  <InfiniteCounter startValue={134390} />
                 </p>
               </div>
             </div>
@@ -240,8 +240,8 @@ export default function Home() {
                 <CheckCircle2 className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-500">Dnes aktivní bonusy</p>
-                <p className="text-2xl font-bold text-slate-900">{links.length} nabídek</p>
+                <p className="text-sm font-medium text-slate-500">Stav bonusů</p>
+                <p className="text-2xl font-bold text-slate-900">Ověřeno</p>
               </div>
             </div>
           </div>
