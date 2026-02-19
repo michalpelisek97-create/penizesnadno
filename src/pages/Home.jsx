@@ -13,7 +13,7 @@ import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { createPageUrl } from '@/utils'; // DŮLEŽITÉ: Přidán import pro routování
+import { createPageUrl } from '@/utils';
 
 // 1. Komponenta pro NEKONEČNĚ STOUPAJÍCÍ počítadlo
 const InfiniteCounter = ({ startValue }) => {
@@ -143,6 +143,7 @@ export default function Home() {
           className="text-center mb-6"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
+            <point className="w-4 h-4 text-amber-500 animate-pulse" />
             <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
             <span className="text-sm font-medium text-slate-700">
               Dnes aktivní bonusy pro vás ({getFormattedDate()})
@@ -225,8 +226,9 @@ export default function Home() {
                 ) : (
                   articles.map((article) => (
                     <Link 
-                      to={createPageUrl('ArticleDetail', { id: article.id })} 
                       key={article.id}
+                      to={{ pathname: createPageUrl('ArticleDetail', { id: article.id }) }}
+                      state={{ articleData: article }}
                       className="group bg-white p-6 rounded-2xl border border-slate-200 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
                     >
                       <div>
