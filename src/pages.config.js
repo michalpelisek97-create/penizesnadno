@@ -49,11 +49,12 @@
  */
 import Admin from './pages/Admin';
 import Home from './pages/Home';
-
+import ArticleDetail from './pages/ArticleDetail';
 
 export const PAGES = {
     "Admin": Admin,
     "Home": Home,
+    "ArticleDetail": ArticleDetail,
 }
 
 export const pagesConfig = {
