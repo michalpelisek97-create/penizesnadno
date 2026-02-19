@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link'; // Přidán chybějící import pro články
+import { Link } from 'react-router-dom'; // Změněno z next/link na react-router-dom
 import { 
   Sparkles, 
   FileText, 
@@ -99,7 +99,7 @@ export default function Home() {
     queryFn: () => base44.entities.Article.filter({ is_active: true }, '-created_at'),
   });
 
-  // FILTRACE: Odkazy (Bonusy)
+  // FILTRACE: Bonusy se schovají, pokud je vybrána kategorie Článek
   const filteredLinks = useMemo(() => {
     if (selectedCategory === 'all') {
       return links.filter(link => 
@@ -107,9 +107,7 @@ export default function Home() {
         !(Array.isArray(link.categories) && link.categories.includes('Nákup levně'))
       );
     }
-    // Pokud je vybrán Článek, bonusy schováme
     if (selectedCategory === 'Článek') return [];
-    
     return links.filter(link => 
       link.category === selectedCategory || 
       (Array.isArray(link.categories) && link.categories.includes(selectedCategory))
@@ -119,7 +117,7 @@ export default function Home() {
   const isLoading = isLoadingLinks || isLoadingArticles;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 overflow-hidden text-slate-900">
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-12 sm:py-16">
         
         {/* Header */}
@@ -165,9 +163,9 @@ export default function Home() {
         <AnimatePresence mode="wait">
           {selectedCategory !== 'Článek' && (
             <motion.div 
-              key="links-grid"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              key="bonus-grid"
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
               exit={{ opacity: 0 }}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20"
             >
@@ -180,7 +178,7 @@ export default function Home() {
                     <div key={link.id} className="relative">
                       {isFavorite && (
                         <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
-                          🔥 TOP
+                          🔥 NEJOBLÍBENĚJŠÍ
                         </div>
                       )}
                       <LinkCard link={link} index={index} />
@@ -192,11 +190,11 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* Sekce Články - Zobrazí se JEN při vybrané kategorii 'Článek' */}
+        {/* Sekce Články - Zobrazí se JEN tam */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'Článek' && (
             <motion.div 
-              key="articles-section"
+              key="articles-view"
               initial={{ opacity: 0, y: 20 }} 
               animate={{ opacity: 1, y: 0 }} 
               exit={{ opacity: 0, y: -20 }}
@@ -206,28 +204,28 @@ export default function Home() {
                 <FileText className="w-6 h-6 text-purple-600" />
                 <h2 className="text-3xl font-bold text-slate-900">Návody a články</h2>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {isLoadingArticles ? (
                   [...Array(4)].map((_, i) => <Skeleton key={i} className="h-48 w-full rounded-2xl" />)
                 ) : (
                   articles.map((article) => (
                     <Link 
-                      href={`/blog/${article.slug}`} 
+                      to={`/blog/${article.slug}`} 
                       key={article.id}
                       className="group bg-white p-6 rounded-2xl border border-slate-200 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
                     >
                       <div>
-                        <div className="text-xs text-slate-400 mb-2 font-medium uppercase tracking-wider">Návod</div>
+                        <div className="text-xs text-purple-500 font-bold uppercase tracking-wider mb-2">Návod</div>
                         <h3 className="text-xl font-bold text-slate-900 group-hover:text-purple-600 transition-colors mb-2">
                           {article.title}
                         </h3>
                         <p className="text-slate-600 line-clamp-2 mb-4 text-sm">
-                          {article.excerpt || "Podrobný návod, jak získat tento bonus krok za krokem."}
+                          {article.excerpt || "Podrobný návod jak získat bonus. Klikněte pro více informací."}
                         </p>
                       </div>
                       <div className="flex items-center text-purple-600 font-semibold gap-1 text-sm">
-                        Více informací <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        Zobrazit návod <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </Link>
                   ))
