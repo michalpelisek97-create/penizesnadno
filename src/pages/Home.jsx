@@ -7,15 +7,13 @@ import {
   Sparkles, 
   FileText, 
   ArrowRight, 
-  Share2, 
-  TrendingUp, 
-  CheckCircle2 
+  Share2 
 } from 'lucide-react';
 import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-
+import { createPageUrl } from '@/utils'; // DŮLEŽITÉ: Přidán import pro routování
 
 // 1. Komponenta pro NEKONEČNĚ STOUPAJÍCÍ počítadlo
 const InfiniteCounter = ({ startValue }) => {
@@ -206,7 +204,7 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* Sekce Články - Zobrazí se JEN tam */}
+        {/* Sekce Články */}
         <AnimatePresence mode="wait">
           {selectedCategory === 'Článek' && (
             <motion.div 
@@ -227,7 +225,7 @@ export default function Home() {
                 ) : (
                   articles.map((article) => (
                     <Link 
-                      to={`/article/${article.id}`} 
+                      to={createPageUrl('ArticleDetail', { id: article.id })} 
                       key={article.id}
                       className="group bg-white p-6 rounded-2xl border border-slate-200 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
                     >
@@ -245,11 +243,6 @@ export default function Home() {
                       </div>
                     </Link>
                   ))
-                )}
-                {articles.length === 0 && !isLoading && (
-                  <div className="col-span-full text-center py-20 text-slate-400">
-                    Zatím zde nejsou žádné články.
-                  </div>
                 )}
               </div>
             </motion.div>
