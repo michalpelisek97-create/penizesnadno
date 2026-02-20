@@ -15,6 +15,7 @@ import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 
+// Optimalizované počítadlo
 const InfiniteCounter = ({ startValue }) => {
   const [count, setCount] = useState(startValue);
   useEffect(() => {
@@ -29,32 +30,26 @@ const InfiniteCounter = ({ startValue }) => {
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
 
-  // OPTIMALIZACE: Odložené načítání externích skriptů (Google Ads/Verify)
+  // OPTIMALIZACE: Odložené načítání Google Ads (v index.html smazáno, tady se načte po startu)
   useEffect(() => {
-    // Verifikace může zůstat hned
-    if (!document.querySelector('meta[name="google-site-verification"]')) {
-      const googleVerify = document.createElement('meta');
-      googleVerify.name = "google-site-verification";
-      googleVerify.content = "KC7dRka-7zMhcfQMw2mugjjr6oy05-Umr5qcKraZf7w";
-      document.head.appendChild(googleVerify);
-    }
-
-    // ADSENSE A OSTATNÍ - Načteme s mírným zpožděním (klíč k lepšímu skóre)
     const timer = setTimeout(() => {
-      const script = document.createElement('script');
-      script.src = "https://pagead2.googlesyndication.com";
-      script.async = true;
-      script.crossOrigin = "anonymous";
-      document.head.appendChild(script);
-    }, 2000); // 2 sekundy zpoždění
+      if (!document.querySelector('script[src*="googlesyndication"]')) {
+        const script = document.createElement('script');
+        script.src = "https://pagead2.googlesyndication.com";
+        script.async = true;
+        script.crossOrigin = "anonymous";
+        document.head.appendChild(script);
+      }
+    }, 2500); // Zpoždění 2.5s pro maximální rychlost startu webu
 
     return () => clearTimeout(timer);
   }, []);
 
+  // Data Fetching s delší cache pro stabilitu
   const { data: allData = [], isLoading } = useQuery({
     queryKey: ['referral-links'],
     queryFn: () => base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order'),
-    staleTime: 1000 * 60 * 10, // Zvýšeno na 10 minut pro lepší výkon
+    staleTime: 1000 * 60 * 15, 
   });
 
   const links = useMemo(() => allData.filter(item => !item.is_article), [allData]);
@@ -71,6 +66,7 @@ export default function Home() {
     <div className="min-h-screen bg-white text-slate-900">
       <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12">
         
+        {/* HEADER */}
         <header className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 border border-slate-200 mb-4">
             <Sparkles className="w-4 h-4 text-amber-500" />
@@ -90,6 +86,7 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
+        {/* Sekce BONUSY - Zde je oprava pro LCP */}
         <main className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
           {isLoading ? (
             [...Array(6)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-3xl" />)
@@ -99,13 +96,14 @@ export default function Home() {
                 {(link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank')) && (
                   <div className="absolute -top-2 -right-2 z-20 bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-md">🔥 TOP</div>
                 )}
-                {/* Atribut loading="lazy" musíme vyřešit uvnitř komponenty LinkCard */}
-                <LinkCard link={link} />
+                {/* KLÍČOVÁ OPRAVA: Předáváme 'index', aby LinkCard mohl prioritizovat první obrázek */}
+                <LinkCard link={link} index={index} />
               </div>
             ))
           )}
         </main>
 
+        {/* Sekce ČLÁNKY */}
         {(selectedCategory === 'all' || selectedCategory === 'Článek') && articles.length > 0 && (
           <section className="mt-20">
             <div className="flex items-center gap-3 mb-8 border-b pb-4">
@@ -132,6 +130,7 @@ export default function Home() {
           </section>
         )}
 
+        {/* FINANCE a FOOTER */}
         <footer className="mt-24 py-12 border-t text-center">
           <div className="inline-block bg-slate-50 border border-slate-200 p-6 rounded-3xl mb-8">
             <div className="flex items-center justify-center gap-2 text-emerald-600 mb-1">
@@ -161,7 +160,6 @@ export default function Home() {
             <p className="text-[10px] text-slate-400">© 2026 Vyzkoušej & Ušetři. Všechny bonusy podléhají podmínkám bank.</p>
           </div>
         </footer>
-
       </div>
     </div>
   );
