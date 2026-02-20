@@ -2,38 +2,34 @@
 <html lang="cs">
   <head>
     <meta charset="UTF-8" />
-    <!-- 1. PRECONNECT: Nejsilnější nástroj pro zrychlení LCP. 
-         Vytvoří spojení se servery s obrázky okamžitě. -->
+    <!-- PRECONNECT: Klíčové pro bleskové LCP -->
     <link rel="preconnect" href="https://play-lh.googleusercontent.com" crossorigin>
     <link rel="preconnect" href="https://ctpool.net" crossorigin>
+    <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
     
-    <!-- 2. IKONA A META: Změněno na 'fetchpriority="high"' pro logo -->
     <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" fetchpriority="high" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="manifest" href="/manifest.json" />
     
-    <!-- 3. SEO & ADS: Ověření účtu zůstává, skript se načítá až v Home.jsx -->
+    <!-- Google Adsense účet -->
     <meta name="google-adsense-account" content="ca-pub-3492240221253160">
     
     <title>Vyzkoušej & Ušetři</title>
     
-    <!-- 4. ZABRÁNĚNÍ BLIKÁNÍ (Layout Shift): 
-         Malý styl, který zajistí, že se web zobrazí, až když je CSS připraveno. -->
     <style>
       #root { min-height: 100vh; }
-      body { background-color: white; margin: 0; }
+      body { background-color: white; margin: 0; transition: opacity 0.3s ease; }
     </style>
   </head>
   <body>
     <div id="root"></div>
     
-    <!-- 5. HLAVNÍ SKRIPT: 'type="module"' automaticky funguje jako 'defer' (neblokuje start) -->
     <script type="module" src="/src/main.jsx"></script>
     
     <script>
-      // Extra rychlé zobrazení body po načtení skriptu
+      // Elegantní zobrazení, které neháže chyby v konzoli
       window.addEventListener('load', () => {
-        document.body.style.opacity = '1';
+        if (document.body) document.body.style.opacity = '1';
       });
     </script>
   </body>
