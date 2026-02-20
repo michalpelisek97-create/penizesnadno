@@ -7,6 +7,7 @@ export default defineConfig({
   logLevel: 'error', 
   plugins: [
     base44({
+      // Podpora pro starší SDK importy
       legacySDKImports: process.env.BASE44_LEGACY_SDK_IMPORTS === 'true',
       hmrNotifier: true,
       navigationNotifier: true,
@@ -15,25 +16,39 @@ export default defineConfig({
     react(),
   ],
   build: {
-    // Zapneme pokročilou minifikaci
+    // 1. ZABRÁNÍ BLOKOVÁNÍ CSS: Soubory pod 20kb se vloží přímo (inlining), 
+    // což vyřeší tvou chybu "Počáteční vykreslení stránky blokují požadavky"
+    assetsInlineLimit: 20480, 
+    
+    // 2. Rozdělí CSS podle stránek, aby se nenačítalo vše najednou
+    cssCodeSplit: true,
+
+    // 3. Pokročilá minifikace pro nejmenší možnou velikost souborů
     minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // Odstraní console.logy pro čistší produkční kód
+        drop_debugger: true
+      }
+    },
+
     rollupOptions: {
       output: {
-        // Rozdělení kódu na logické celky
+        // 4. ROZDĚLENÍ JAVASCRIPTU (Chunks): Sníží množství "nepoužívaného JS"
         manualChunks(id) {
-          // 1. Všechny těžké vizuální a PDF knihovny dáme bokem
+          // Těžké grafické a exportní knihovny (PDF, 3D, Grafy)
           if (id.includes('three') || id.includes('jspdf') || id.includes('html2canvas') || id.includes('recharts')) {
             return 'visual-assets';
           }
-          // 2. Mapy a editor
+          // Interaktivní nástroje (Mapy, Textové editory)
           if (id.includes('leaflet') || id.includes('quill')) {
             return 'interactive-tools';
           }
-          // 3. Platební brána Stripe
+          // Platební systémy
           if (id.includes('stripe')) {
             return 'payments';
           }
-          // 4. Základní UI komponenty (Radix, Framer Motion)
+          // Ostatní knihovny z node_modules (React, Radix, Framer atd.)
           if (id.includes('node_modules')) {
             return 'vendor';
           }
