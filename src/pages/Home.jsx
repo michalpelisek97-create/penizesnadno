@@ -3,12 +3,17 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Sparkles, FileText, ArrowRight, Share2 } from 'lucide-react';
+import { 
+  Sparkles, 
+  FileText, 
+  ArrowRight, 
+  Share2 
+} from 'lucide-react';
 import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { createPageUrl } from '@/utils';
+import { createPageUrl } from '@/utils'; // DŮLEŽITÉ: Přidán import pro routování
 
 // 1. Komponenta pro NEKONEČNĚ STOUPAJÍCÍ počítadlo
 const InfiniteCounter = ({ startValue }) => {
@@ -34,7 +39,11 @@ export default function Home() {
 
   // Funkce pro získání dnešního data
   const getFormattedDate = () => {
-    return new Date().toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric', year: 'numeric' });
+    return new Date().toLocaleDateString('cs-CZ', {
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric'
+    });
   };
 
   // 2. Google AdSense Verifikace
@@ -111,7 +120,6 @@ export default function Home() {
       text: 'Koukni na tyhle super bonusy a odměny, které můžeš snadno získat!',
       url: window.location.href,
     };
-
     try {
       if (navigator.share) {
         await navigator.share(shareData);
@@ -130,8 +138,8 @@ export default function Home() {
         
         {/* Header */}
         <motion.div 
-          initial={{ opacity: 0, y: -20 }} 
-          animate={{ opacity: 1, y: 0 }} 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
           className="text-center mb-6"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
@@ -142,7 +150,8 @@ export default function Home() {
           </div>
           
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
-            Vyzkoušej <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
+            Vyzkoušej
+            <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
           </h1>
         </motion.div>
 
@@ -169,7 +178,7 @@ export default function Home() {
         {/* Sekce Odkazy (Bonusy) */}
         <AnimatePresence mode="wait">
           {selectedCategory !== 'Článek' && (
-            <motion.div
+            <motion.div 
               key="links-section"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -178,77 +187,84 @@ export default function Home() {
             >
               {isLoading ? (
                 [...Array(6)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
-              ) : (
-                filteredLinks.map((link, index) => {
-                  const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
-                  return (
-                    <div key={link.id} className="relative">
-                      {isFavorite && (
-                        <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
-                          🔥 NEJOBLÍBENĚJŠÍ
-                        </div>
-                      )}
-                      <LinkCard link={link} index={index} />
-                    </div>
-                  );
-                })
-              )}
+              ) : filteredLinks.map((link, index) => {
+                const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
+                return (
+                  <div key={link.id} className="relative">
+                    {isFavorite && (
+                      <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
+                        🔥 NEJOBLÍBENĚJŠÍ
+                      </div>
+                    )}
+                    <LinkCard link={link} index={index} />
+                  </div>
+                );
+              })}
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Zde by pokračovala Sekce Články... */}
+        {/* Sekce Články */}
+        <AnimatePresence mode="wait">
+          {selectedCategory === 'Článek' && (
+            <motion.div 
+              key="articles-section"
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-8"
+            >
+               <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
+                <FileText className="w-6 h-6 text-purple-600" />
+                <h2 className="text-3xl font-bold text-slate-900">Návody a články</h2>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {isLoading ? (
+                  [...Array(4)].map((_, i) => <Skeleton key={i} className="h-48 w-full rounded-2xl" />)
+                ) : (
+                  articles.map((article) => (
+                    <Link 
+                      to={createPageUrl('ArticleDetail', { id: article.id })} 
+                      key={article.id}
+                      className="group bg-white p-6 rounded-2xl border border-slate-200 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="text-xs text-purple-500 font-bold uppercase tracking-wider mb-2">Příspěvek</div>
+                        <h3 className="text-xl font-bold text-slate-900 group-hover:text-purple-600 transition-colors mb-2">
+                          {article.title}
+                        </h3>
+                        <p className="text-slate-600 line-clamp-2 mb-4 text-sm">
+                          {article.content?.replace(/<[^>]*>?/gm, '').substring(0, 150)}...
+                        </p>
+                      </div>
+                      <div className="flex items-center text-purple-600 font-semibold gap-1 text-sm">
+                        Číst návod <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </Link>
+                  ))
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer info s počítadlem */}
+        <div className="mt-20 text-center border-t pt-10 border-slate-200">
+          <p className="text-slate-500 text-sm mb-2">Uživatelé s námi celkem ušetřili už přes</p>
+          <div className="text-3xl font-bold text-emerald-600">
+            <InfiniteCounter startValue={1250400} />
+          </div>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="mt-6 text-slate-400 hover:text-purple-600"
+            onClick={handleShare}
+          >
+            <Share2 className="w-4 h-4 mr-2" /> Sdílet s přáteli
+          </Button>
+        </div>
       </div>
     </div>
   );
 }
-        {/* Sekce Články - Doplněná část */}
-        <AnimatePresence mode="wait">
-          {(selectedCategory === 'all' || selectedCategory === 'Článek') && articles.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="mt-20"
-            >
-              <div className="flex items-center gap-3 mb-8">
-                <div className="p-2 rounded-xl bg-purple-100 text-purple-600">
-                  <FileText className="w-6 h-6" />
-                </div>
-                <h2 className="text-2xl font-bold text-slate-900">Zajímavé čtení a návody</h2>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {articles.map((article) => (
-                  <Link 
-                    key={article.id}
-                    to={createPageUrl(article.title)}
-                    className="group bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex items-center justify-between"
-                  >
-                    <div className="flex-1">
-                      <h3 className="font-bold text-lg group-hover:text-purple-600 transition-colors">
-                        {article.title}
-                      </h3>
-                      <p className="text-slate-500 text-sm mt-1 line-clamp-1">
-                        {article.description || 'Přečtěte si více v našem detailním článku...'}
-                      </p>
-                    </div>
-                    <ArrowRight className="w-5 h-5 text-slate-300 group-hover:text-purple-500 group-hover:translate-x-1 transition-all ml-4" />
-                  </Link>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Tlačítko pro sdílení - Footer */}
-        <div className="mt-20 flex justify-center">
-          <Button 
-            onClick={handleShare}
-            variant="outline"
-            className="rounded-full gap-2 px-8 py-6 border-slate-200 hover:bg-slate-50 text-slate-600 transition-all shadow-sm"
-          >
-            <Share2 className="w-4 h-4" />
-            Sdílet tyto bonusy s přáteli
-          </Button>
-        </div>
