@@ -2,35 +2,38 @@
 <html lang="cs">
   <head>
     <meta charset="UTF-8" />
-    <!-- 1. DNS-PREFETCH: Připraví spojení na externí servery dopředu (zrychlí načítání obrázků) -->
-    <link rel="dns-prefetch" href="https://play-lh.googleusercontent.com">
-    <link rel="dns-prefetch" href="https://ctpool.net">
+    <!-- 1. PRECONNECT: Nejsilnější nástroj pro zrychlení LCP. 
+         Vytvoří spojení se servery s obrázky okamžitě. -->
+    <link rel="preconnect" href="https://play-lh.googleusercontent.com" crossorigin>
+    <link rel="preconnect" href="https://ctpool.net" crossorigin>
     
-    <!-- 2. IKONA: Používáme moderní typy -->
-    <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
+    <!-- 2. IKONA A META: Změněno na 'fetchpriority="high"' pro logo -->
+    <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" fetchpriority="high" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="manifest" href="/manifest.json" />
     
-    <!-- 3. GOOGLE ADSENSE OVĚŘENÍ: Ponecháme jen meta tag pro ověření účtu -->
+    <!-- 3. SEO & ADS: Ověření účtu zůstává, skript se načítá až v Home.jsx -->
     <meta name="google-adsense-account" content="ca-pub-3492240221253160">
     
-    <!-- ODSTRANĚNO: Skript Adsense odtud zmizel. 
-         Už jsme ho přidali do Home.jsx s 2vteřinovým zpožděním, 
-         takže teď neblokuje start webu (LCP/FCP). -->
-    
     <title>Vyzkoušej & Ušetři</title>
+    
+    <!-- 4. ZABRÁNĚNÍ BLIKÁNÍ (Layout Shift): 
+         Malý styl, který zajistí, že se web zobrazí, až když je CSS připraveno. -->
+    <style>
+      #root { min-height: 100vh; }
+      body { background-color: white; margin: 0; }
+    </style>
   </head>
   <body>
     <div id="root"></div>
     
-    <!-- 4. HLAVNÍ SKRIPT: Vite ho díky 'type="module"' načte neblokujícím způsobem (defer) -->
+    <!-- 5. HLAVNÍ SKRIPT: 'type="module"' automaticky funguje jako 'defer' (neblokuje start) -->
     <script type="module" src="/src/main.jsx"></script>
     
-    <!-- 5. OPTIMALIZACE: Malý skript, který zajistí, že se CSS vložené přes Vite (assetsInlineLimit) 
-         zpracuje s nejvyšší prioritou, jakmile se načte DOM. -->
     <script>
-      window.addEventListener('DOMContentLoaded', () => {
-        document.body.style.visibility = 'visible';
+      // Extra rychlé zobrazení body po načtení skriptu
+      window.addEventListener('load', () => {
+        document.body.style.opacity = '1';
       });
     </script>
   </body>
