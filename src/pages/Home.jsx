@@ -15,7 +15,6 @@ import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 
-// 1. Optimalizované počítadlo (bez zbytečných re-renderů)
 const InfiniteCounter = ({ startValue }) => {
   const [count, setCount] = useState(startValue);
   useEffect(() => {
@@ -29,39 +28,33 @@ const InfiniteCounter = ({ startValue }) => {
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [notifIndex, setNotifIndex] = useState(0);
 
-  // 2. Google Verifikace (ponechána pro SEO)
+  // OPTIMALIZACE: Odložené načítání externích skriptů (Google Ads/Verify)
   useEffect(() => {
-    const googleVerify = document.createElement('meta');
-    googleVerify.name = "google-site-verification";
-    googleVerify.content = "KC7dRka-7zMhcfQMw2mugjjr6oy05-Umr5qcKraZf7w";
-    document.head.appendChild(googleVerify);
+    // Verifikace může zůstat hned
+    if (!document.querySelector('meta[name="google-site-verification"]')) {
+      const googleVerify = document.createElement('meta');
+      googleVerify.name = "google-site-verification";
+      googleVerify.content = "KC7dRka-7zMhcfQMw2mugjjr6oy05-Umr5qcKraZf7w";
+      document.head.appendChild(googleVerify);
+    }
 
-    const meta = document.createElement('meta');
-    meta.name = "google-adsense-account";
-    meta.content = "ca-pub-3492240221253160";
-    document.head.appendChild(meta);
+    // ADSENSE A OSTATNÍ - Načteme s mírným zpožděním (klíč k lepšímu skóre)
+    const timer = setTimeout(() => {
+      const script = document.createElement('script');
+      script.src = "https://pagead2.googlesyndication.com";
+      script.async = true;
+      script.crossOrigin = "anonymous";
+      document.head.appendChild(script);
+    }, 2000); // 2 sekundy zpoždění
 
-    const script = document.createElement('script');
-    script.src = "https://pagead2.googlesyndication.com";
-    script.async = true;
-    script.crossOrigin = "anonymous";
-    document.head.appendChild(script);
-
-    return () => {
-      if (document.head.contains(googleVerify)) document.head.removeChild(googleVerify);
-      if (document.head.contains(meta)) document.head.removeChild(meta);
-      if (document.head.contains(script)) document.head.removeChild(script);
-    };
+    return () => clearTimeout(timer);
   }, []);
 
-  // 3. Data Fetching
   const { data: allData = [], isLoading } = useQuery({
     queryKey: ['referral-links'],
     queryFn: () => base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order'),
-    // Cache nastavení pro rychlejší opětovné návštěvy
-    staleTime: 1000 * 60 * 5, 
+    staleTime: 1000 * 60 * 10, // Zvýšeno na 10 minut pro lepší výkon
   });
 
   const links = useMemo(() => allData.filter(item => !item.is_article), [allData]);
@@ -78,8 +71,7 @@ export default function Home() {
     <div className="min-h-screen bg-white text-slate-900">
       <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12">
         
-        {/* STATICKÝ HEADER (Bez animací pro bleskové LCP) */}
-        <div className="text-center mb-10">
+        <header className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 border border-slate-200 mb-4">
             <Sparkles className="w-4 h-4 text-amber-500" />
             <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
@@ -94,35 +86,28 @@ export default function Home() {
           <p className="text-slate-500 max-w-lg mx-auto text-sm sm:text-base">
             Získejte nejlepší bankovní bonusy a odměny na českém trhu přehledně na jednom místě.
           </p>
-        </div>
+        </header>
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* Sekce BONUSY (Pouze jemná animace při načtení dat) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+        <main className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
           {isLoading ? (
-            [...Array(6)].map((_, i) => <Skeleton key={i} className="h-48 w-full rounded-3xl" />)
+            [...Array(6)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-3xl" />)
           ) : (
             filteredLinks.map((link, index) => (
-              <motion.div 
-                key={link.id} 
-                initial={{ opacity: 0 }} 
-                animate={{ opacity: 1 }} 
-                transition={{ delay: index * 0.05 }}
-                className="relative"
-              >
+              <div key={link.id} className="relative">
                 {(link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank')) && (
                   <div className="absolute -top-2 -right-2 z-20 bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-md">🔥 TOP</div>
                 )}
+                {/* Atribut loading="lazy" musíme vyřešit uvnitř komponenty LinkCard */}
                 <LinkCard link={link} />
-              </motion.div>
+              </div>
             ))
           )}
-        </div>
+        </main>
 
-        {/* Sekce ČLÁNKY */}
         {(selectedCategory === 'all' || selectedCategory === 'Článek') && articles.length > 0 && (
-          <div className="mt-20">
+          <section className="mt-20">
             <div className="flex items-center gap-3 mb-8 border-b pb-4">
               <FileText className="text-purple-600" size={28} />
               <h2 className="text-3xl font-bold">Návody a tipy</h2>
@@ -144,11 +129,10 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-          </div>
+          </section>
         )}
 
-        {/* Sekce FINANCE a PATIČKA */}
-        <div className="mt-24 py-12 border-t text-center">
+        <footer className="mt-24 py-12 border-t text-center">
           <div className="inline-block bg-slate-50 border border-slate-200 p-6 rounded-3xl mb-8">
             <div className="flex items-center justify-center gap-2 text-emerald-600 mb-1">
               <TrendingUp size={18} />
@@ -176,7 +160,7 @@ export default function Home() {
             </Button>
             <p className="text-[10px] text-slate-400">© 2026 Vyzkoušej & Ušetři. Všechny bonusy podléhají podmínkám bank.</p>
           </div>
-        </div>
+        </footer>
 
       </div>
     </div>
