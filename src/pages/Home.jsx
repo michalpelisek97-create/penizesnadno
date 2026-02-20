@@ -13,7 +13,7 @@ import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { createPageUrl } from '@/utils'; // DŮLEŽITÉ: Přidán import pro routování
+import { createPageUrl } from '@/utils';
 
 // 1. Komponenta pro NEKONEČNĚ STOUPAJÍCÍ počítadlo
 const InfiniteCounter = ({ startValue }) => {
@@ -46,13 +46,21 @@ export default function Home() {
     });
   };
 
-  // 2. Google AdSense Verifikace
+  // 2. Google Verifikace (Search Console) & AdSense
   useEffect(() => {
+    // Google Search Console meta tag
+    const googleVerify = document.createElement('meta');
+    googleVerify.name = "google-site-verification";
+    googleVerify.content = "KC7dRka-7zMhcfQMw2mugjjr6oy05-Umr5qcKraZf7w";
+    document.head.appendChild(googleVerify);
+
+    // Google AdSense meta tag
     const meta = document.createElement('meta');
     meta.name = "google-adsense-account";
     meta.content = "ca-pub-3492240221253160";
     document.head.appendChild(meta);
 
+    // Google AdSense script
     const script = document.createElement('script');
     script.src = "https://pagead2.googlesyndication.com";
     script.async = true;
@@ -60,6 +68,7 @@ export default function Home() {
     document.head.appendChild(script);
 
     return () => {
+      if (document.head.contains(googleVerify)) document.head.removeChild(googleVerify);
       if (document.head.contains(meta)) document.head.removeChild(meta);
       if (document.head.contains(script)) document.head.removeChild(script);
     };
@@ -88,17 +97,16 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [notifications.length]);
 
-  // 4. API Data Fetching - Vše taháme z ReferralLink kvůli limitům
+  // 4. API Data Fetching
   const { data: allData = [], isLoading } = useQuery({
     queryKey: ['referral-links'],
     queryFn: () => base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order'),
   });
 
-  // Rozdělení dat na bonusy a články na základě příznaku is_article
   const links = useMemo(() => allData.filter(item => !item.is_article), [allData]);
   const articles = useMemo(() => allData.filter(item => item.is_article), [allData]);
 
-  // FILTRACE: Logika pro zobrazení bonusů
+  // Filtrace bonusů
   const filteredLinks = useMemo(() => {
     if (selectedCategory === 'all') {
       return links.filter(link => 
@@ -113,11 +121,11 @@ export default function Home() {
     );
   }, [selectedCategory, links]);
 
-  // 5. Marketingové sdílení
+  // Sdílení
   const handleShare = async () => {
     const shareData = {
       title: 'Vyzkoušej & Ušetři',
-      text: 'Koukni na tyhle super bonusy a odměny, které můžeš snadno získat!',
+      text: 'Koukni na tyhle super bonusy a odměny!',
       url: window.location.href,
     };
     try {
@@ -175,7 +183,7 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* Sekce Odkazy (Bonusy) */}
+        {/* Sekce BONUSY */}
         <AnimatePresence mode="wait">
           {selectedCategory !== 'Článek' && (
             <motion.div 
@@ -204,64 +212,68 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* Sekce Články */}
+        {/* Sekce ČLÁNKY - OPRAVENO PRO ARTICLE DETAIL */}
         <AnimatePresence mode="wait">
-          {selectedCategory === 'Článek' && (
-            <motion.div 
+          {(selectedCategory === 'all' || selectedCategory === 'Článek') && articles.length > 0 && (
+            <motion.div
               key="articles-section"
-              initial={{ opacity: 0, y: 20 }} 
-              animate={{ opacity: 1, y: 0 }} 
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-8"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 40 }}
+              className="mt-20"
             >
-               <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
-                <FileText className="w-6 h-6 text-purple-600" />
-                <h2 className="text-3xl font-bold text-slate-900">Návody a články</h2>
+              <div className="flex items-center gap-3 mb-10">
+                <div className="p-2 rounded-xl bg-purple-100 text-purple-600">
+                  <FileText size={24} />
+                </div>
+                <h2 className="text-3xl font-bold text-slate-900">Zajímavé čtení a návody</h2>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {isLoading ? (
-                  [...Array(4)].map((_, i) => <Skeleton key={i} className="h-48 w-full rounded-2xl" />)
-                ) : (
-                  articles.map((article) => (
-                    <Link 
-                      to={createPageUrl('ArticleDetail', { id: article.id })} 
-                      key={article.id}
-                      className="group bg-white p-6 rounded-2xl border border-slate-200 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
-                    >
-                      <div>
-                        <div className="text-xs text-purple-500 font-bold uppercase tracking-wider mb-2">Příspěvek</div>
-                        <h3 className="text-xl font-bold text-slate-900 group-hover:text-purple-600 transition-colors mb-2">
-                          {article.title}
-                        </h3>
-                        <p className="text-slate-600 line-clamp-2 mb-4 text-sm">
-                          {article.content?.replace(/<[^>]*>?/gm, '').substring(0, 150)}...
-                        </p>
+                {articles.map((article) => (
+                  <Link
+                    key={article.id}
+                    // Posíláme ID článku do URL
+                    to={`/p/${article.id}`}
+                    // Předáváme data do state pro okamžité zobrazení v ArticleDetail
+                    state={{ articleData: article }}
+                    className="group block bg-white rounded-3xl p-1 border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500"
+                  >
+                    <div className="relative overflow-hidden rounded-[22px] aspect-[16/9]">
+                      <img
+                        src={article.image_url || 'https://images.unsplash.com'}
+                        alt={article.title}
+                        className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent opacity-60" />
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-purple-600 transition-colors">
+                        {article.title}
+                      </h3>
+                      <p className="text-slate-600 line-clamp-2 text-sm mb-6 leading-relaxed">
+                        {article.description}
+                      </p>
+                      <div className="flex items-center text-purple-600 font-bold text-sm">
+                        Přečíst článek
+                        <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-2 transition-transform" />
                       </div>
-                      <div className="flex items-center text-purple-600 font-semibold gap-1 text-sm">
-                        Číst návod <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </Link>
-                  ))
-                )}
+                    </div>
+                  </Link>
+                ))}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Footer info s počítadlem */}
-        <div className="mt-20 text-center border-t pt-10 border-slate-200">
-          <p className="text-slate-500 text-sm mb-2">Uživatelé s námi celkem ušetřili už přes</p>
-          <div className="text-3xl font-bold text-emerald-600">
-            <InfiniteCounter startValue={1250400} />
-          </div>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="mt-6 text-slate-400 hover:text-purple-600"
+        <div className="flex justify-center mt-20 pb-10">
+          <Button
             onClick={handleShare}
+            variant="outline"
+            className="rounded-full px-8 py-6 border-slate-200 hover:bg-slate-50 gap-2 text-slate-600 font-semibold shadow-sm active:scale-95 transition-all"
           >
-            <Share2 className="w-4 h-4 mr-2" /> Sdílet s přáteli
+            <Share2 size={20} />
+            Sdílet s přáteli
           </Button>
         </div>
       </div>
