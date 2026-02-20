@@ -202,3 +202,53 @@ export default function Home() {
     </div>
   );
 }
+        {/* Sekce Články - Doplněná část */}
+        <AnimatePresence mode="wait">
+          {(selectedCategory === 'all' || selectedCategory === 'Článek') && articles.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="mt-20"
+            >
+              <div className="flex items-center gap-3 mb-8">
+                <div className="p-2 rounded-xl bg-purple-100 text-purple-600">
+                  <FileText className="w-6 h-6" />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-900">Zajímavé čtení a návody</h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {articles.map((article) => (
+                  <Link 
+                    key={article.id}
+                    to={createPageUrl(article.title)}
+                    className="group bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex items-center justify-between"
+                  >
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg group-hover:text-purple-600 transition-colors">
+                        {article.title}
+                      </h3>
+                      <p className="text-slate-500 text-sm mt-1 line-clamp-1">
+                        {article.description || 'Přečtěte si více v našem detailním článku...'}
+                      </p>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-slate-300 group-hover:text-purple-500 group-hover:translate-x-1 transition-all ml-4" />
+                  </Link>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Tlačítko pro sdílení - Footer */}
+        <div className="mt-20 flex justify-center">
+          <Button 
+            onClick={handleShare}
+            variant="outline"
+            className="rounded-full gap-2 px-8 py-6 border-slate-200 hover:bg-slate-50 text-slate-600 transition-all shadow-sm"
+          >
+            <Share2 className="w-4 h-4" />
+            Sdílet tyto bonusy s přáteli
+          </Button>
+        </div>
