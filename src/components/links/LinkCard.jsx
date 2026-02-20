@@ -31,12 +31,12 @@ export default function LinkCard({ link, index }) {
   const getOptimizedImageUrl = (url) => {
     if (!url) return null;
     
-    // 1. Oprava Google UserContent (změna 5K rozlišení na 800px)
+    // 1. AGREZIVNÍ ZMENŠENÍ: Změna z 800px na 400px pro Google náhledy (zásadní úspora dat)
     if (url.includes('googleusercontent.com')) {
-      return url.replace(/=w\d+-h\d+/, '=w800').replace(/=s\d+/, '=s800');
+      return url.replace(/=w\d+-h\d+/, '=w400').replace(/=s\d+/, '=s400');
     }
     
-    // 2. Tady můžete v budoucnu přidat další CDN transformace
+    // Pokud je obrázek přes proxy tosevyplati.cz, necháme ho, ale loading="lazy" ho zkrotí
     return url;
   };
 
@@ -46,7 +46,7 @@ export default function LinkCard({ link, index }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.05 }} // Zrychlená animace
+      transition={{ duration: 0.4, delay: index * 0.05 }} 
       className="group relative"
     >
       <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl blur-xl -z-10"
@@ -60,12 +60,14 @@ export default function LinkCard({ link, index }) {
             <img 
               src={optimizedSrc} 
               alt={link.title}
-              // KLÍČOVÉ: Lazy loading pro všechny obrázky kromě prvních dvou
-              loading={index < 2 ? "eager" : "lazy"} 
-              // KLÍČOVÉ: Fetchpriority pro první obrázek (zrychlí LCP)
+              // OPRAVA LCP: První karta se načte okamžitě (eager), ostatní až při scrollu (lazy)
+              loading={index === 0 ? "eager" : "lazy"} 
+              // OPRAVA LCP: Vynucení nejvyšší priority pro úplně první prvek na webu
               fetchpriority={index === 0 ? "high" : "auto"}
+              // Zrychluje dekódování obrázku mimo hlavní vlákno
+              decoding="async"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              onError={(e) => { e.target.style.display = 'none'; }} // Skryje nefunkční obrázky
+              onError={(e) => { e.target.style.display = 'none'; }}
             />
           ) : (
             <div className={`w-full h-full bg-gradient-to-br ${gradientClass} flex items-center justify-center`}>
