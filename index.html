@@ -2,19 +2,36 @@
 <html lang="cs">
   <head>
     <meta charset="UTF-8" />
+    <!-- 1. DNS-PREFETCH: Připraví spojení na externí servery dopředu (zrychlí načítání obrázků) -->
+    <link rel="dns-prefetch" href="https://play-lh.googleusercontent.com">
+    <link rel="dns-prefetch" href="https://ctpool.net">
+    
+    <!-- 2. IKONA: Používáme moderní typy -->
     <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="manifest" href="/manifest.json" />
     
-    <!-- GOOGLE ADSENSE OVĚŘENÍ -->
+    <!-- 3. GOOGLE ADSENSE OVĚŘENÍ: Ponecháme jen meta tag pro ověření účtu -->
     <meta name="google-adsense-account" content="ca-pub-3492240221253160">
-    <script async src="https://pagead2.googlesyndication.com" crossorigin="anonymous"></script>
+    
+    <!-- ODSTRANĚNO: Skript Adsense odtud zmizel. 
+         Už jsme ho přidali do Home.jsx s 2vteřinovým zpožděním, 
+         takže teď neblokuje start webu (LCP/FCP). -->
     
     <title>Vyzkoušej & Ušetři</title>
   </head>
   <body>
     <div id="root"></div>
+    
+    <!-- 4. HLAVNÍ SKRIPT: Vite ho díky 'type="module"' načte neblokujícím způsobem (defer) -->
     <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- 5. OPTIMALIZACE: Malý skript, který zajistí, že se CSS vložené přes Vite (assetsInlineLimit) 
+         zpracuje s nejvyšší prioritou, jakmile se načte DOM. -->
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        document.body.style.visibility = 'visible';
+      });
+    </script>
   </body>
 </html>
-
