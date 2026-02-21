@@ -22,7 +22,7 @@ const categoryLabels = {
   other: 'Ostatní'
 };
 
-export default function LinkCard({ link, priority = false }) {
+export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
   const primaryCategory = link.category || (Array.isArray(link.categories) ? link.categories[0] : 'other');
   const gradientClass = categoryColors[primaryCategory] || categoryColors.other;
   const [imgError, setImgError] = React.useState(false);
