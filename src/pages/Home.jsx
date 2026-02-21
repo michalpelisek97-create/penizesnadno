@@ -76,12 +76,12 @@ export default function Home() {
   const { data: allData = [], isLoading } = useQuery({
     queryKey: ['referral-links'],
     queryFn: async () => {
-          const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 50);
-          return data.map(({ content: _content, description, ...rest }) => ({
-            ...rest,
-            description: description ? description.substring(0, 150) : null,
-          }));
-        },
+      const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 50);
+      return data.map(({ content: _content, description, ...rest }) => ({
+        ...rest,
+        description: description ? description.substring(0, 150) : null,
+      }));
+    },
     staleTime: 5 * 60 * 1000,      // data jsou "čerstvá" 5 minut - žádný re-fetch při každém renderu
     gcTime: 15 * 60 * 1000,        // cache se drží 15 minut v paměti
     refetchOnWindowFocus: false,    // nefetchovat při přepnutí záložky
