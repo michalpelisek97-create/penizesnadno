@@ -72,6 +72,9 @@ const WheelOfFortune = () => {
 
   const closeModal = () => {
     setShowModal(false);
+    // Po zavření modalu resetuj stav na odemčení
+    setIsUnlocked(false);
+    localStorage.removeItem('wheel_unlocked');
   };
 
   return (
