@@ -44,6 +44,14 @@ const WheelOfFortune = () => {
     }, 1000);
   };
 
+  const decodeLink = (encoded) => {
+    try {
+      return atob(encoded);
+    } catch (e) {
+      return '';
+    }
+  };
+
   const handleSpin = () => {
     if (!isUnlocked || isSpinning) return;
 
