@@ -141,28 +141,28 @@ export default function Home() {
   // Infinite scroll - načít více když se dostaneme blízko konce
   // Načíst reklamy skripty
   useEffect(() => {
-    // Mobilní reklama v horní části
+    // Reklama
+      window.atOptions = {
+        'key': '87afe0cbb8dd8164f2c3a4a2524323d6',
+        'format': 'iframe',
+        'height': 50,
+        'width': 320,
+        'params': {}
+      };
+      const createAdScript = (containerId) => {
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.highperformanceformat.com/87afe0cbb8dd8164f2c3a4a2524323d6/invoke.js';
+        script.setAttribute('data-cfasync', 'false');
+        const container = document.getElementById(containerId);
+        if (container) {
+          container.appendChild(script);
+        }
+      };
       if (window.innerWidth < 768) {
-        window.atOptions = {
-          'key': '87afe0cbb8dd8164f2c3a4a2524323d6',
-          'format': 'iframe',
-          'height': 50,
-          'width': 320,
-          'params': {}
-        };
-        const createAdScript = (containerId) => {
-          const script = document.createElement('script');
-          script.async = true;
-          script.src = 'https://www.highperformanceformat.com/87afe0cbb8dd8164f2c3a4a2524323d6/invoke.js';
-          script.setAttribute('data-cfasync', 'false');
-          const container = document.getElementById(containerId);
-          if (container) {
-            container.appendChild(script);
-          }
-        };
         createAdScript('mobile-ad-top');
-        createAdScript('mobile-ad-articles');
       }
+      createAdScript('mobile-ad-articles');
 
     // Hlavní reklama
     const mainScript = document.createElement('script');
