@@ -40,8 +40,8 @@ export default function LinkCard({ link, priority = false }) {
               }
               alt={link.title}
               loading={priority ? "eager" : "lazy"}
-              fetchpriority={priority ? "high" : "low"}
-              decoding="async"
+                              fetchpriority={priority ? "high" : "auto"}
+                              decoding={priority ? "sync" : "async"}
               width="400"
               height="160"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
