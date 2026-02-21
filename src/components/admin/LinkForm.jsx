@@ -62,7 +62,7 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
       image_url: formData.image_url,
       categories: formData.categories,
       category: mainCat,
-      cta_text: formData.cta_text || 'Získat bonus',
+      cta_text: formData.cta_text.trim() === '' ? 'Získat bonus' : formData.cta_text,
       is_active: formData.is_active,
       sort_order: formData.sort_order
     };
