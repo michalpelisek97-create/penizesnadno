@@ -250,6 +250,11 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
+        <AdvancedFilters
+          onFiltersChange={setAdvancedFilters}
+          onClear={() => setAdvancedFilters({ searchTerm: '', sortBy: 'newest', popularityMin: 0, dateFrom: null })}
+        />
+
         {/* Sekce Odkazy (Bonusy) */}
           {selectedCategory !== 'Článek' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
