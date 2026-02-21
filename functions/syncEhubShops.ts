@@ -25,6 +25,7 @@ Deno.serve(async (req) => {
     }
 
     const data = await response.json();
+    console.log('eHUB API response:', JSON.stringify(data, null, 2));
     const campaigns = Array.isArray(data) ? data : data.data || [];
 
     // Get existing shops from "Nákup levně" category
