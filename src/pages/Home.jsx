@@ -13,8 +13,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 
-// Lazy load LinkCard - obsahuje framer-motion, načte se až po prvním renderu
-const LinkCard = lazy(() => import('@/components/links/LinkCard'));
+// Přímý import - LinkCard musí být ready dřív než data dorazí
+import LinkCard from '@/components/links/LinkCard';
 
 // 1. Komponenta pro NEKONEČNĚ STOUPAJÍCÍ počítadlo
 const InfiniteCounter = ({ startValue }) => {
