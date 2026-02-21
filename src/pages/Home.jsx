@@ -214,8 +214,13 @@ export default function Home() {
           <div id="container-0a15c12ae0beea74e0cf91c387f1d820"></div>
         </div>
 
+        {/* Sekce Kolo Štěstí */}
+        {selectedCategory === 'wheel' && (
+          <WheelOfFortune />
+        )}
+
         {/* Sekce Odkazy (Bonusy) */}
-          {selectedCategory !== 'Článek' && (
+          {selectedCategory !== 'Článek' && selectedCategory !== 'wheel' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
               {isLoading ? (
                 [...Array(6)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
