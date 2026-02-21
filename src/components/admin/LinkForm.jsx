@@ -32,40 +32,6 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
     sort_order: 0
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [isFetchingMeta, setIsFetchingMeta] = useState(false);
-
-  const fetchOpenGraphData = async () => {
-    if (!formData.url) {
-      toast.error('Zadej URL adresu');
-      return;
-    }
-    setIsFetchingMeta(true);
-    try {
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `Extract Open Graph metadata from this URL: ${formData.url}. Return title, description, and image_url.`,
-        add_context_from_internet: true,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            title: { type: "string" },
-            description: { type: "string" },
-            image_url: { type: "string" }
-          }
-        }
-      });
-      setFormData(prev => ({
-        ...prev,
-        title: result.title || prev.title,
-        description: result.description || prev.description,
-        image_url: result.image_url || prev.image_url
-      }));
-      toast.success('Metadata načtena');
-    } catch (e) {
-      toast.error('Chyba při načítání metadat');
-    } finally {
-      setIsFetchingMeta(false);
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
