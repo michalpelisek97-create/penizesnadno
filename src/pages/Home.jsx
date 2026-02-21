@@ -295,7 +295,7 @@ export default function Home() {
           <div className="jackpot-container bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-600 border-4 border-yellow-300 rounded-2xl p-8 text-center relative overflow-hidden backdrop-blur-sm">
             <div className="jackpot-shine" />
             
-            <p className="text-sm font-bold text-yellow-100 mb-3 tracking-widest uppercase">🎰 Uživatelé s námi už ušetřili 🎰</p>
+            <p className="text-sm font-bold text-yellow-100 mb-3 tracking-widest uppercase">Uživatelé s námi už ušetřili</p>
             
             <div className="jackpot-number text-7xl font-black text-white mb-6 drop-shadow-2xl">
               <InfiniteCounter startValue={142255} />
