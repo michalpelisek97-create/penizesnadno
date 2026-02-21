@@ -75,9 +75,9 @@ export default function LinkCard({ link, index }) {
 
         {/* Content Section */}
         <div className="p-5">
-          <h3 className="text-lg font-semibold text-slate-900 mb-2 line-clamp-1">
+          <p className="text-lg font-semibold text-slate-900 mb-2 line-clamp-1">
             {link.title}
-          </h3>
+          </p>
           
           {link.description && (
             <p className="text-sm text-slate-600 mb-4 line-clamp-2 leading-relaxed">
