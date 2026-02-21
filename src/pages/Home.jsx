@@ -79,7 +79,7 @@ export default function Home() {
     queryKey: ['referral-links'],
     queryFn: async () => {
       const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 500);
-      return data.map(({ content: _content, description, ...rest }) => ({
+      return data.map(({ description, ...rest }) => ({
         ...rest,
         description: description ? description.substring(0, 120) : null,
       }));
