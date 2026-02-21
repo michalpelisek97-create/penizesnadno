@@ -15,6 +15,7 @@ import { createPageUrl } from '@/utils';
 
 // Přímý import - LinkCard musí být ready dřív než data dorazí
 import LinkCard from '@/components/links/LinkCard';
+import WheelOfFortune from '@/components/wheel/WheelOfFortune';
 import { generateSchemaData } from '@/components/utils/seoHelper';
 
 // 1. Komponenta pro NEKONEČNĚ STOUPAJÍCÍ počítadlo
