@@ -1,6 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { ExternalLink, Gift, Sparkles, ShoppingBag } from 'lucide-react'; // Přidána ikona
+import { ExternalLink, Gift, Sparkles, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const categoryColors = {
