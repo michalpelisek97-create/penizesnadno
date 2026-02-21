@@ -174,7 +174,9 @@ export default function Home() {
                           🔥 NEJOBLÍBENĚJŠÍ
                         </div>
                       )}
-                      <LinkCard link={link} priority={index < 3} />
+                      <React.Suspense fallback={<Skeleton className="h-64 w-full rounded-2xl" />}>
+                        <LinkCard link={link} priority={index < 3} />
+                      </React.Suspense>
                     </div>
                   );
                 })
