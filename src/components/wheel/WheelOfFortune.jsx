@@ -204,7 +204,7 @@ const WheelOfFortune = () => {
             <div style={styles.modalContent}>
               <h2 style={styles.modalTitle}>🎉 Gratulujeme!</h2>
               <p style={styles.modalText}>Vyhrál jsi:</p>
-              <div style={styles.prizeDisplay}>{prizes[winnerIndex]?.text}</div>
+              <div style={styles.prizeDisplay}>{prizes[winnerIndex]?.fullName}</div>
               <p style={styles.modalDescription}>
                 Klikni na tlačítko níže a vyzvedni si svou odměnu!
               </p>
