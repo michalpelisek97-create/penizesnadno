@@ -279,7 +279,7 @@ export default function Home() {
           )}
 
         {/* Sekce Články */}
-          {(selectedCategory === 'Článek' || selectedCategory === 'all') && (
+          {(selectedCategory === 'Články' || selectedCategory === 'all') && (
             <div className="space-y-8">
                <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
                 <FileText className="w-6 h-6 text-purple-600" />
