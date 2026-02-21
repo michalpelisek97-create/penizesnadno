@@ -144,15 +144,15 @@ export default function Home() {
     // Mobilní reklama v horní části
     if (window.innerWidth < 768) {
       window.atOptions = {
-        'key': '8d435fcf615b84048a82837131497a64',
+        'key': '87afe0cbb8dd8164f2c3a4a2524323d6',
         'format': 'iframe',
-        'height': 300,
-        'width': 160,
+        'height': 50,
+        'width': 320,
         'params': {}
       };
       const mobileScript = document.createElement('script');
       mobileScript.async = true;
-      mobileScript.src = 'https://www.highperformanceformat.com/8d435fcf615b84048a82837131497a64/invoke.js';
+      mobileScript.src = 'https://www.highperformanceformat.com/87afe0cbb8dd8164f2c3a4a2524323d6/invoke.js';
       mobileScript.setAttribute('data-cfasync', 'false');
       const adContainer = document.getElementById('mobile-ad-top');
       if (adContainer) {
