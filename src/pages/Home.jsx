@@ -138,17 +138,13 @@ export default function Home() {
   }, [filteredLinks]);
 
   // Infinite scroll - načít více když se dostaneme blízko konce
-  // Načíst reklamy skripty
+  // Načíst reklamu skript
   useEffect(() => {
-    const script1 = document.createElement('script');
-    script1.async = true;
-    script1.src = 'https://pl28764392.effectivegatecpm.com/0a15c12ae0beea74e0cf91c387f1d820/invoke.js';
-    script1.setAttribute('data-cfasync', 'false');
-    document.body.appendChild(script1);
-
-    const script2 = document.createElement('script');
-    script2.src = 'https://pl28764424.effectivegatecpm.com/88/fe/f6/88fef6d1257a8ce435fb06ed0927dc93.js';
-    document.body.appendChild(script2);
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://pl28764392.effectivegatecpm.com/0a15c12ae0beea74e0cf91c387f1d820/invoke.js';
+    script.setAttribute('data-cfasync', 'false');
+    document.body.appendChild(script);
   }, []);
 
   useEffect(() => {
@@ -277,11 +273,6 @@ export default function Home() {
               </div>
             </div>
           )}
-
-        {/* Druhá reklama */}
-        <div className="my-12 flex justify-center">
-          <div className="w-full max-w-2xl"></div>
-        </div>
 
         {/* Footer info s počítadlem - Jackpot style */}
         <div className="mt-20 relative">
