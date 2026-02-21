@@ -39,7 +39,8 @@ export default function LinkCard({ link, priority = false }) {
                   : link.image_url
               }
               alt={link.title}
-              loading="lazy"
+              loading={priority ? "eager" : "lazy"}
+              fetchpriority={priority ? "high" : "low"}
               decoding="async"
               width="400"
               height="160"
