@@ -143,7 +143,7 @@ export default function Home() {
           <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white border border-emerald-100 shadow-sm">
             <div className="h-2 w-2 rounded-full bg-emerald-500" />
             <p className="text-sm font-medium text-slate-700 text-center">
-              <span className="font-bold">{notifications[notifIndex].name}</span> získal(a) bonus u <span className="text-emerald-600 font-bold">{notifications[notifIndex].app}</span>
+              <span className="font-bold">{notifications[notifIndex].name}</span> získal(a) bonus u <span className="text-emerald-700 font-bold">{notifications[notifIndex].app}</span>
             </p>
           </div>
         </div>
