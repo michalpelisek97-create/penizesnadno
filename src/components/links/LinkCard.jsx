@@ -25,6 +25,9 @@ const categoryLabels = {
 export default function LinkCard({ link, priority = false }) {
   const primaryCategory = link.category || (Array.isArray(link.categories) ? link.categories[0] : 'other');
   const gradientClass = categoryColors[primaryCategory] || categoryColors.other;
+  const [imgError, setImgError] = React.useState(false);
+
+  const handleImageError = () => setImgError(true);
 
   return (
     <div className="group relative">
