@@ -78,25 +78,37 @@ export default function ArticleDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
-      <div className="max-w-3xl mx-auto px-4 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <style>{`
+        .article-container { color: #2c3e50; }
+        .article-container .content-card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); border-top: 5px solid #27ae60; }
+        .article-container h1 { color: #1a1a1a; text-align: center; font-size: 2.5em; margin-bottom: 30px; }
+        .article-container h2 { color: #2c3e50; margin-top: 40px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .article-container h3 { color: #2c3e50; margin-top: 30px; margin-bottom: 15px; }
+        .article-container .bonus-section { background: #fffdf0; border: 1px solid #f1c40f; border-radius: 10px; padding: 25px; margin: 30px 0; }
+        .article-container .bonus-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .article-container .bonus-table td { padding: 15px; border-bottom: 1px solid #ddd; }
+        .article-container .bank-name { font-weight: bold; font-size: 1.1em; color: #333; }
+        .article-container .reward { color: #27ae60; font-weight: bold; font-size: 1.2em; text-align: right; }
+        .article-container .cta-btn { display: inline-block; background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 0.9em; transition: 0.3s; }
+        .article-container .cta-btn:hover { background: #333; color: #f1c40f; }
+        .article-container .pro-tip { background: #e8f4fd; border-left: 5px solid #3498db; padding: 15px; margin: 20px 0; font-style: italic; color: #2c3e50; }
+        .article-container .footer-info { font-size: 0.85em; color: #95a5a6; text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid #eee; }
+        .article-container .inline-link { color: #27ae60; font-weight: bold; text-decoration: underline; }
+        .article-container p { line-height: 1.6; }
+        .article-container ul, .article-container ol { margin-left: 20px; }
+      `}</style>
+      
+      <div className="max-w-4xl mx-auto px-4 py-12">
         <Button variant="ghost" onClick={() => navigate('/')} className="mb-8 text-white hover:text-gray-200">
           <ArrowLeft className="mr-2 h-4 w-4" /> Zpět
         </Button>
 
-        <article className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 prose prose-invert max-w-none [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-4 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mt-6 [&_h3]:mb-3 [&_p]:mb-4 [&_p]:text-slate-200 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:list-inside [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:list-inside [&_ol]:mb-4 [&_li]:text-slate-200 [&_a]:text-emerald-400 [&_a:hover]:text-emerald-300 [&_a]:underline">
-          <div className="flex items-center gap-2 text-emerald-400 font-bold uppercase text-xs mb-6">
-            <FileText className="w-4 h-4" /> Návod / Článek
-          </div>
-          
-          <h1 className="text-4xl font-extrabold mb-8 leading-tight text-white">
-            {article.title}
-          </h1>
-
+        <div className="article-container">
           <div 
             dangerouslySetInnerHTML={{ __html: article.content || article.description || '' }} 
           />
-        </article>
+        </div>
       </div>
     </div>
   );
