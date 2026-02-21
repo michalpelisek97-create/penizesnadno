@@ -24,6 +24,14 @@ export default function ArticleDetail() {
 
   // Použijeme buď předaná data, nebo načtená
   const article = passedArticle || fetchedArticle;
+  
+  // Debug - zkontrolovat co máme
+  useEffect(() => {
+    console.log('ArticleDetail - article data:', article);
+    console.log('ArticleDetail - content:', article?.content);
+    console.log('ArticleDetail - passedArticle:', passedArticle);
+    console.log('ArticleDetail - fetchedArticle:', fetchedArticle);
+  }, [article, passedArticle, fetchedArticle]);
 
   // Nastavit meta tagy a schema.org data
   useEffect(() => {
