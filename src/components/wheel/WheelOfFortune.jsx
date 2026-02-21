@@ -8,16 +8,24 @@ const WheelOfFortune = () => {
   const [winnerIndex, setWinnerIndex] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
+  // Base64 zakódované referral linky
+  const encodedLinks = [
+    'aHR0cHM6Ly9nLmNiLmNsaWNrL0htQXJ4aA==', // Coinbase
+    'aHR0cHM6Ly93d3cuYWlyYmFuay5jei9wb3p2YW5pLXByYXRlbD9yZWZlcnJlcj01MmF3eXg=', // AirBank
+    'aHR0cHM6Ly9yb2xsZXJjb2luLmNvbS8/cj1rczVyYmR2Mg==', // RollerCoin
+    'aHR0cHM6Ly9qb2luLmhvbmV5Z2Fpbi5jb20vUEVMSVMwMDdCNQ==', // HoneyGain
+    'aHR0cHM6Ly9vbmIucmIuY3ovb25iLXdlYj9tZ209TjBGbng=' // RB
+  ];
+
   const prizes = [
-    { text: '100 Kč Bonus', color: '#2c3e50' },
-    { text: '500 Kč Cashback', color: '#f1c40f' },
-    { text: '1000 Kč Bonus', color: '#00d4ff' },
-    { text: '250 Kč Gift', color: '#2c3e50' },
-    { text: 'VIP Přístup', color: '#f1c40f' }
+    { text: 'Bonus Coinbase', color: '#2c3e50' },
+    { text: 'AirBank Bonus', color: '#f1c40f' },
+    { text: 'Těžba RollerCoin', color: '#00d4ff' },
+    { text: 'HoneyGain Credit', color: '#2c3e50' },
+    { text: 'RB Odměna', color: '#f1c40f' }
   ];
 
   const smartlinkUrl = 'https://www.effectivegatecpm.com/whifkrp4te?key=06123d4024c40ca03236d07ac020b0c6';
-  const referralUrl = 'MOJ_REFERRAL_ODKAZ';
 
   // Zkontroluj localStorage při loadování
   useEffect(() => {
