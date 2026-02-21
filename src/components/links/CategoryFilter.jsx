@@ -56,7 +56,7 @@ export default function CategoryFilter({ selected, onSelect }) {
 
             {/* Štítek pro NOVÉ (Nákup levně) */}
             {category.new && !isSelected && (
-              <span className="absolute -top-2 -right-2 bg-emerald-500 text-[10px] text-white px-2 py-0.5 rounded-full shadow-md font-black z-20">
+              <span className="absolute -top-2 -right-2 bg-emerald-700 text-[10px] text-white px-2 py-0.5 rounded-full shadow-md font-black z-20">
                 NOVÉ
               </span>
             )}
