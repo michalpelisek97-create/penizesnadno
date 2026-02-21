@@ -14,20 +14,15 @@ export default defineConfig({
     react(),
   ],
   build: {
-    // 1. MAXIMÁLNÍ INLINING (Zruší samostatný soubor CSS)
-    // Protože máš latenci 865ms, nechceme žádné extra soubory. 
-    // Vše do 100KB nacpeme do hlavního JS balíku.
-    assetsInlineLimit: 102400, 
+    // 1. TOTÁLNÍ INLINING: Zvedáme limit na 250KB.
+    // Tím zajistíme, že CSS i menší obrázky/ikony budou přímo v JS.
+    // Zmizí samostatný požadavek na style.css, který měl latenci 936ms.
+    assetsInlineLimit: 256000, 
     
-    // Zabráníme rozdělování CSS do malých souborů
+    // 2. KONEC ŘETĚZENÍ: Žádné rozdělování souborů.
     cssCodeSplit: false,
 
-    // 2. RYCHLEJŠÍ NAČÍTÁNÍ
-    modulePreload: {
-      polyfill: false // Moderní prohlížeče ho nepotřebují, ušetříš pár KB
-    },
-
-    // 3. AGRESIVNÍ ZMENŠENÍ VELIKOSTI
+    // 3. AGRESIVNÍ MINIFIKACE:
     minify: 'terser',
     terserOptions: {
       compress: {
@@ -36,18 +31,19 @@ export default defineConfig({
         pure_funcs: ['console.log', 'console.info', 'console.debug']
       },
       mangle: {
-        toplevel: true // Více zkomprimuje názvy proměnných
+        toplevel: true 
       }
     },
 
     rollupOptions: {
       output: {
-        // 4. JEDEN HLAVNÍ BALÍK (Odstraní řetězení)
-        // Pro malý web je lepší mít vše v jednom 'index.js' než čekat na 3 menší.
+        // Vše do jednoho balíku 'index.js'
         manualChunks: undefined, 
-        entryFileNames: `assets/[name].js`,
-        chunkFileNames: `assets/[name].js`,
-        assetFileNames: `assets/[name].[ext]`
+        entryFileNames: `assets/index.js`,
+        chunkFileNames: `assets/index.js`,
+        assetFileNames: `assets/[name].[ext]`,
+        // Odstraní nepotřebné importy v hlavičce souborů
+        hoistTransitiveImports: false
       },
     },
   },
