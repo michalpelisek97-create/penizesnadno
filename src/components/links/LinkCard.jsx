@@ -27,16 +27,17 @@ export default function LinkCard({ link, index }) {
   const primaryCategory = link.category || (Array.isArray(link.categories) ? link.categories[0] : 'other');
   const gradientClass = categoryColors[primaryCategory] || categoryColors.other;
 
+  // OPRAVA: Dynamický výběr textu tlačítka (prioritu má button_text z adminu)
+  const displayButtonText = link.button_text || link.cta_text || 'Získat bonus';
+
   // FUNKCE PRO OPTIMALIZACI OBRÁZKŮ ZA BĚHU
   const getOptimizedImageUrl = (url) => {
     if (!url) return null;
     
-    // 1. AGREZIVNÍ ZMENŠENÍ: Změna z 800px na 400px pro Google náhledy (zásadní úspora dat)
     if (url.includes('googleusercontent.com')) {
       return url.replace(/=w\d+-h\d+/, '=w400').replace(/=s\d+/, '=s400');
     }
     
-    // Pokud je obrázek přes proxy tosevyplati.cz, necháme ho, ale loading="lazy" ho zkrotí
     return url;
   };
 
@@ -60,11 +61,8 @@ export default function LinkCard({ link, index }) {
             <img 
               src={optimizedSrc} 
               alt={link.title}
-              // OPRAVA LCP: První karta se načte okamžitě (eager), ostatní až při scrollu (lazy)
               loading={index === 0 ? "eager" : "lazy"} 
-              // OPRAVA LCP: Vynucení nejvyšší priority pro úplně první prvek na webu
-              fetchpriority={index === 0 ? "high" : "auto"}
-              // Zrychluje dekódování obrázku mimo hlavní vlákno
+              fetchPriority={index === 0 ? "high" : "auto"}
               decoding="async"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               onError={(e) => { e.target.style.display = 'none'; }}
@@ -113,7 +111,8 @@ export default function LinkCard({ link, index }) {
               className={`w-full bg-gradient-to-r ${gradientClass} hover:brightness-110 text-white font-bold py-6 rounded-xl shadow-md transition-all duration-300 group/btn`}
             >
               <Sparkles className="w-4 h-4 mr-2 group-hover/btn:animate-pulse" />
-              {link.cta_text || 'Získat bonus'}
+              {/* OPRAVENO: Nyní používá správnou proměnnou displayButtonText */}
+              {displayButtonText}
               <ExternalLink className="w-4 h-4 ml-2 opacity-50" />
             </Button>
           </a>
