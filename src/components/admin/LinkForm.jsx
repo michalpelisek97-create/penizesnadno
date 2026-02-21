@@ -34,7 +34,7 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
   const [isLoading, setIsLoading] = useState(false);
 
   React.useEffect(() => {
-    if (editingLink) {
+    if (editingLink?.id) {
       setFormData({
         url: editingLink.url || '',
         title: editingLink.title || '',
