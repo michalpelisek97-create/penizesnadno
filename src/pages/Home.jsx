@@ -209,14 +209,9 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* Reklama - Mobile */}
-        <div className="sm:hidden my-4 mx-auto">
+        {/* Reklama */}
+        <div className="my-4 mx-auto scale-50 sm:scale-100 origin-top" style={{width: 'fit-content'}}>
           <div id="container-0a15c12ae0beea74e0cf91c387f1d820"></div>
-        </div>
-
-        {/* Reklama - Desktop */}
-        <div className="my-4 mx-auto hidden sm:block">
-          <div id="container-0a15c12ae0beea74e0cf91c387f1d820-desktop"></div>
         </div>
 
         {/* Sekce Kolo Štěstí */}
