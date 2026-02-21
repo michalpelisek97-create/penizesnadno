@@ -82,16 +82,16 @@ const WheelOfFortune = () => {
 
     // Draw center circle
     ctx.beginPath();
-    ctx.arc(0, 0, 40, 0, 2 * Math.PI);
+    ctx.arc(0, 0, 80, 0, 2 * Math.PI);
     ctx.fillStyle = '#fff';
     ctx.fill();
     ctx.strokeStyle = '#f1c40f';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 6;
     ctx.stroke();
 
     // Draw SPIN text
     ctx.fillStyle = '#2c3e50';
-    ctx.font = 'bold 20px Arial';
+    ctx.font = 'bold 40px Arial';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('SPIN', 0, 0);
