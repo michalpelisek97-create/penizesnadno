@@ -209,7 +209,7 @@ export default function Home() {
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
         {/* Reklama */}
-        <div className="my-8">
+        <div className="my-8 max-w-2xl mx-auto">
           <div id="container-0a15c12ae0beea74e0cf91c387f1d820"></div>
         </div>
 
