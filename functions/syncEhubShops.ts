@@ -18,15 +18,19 @@ Deno.serve(async (req) => {
 
     // Fetch campaigns from eHUB API
     const apiUrl = `https://api.ehub.cz/v3/publishers/${partnerId}/campaigns?apiKey=${apiKey}`;
+    console.log('API URL:', apiUrl.replace(apiKey, '***'));
     const response = await fetch(apiUrl);
 
     if (!response.ok) {
-      throw new Error(`eHUB API error: ${response.status}`);
+      const errorText = await response.text();
+      console.log('API error response:', errorText);
+      throw new Error(`eHUB API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
     console.log('eHUB API response:', JSON.stringify(data, null, 2));
     const campaigns = Array.isArray(data) ? data : data.data || [];
+    console.log('Campaigns parsed:', campaigns.length);
 
     // Get existing shops from "Nákup levně" category
     const existingShops = await base44.asServiceRole.entities.ReferralLink.filter({
