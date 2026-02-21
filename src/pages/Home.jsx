@@ -173,7 +173,7 @@ export default function Home() {
                           🔥 NEJOBLÍBENĚJŠÍ
                         </div>
                       )}
-                      <LinkCard link={link} index={index} />
+                      <LinkCard link={link} priority={index < 3} />
                     </div>
                   );
                 })
