@@ -260,15 +260,15 @@ export default function Home() {
           )}
 
         {/* Footer info s počítadlem */}
-        <div className="mt-20 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-8 text-center">
-          <p className="text-sm font-medium text-slate-600 mb-3">Uživatelé s námi už ušetřili</p>
-          <div className="text-5xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-6">
+        <div className="mt-20 bg-gradient-to-r from-emerald-900/40 to-teal-900/40 border border-emerald-500/40 rounded-2xl p-8 text-center">
+          <p className="text-sm font-medium text-emerald-200 mb-3">Uživatelé s námi už ušetřili</p>
+          <div className="text-5xl font-bold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent mb-6">
             <InfiniteCounter startValue={142255} />
           </div>
           <Button 
             variant="outline" 
             size="sm" 
-            className="text-emerald-700 border-emerald-300 hover:bg-emerald-100"
+            className="text-emerald-300 border-emerald-400 hover:bg-emerald-500/20"
             onClick={handleShare}
           >
             <Share2 className="w-4 h-4 mr-2" /> Sdílet s přáteli
