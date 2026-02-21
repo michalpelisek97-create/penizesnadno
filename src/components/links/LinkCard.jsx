@@ -43,12 +43,18 @@ export default function LinkCard({ link, index }) {
         <div className="relative h-40 overflow-hidden">
           {link.image_url ? (
             <img 
-              src={link.image_url} 
-              alt={link.title}
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+                    src={
+                      link.image_url?.includes('images.unsplash.com')
+                        ? link.image_url.replace(/[?&]w=\d+/, '').replace(/[?&]h=\d+/, '') + (link.image_url.includes('?') ? '&w=400&q=60&fm=webp' : '?w=400&q=60&fm=webp')
+                        : link.image_url
+                    }
+                    alt={link.title}
+                    loading="lazy"
+                    decoding="async"
+                    width="400"
+                    height="160"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
           ) : (
             <div className={`w-full h-full bg-gradient-to-br ${gradientClass} flex items-center justify-center`}>
               {primaryCategory === 'Nákup levně' ? (
