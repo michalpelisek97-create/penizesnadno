@@ -84,9 +84,7 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
                 placeholder="https://..."
                 required
               />
-              <Button type="button" variant="outline" onClick={fetchOpenGraphData} disabled={isFetchingMeta}>
-                {isFetchingMeta ? <Loader2 className="animate-spin h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
-              </Button>
+
             </div>
           </div>
 
