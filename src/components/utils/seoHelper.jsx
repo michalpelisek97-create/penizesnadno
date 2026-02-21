@@ -56,16 +56,41 @@ export const generateSchemaData = (type, data = {}) => {
     
     article: {
       '@context': 'https://schema.org',
-      '@type': 'Article',
+      '@type': 'NewsArticle',
       headline: data.title || 'Návod',
       description: data.description || '',
-      image: data.image_url || '',
+      image: data.image_url ? [data.image_url] : [],
       datePublished: data.created_date || new Date().toISOString(),
       dateModified: data.updated_date || new Date().toISOString(),
       author: {
         '@type': 'Organization',
         name: 'Vyzkoušej & Ušetři'
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Vyzkoušej & Ušetři',
+        logo: {
+          '@type': 'ImageObject',
+          url: `${baseUrl}/logo.png`
+        }
+      },
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': `${baseUrl}/clanek/${data.id}`
       }
+    },
+
+    offer: {
+      '@context': 'https://schema.org',
+      '@type': 'Offer',
+      name: data.title || 'Bonus',
+      description: data.description || '',
+      image: data.image_url || '',
+      url: data.url || baseUrl,
+      priceCurrency: 'CZK',
+      price: '0',
+      availability: 'https://schema.org/InStock',
+      offerCount: data.offerCount || 1
     },
 
     breadcrumb: {
@@ -90,6 +115,28 @@ export const generateSchemaData = (type, data = {}) => {
           text: item.answer
         }
       })) || []
+    },
+
+    collectionPage: {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: data.title || 'Bonusy a Cashback',
+      description: data.description || 'Kolekce dostupných bonusů a cashbacku',
+      url: baseUrl,
+      mainEntity: {
+        '@type': 'ItemList',
+        itemListElement: data.items?.map((item, idx) => ({
+          '@type': 'ListItem',
+          position: idx + 1,
+          item: {
+            '@type': 'Offer',
+            name: item.title,
+            description: item.description,
+            image: item.image_url,
+            url: item.url
+          }
+        })) || []
+      }
     }
   };
 
