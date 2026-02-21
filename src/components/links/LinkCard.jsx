@@ -1,13 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Gift, Sparkles, ShoppingBag } from 'lucide-react';
+import { ExternalLink, Gift, Sparkles, ShoppingBag } from 'lucide-react'; // Přidána ikona
 import { Button } from '@/components/ui/button';
 
 const categoryColors = {
   crypto: 'from-amber-500 to-orange-600',
   banks: 'from-emerald-500 to-teal-600',
   cashback: 'from-pink-500 to-rose-600',
-  'Nákup levně': 'from-blue-500 to-cyan-600',
+  'Nákup levně': 'from-blue-500 to-cyan-600', // Barva pro novou kategorii
   games: 'from-purple-500 to-violet-600',
   apps: 'from-blue-500 to-indigo-600',
   other: 'from-slate-500 to-slate-600'
@@ -17,56 +17,35 @@ const categoryLabels = {
   crypto: 'Kryptoměny',
   banks: 'Banky',
   cashback: 'Cashback',
-  'Nákup levně': 'Nákup levně',
+  'Nákup levně': 'Nákup levně', // Štítek pro novou kategorii
   games: 'Hry',
   apps: 'Aplikace',
   other: 'Ostatní'
 };
 
 export default function LinkCard({ link, index }) {
+  // Upravená logika pro získání barvy a labelu
   const primaryCategory = link.category || (Array.isArray(link.categories) ? link.categories[0] : 'other');
   const gradientClass = categoryColors[primaryCategory] || categoryColors.other;
-
-  // Načtení textu tlačítka z DB
-  const displayButtonText = link.button_text || link.cta_text || 'Získat bonus';
-
-  const getOptimizedImageUrl = (url) => {
-    if (!url) return null;
-    
-    // Agresivnější zmenšení pro mobilní LCP (w300 místo w400)
-    if (url.includes('googleusercontent.com')) {
-      return url.replace(/=w\d+-h\d+/, '=w300').replace(/=s\d+/, '=s300');
-    }
-    return url;
-  };
-
-  const optimizedSrc = getOptimizedImageUrl(link.image_url);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.05 }} 
+      transition={{ duration: 0.4, delay: index * 0.1 }}
       className="group relative"
     >
       <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl blur-xl -z-10"
            style={{ background: `linear-gradient(135deg, var(--tw-gradient-stops))` }} />
       
       <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-        
         {/* Image Section */}
-        <div className="relative h-40 overflow-hidden bg-slate-100">
-          {optimizedSrc ? (
+        <div className="relative h-40 overflow-hidden">
+          {link.image_url ? (
             <img 
-              src={optimizedSrc} 
+              src={link.image_url} 
               alt={link.title}
-              // ZMĚNA: První dvě karty (index 0 a 1) se načtou okamžitě, zbytek líně.
-              // To je klíčové pro mobilní LCP, kde jsou často vidět 2 karty pod sebou.
-              loading={index < 2 ? "eager" : "lazy"} 
-              fetchPriority={index < 2 ? "high" : "auto"}
-              decoding="async"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              onError={(e) => { e.target.style.display = 'none'; }}
             />
           ) : (
             <div className={`w-full h-full bg-gradient-to-br ${gradientClass} flex items-center justify-center`}>
@@ -78,11 +57,13 @@ export default function LinkCard({ link, index }) {
             </div>
           )}
           
+          {/* Category Badges */}
           <div className="absolute top-3 left-3 flex flex-wrap gap-1">
+            {/* Zobrazíme buď pole kategorií, nebo jen tu jednu hlavní */}
             {(Array.isArray(link.categories) && link.categories.length > 0 ? link.categories : [primaryCategory]).map((cat) => (
               <div 
                 key={cat}
-                className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase text-white bg-gradient-to-r ${categoryColors[cat] || categoryColors.other} shadow-lg`}
+                className={`px-2.5 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r ${categoryColors[cat] || categoryColors.other} shadow-lg`}
               >
                 {categoryLabels[cat] || cat}
               </div>
@@ -92,16 +73,17 @@ export default function LinkCard({ link, index }) {
 
         {/* Content Section */}
         <div className="p-5">
-          <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-1">
+          <h3 className="text-lg font-semibold text-slate-900 mb-2 line-clamp-1">
             {link.title}
           </h3>
           
           {link.description && (
-            <p className="text-sm text-slate-500 mb-4 line-clamp-2 leading-relaxed h-10">
+            <p className="text-sm text-slate-600 mb-4 line-clamp-2 leading-relaxed">
               {link.description}
             </p>
           )}
 
+          {/* CTA Button */}
           <a 
             href={link.url} 
             target="_blank" 
@@ -109,11 +91,11 @@ export default function LinkCard({ link, index }) {
             className="block"
           >
             <Button 
-              className={`w-full bg-gradient-to-r ${gradientClass} hover:brightness-110 text-white font-bold py-6 rounded-xl shadow-md transition-all duration-300 group/btn`}
+              className={`w-full bg-gradient-to-r ${gradientClass} hover:opacity-90 text-white font-medium py-5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group/btn`}
             >
               <Sparkles className="w-4 h-4 mr-2 group-hover/btn:animate-pulse" />
-              {displayButtonText}
-              <ExternalLink className="w-4 h-4 ml-2 opacity-50" />
+              {link.cta_text || 'Získat bonus'}
+              <ExternalLink className="w-4 h-4 ml-2 opacity-70" />
             </Button>
           </a>
         </div>
