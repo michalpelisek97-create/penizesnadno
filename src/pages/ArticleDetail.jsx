@@ -15,15 +15,15 @@ export default function ArticleDetail() {
   // 1. Zkusíme vzít data ze "state" (předaná z Home.jsx)
   const passedArticle = location.state?.articleData;
 
-  // 2. Query spustíme když nemáme data, nebo když chybí content (data ze state jsou bez obsahu)
+  // 2. Query spustíme vždy když chybí content
   const { data: fetchedArticle, isLoading } = useQuery({
     queryKey: ['article', id],
     queryFn: () => base44.entities.ReferralLink.get(id),
-    enabled: !!id && (!passedArticle?.content || !passedArticle),
+    enabled: !!id && !passedArticle?.content,
   });
 
-  // Použijeme buď předaná data se zazálohou na načtená, nebo jen načtená
-  const article = (passedArticle?.content ? passedArticle : fetchedArticle) || passedArticle;
+  // Použijeme fetched data (má content), nebo fallback na passedArticle
+  const article = fetchedArticle || passedArticle;
 
   // Nastavit meta tagy a schema.org data
   useEffect(() => {
