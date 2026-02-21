@@ -259,20 +259,61 @@ export default function Home() {
             </div>
           )}
 
-        {/* Footer info s počítadlem */}
-        <div className="mt-20 bg-gradient-to-r from-emerald-900/40 to-teal-900/40 border border-emerald-500/40 rounded-2xl p-8 text-center">
-          <p className="text-sm font-medium text-emerald-200 mb-3">Uživatelé s námi už ušetřili</p>
-          <div className="text-5xl font-bold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent mb-6">
-            <InfiniteCounter startValue={142255} />
+        {/* Footer info s počítadlem - Jackpot style */}
+        <div className="mt-20 relative">
+          <style>{`
+            @keyframes jackpot-glow {
+              0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4), 0 0 40px rgba(34, 197, 94, 0.2); }
+              50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.8), 0 0 80px rgba(34, 197, 94, 0.5), inset 0 0 20px rgba(16, 185, 129, 0.2); }
+            }
+            @keyframes number-pulse {
+              0%, 100% { text-shadow: 0 0 10px rgba(16, 185, 129, 0.5), 0 0 20px rgba(34, 197, 94, 0.3); }
+              50% { text-shadow: 0 0 30px rgba(16, 185, 129, 1), 0 0 60px rgba(34, 197, 94, 0.8), 0 0 100px rgba(34, 197, 94, 0.4); }
+            }
+            @keyframes jackpot-shine {
+              0% { left: -100%; }
+              100% { left: 100%; }
+            }
+            .jackpot-container {
+              animation: jackpot-glow 2s ease-in-out infinite;
+            }
+            .jackpot-number {
+              animation: number-pulse 1.5s ease-in-out infinite;
+            }
+            .jackpot-shine {
+              position: absolute;
+              top: 0;
+              left: -100%;
+              width: 100%;
+              height: 100%;
+              background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+              animation: jackpot-shine 2.5s ease-in-out infinite;
+              border-radius: 1rem;
+            }
+          `}</style>
+          
+          <div className="jackpot-container bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-600 border-4 border-yellow-300 rounded-2xl p-8 text-center relative overflow-hidden backdrop-blur-sm">
+            <div className="jackpot-shine" />
+            
+            <p className="text-sm font-bold text-yellow-100 mb-3 tracking-widest uppercase">🎰 Uživatelé s námi už ušetřili 🎰</p>
+            
+            <div className="jackpot-number text-7xl font-black text-white mb-6 drop-shadow-2xl">
+              <InfiniteCounter startValue={142255} />
+            </div>
+            
+            <div className="text-lg font-bold text-yellow-100 mb-6 drop-shadow-lg">
+              JACKPOT! 💰 JACKPOT! 💰 JACKPOT!
+            </div>
+            
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="bg-yellow-300 text-yellow-900 border-yellow-200 hover:bg-yellow-200 font-bold shadow-lg"
+              onClick={handleShare}
+            >
+              <Share2 className="w-4 h-4 mr-2" /> Sdílet s přáteli
+            </Button>
           </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="text-emerald-300 border-emerald-400 hover:bg-emerald-500/20"
-            onClick={handleShare}
-          >
-            <Share2 className="w-4 h-4 mr-2" /> Sdílet s přáteli
-          </Button>
         </div>
       </main>
     </div>
