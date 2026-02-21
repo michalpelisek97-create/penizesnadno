@@ -16,7 +16,6 @@ import { createPageUrl } from '@/utils';
 // Přímý import - LinkCard musí být ready dřív než data dorazí
 import LinkCard from '@/components/links/LinkCard';
 import { generateSchemaData } from '@/components/utils/seoHelper';
-import AdvancedFilters from '@/components/links/AdvancedFilters';
 
 // 1. Komponenta pro NEKONEČNĚ STOUPAJÍCÍ počítadlo
 const InfiniteCounter = ({ startValue }) => {
@@ -40,12 +39,6 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
   const [displayCount, setDisplayCount] = useState(12);
-  const [advancedFilters, setAdvancedFilters] = useState({
-    searchTerm: '',
-    sortBy: 'newest',
-    popularityMin: 0,
-    dateFrom: null
-  });
 
   // Funkce pro získání dnešního data
   const getFormattedDate = () => {
@@ -105,14 +98,12 @@ export default function Home() {
   // FILTRACE: Logika pro zobrazení bonusů
   const filteredLinks = useMemo(() => {
     let filtered;
-    
-    // Základní filtr podle kategorie
     if (selectedCategory === 'all') {
       filtered = links.filter(link => 
         link.category !== 'Nákup levně' && 
         !(Array.isArray(link.categories) && link.categories.includes('Nákup levně'))
       );
-    } else if (selectedCategory === 'Články') {
+    } else if (selectedCategory === 'Článek') {
       return [];
     } else {
       filtered = links.filter(link => 
@@ -120,50 +111,8 @@ export default function Home() {
         (Array.isArray(link.categories) && link.categories.includes(selectedCategory))
       );
     }
-
-    // Pokročilé filtry
-    if (advancedFilters.searchTerm) {
-      filtered = filtered.filter(link => {
-        const searchLower = advancedFilters.searchTerm;
-        const titleMatch = link.title.toLowerCase().includes(searchLower);
-        const descMatch = link.description?.toLowerCase().includes(searchLower);
-        const keywordsMatch = Array.isArray(link.keywords) && 
-          link.keywords.some(kw => kw.toLowerCase().includes(searchLower));
-        return titleMatch || descMatch || keywordsMatch;
-      });
-    }
-
-    // Filtr podle popularity
-    if (advancedFilters.popularityMin > 0) {
-      filtered = filtered.filter(link => (link.popularity_score || 0) >= advancedFilters.popularityMin);
-    }
-
-    // Filtr podle data
-    if (advancedFilters.dateFrom) {
-      const fromDate = new Date(advancedFilters.dateFrom);
-      filtered = filtered.filter(link => {
-        const linkDate = new Date(link.created_date);
-        return linkDate >= fromDate;
-      });
-    }
-
-    // Třídění
-    const sortBy = advancedFilters.sortBy;
-    if (sortBy === 'popular') {
-      filtered.sort((a, b) => (b.popularity_score || 0) - (a.popularity_score || 0));
-    } else if (sortBy === 'views') {
-      filtered.sort((a, b) => (b.views_count || 0) - (a.views_count || 0));
-    } else if (sortBy === 'oldest') {
-      filtered.sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
-    } else if (sortBy === 'alphabetical') {
-      filtered.sort((a, b) => a.title.localeCompare(b.title));
-    } else {
-      // newest - default
-      filtered.sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
-    }
-
     return filtered.slice(0, displayCount);
-  }, [selectedCategory, links, displayCount, advancedFilters]);
+  }, [selectedCategory, links, displayCount]);
 
   // Nastavit Schema.org data pro domovskou stránku
   useEffect(() => {
@@ -250,11 +199,6 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        <AdvancedFilters
-          onFiltersChange={setAdvancedFilters}
-          onClear={() => setAdvancedFilters({ searchTerm: '', sortBy: 'newest', popularityMin: 0, dateFrom: null })}
-        />
-
         {/* Sekce Odkazy (Bonusy) */}
           {selectedCategory !== 'Článek' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
@@ -279,7 +223,7 @@ export default function Home() {
           )}
 
         {/* Sekce Články */}
-          {(selectedCategory === 'Články' || selectedCategory === 'all') && (
+          {(selectedCategory === 'Článek' || selectedCategory === 'all') && (
             <div className="space-y-8">
                <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
                 <FileText className="w-6 h-6 text-purple-600" />
