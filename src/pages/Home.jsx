@@ -77,7 +77,7 @@ export default function Home() {
   const { data: allData = [], isLoading } = useQuery({
     queryKey: ['referral-links'],
     queryFn: async () => {
-      const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 500);
+      const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 20);
       return data.map(({ content: _content, description, ...rest }) => ({
         ...rest,
         description: description ? description.substring(0, 120) : null,
@@ -88,6 +88,19 @@ export default function Home() {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     placeholderData: [],
+  });
+
+  // Načíst zbývající data v backgroundu
+  useQuery({
+    queryKey: ['referral-links-rest'],
+    queryFn: async () => {
+      return await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 500);
+    },
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    enabled: !isLoading,
   });
 
   // Rozdělení dat na bonusy a články na základě příznaku is_article
