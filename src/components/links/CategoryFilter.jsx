@@ -52,7 +52,8 @@ export default function CategoryFilter({ selected, onSelect }) {
 
             {/* Štítek pro TOP/Hot novinka */}
             {(category.hot || category.hotLabel) && (
-              <span className="absolute -top-2 -right-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-[10px] text-white px-2 py-0.5 rounded-full shadow-md font-black z-20 animate-bounce">
+              <span className="absolute -top-2 -right-2 bg-red-600 text-[10px] text-white px-2 py-0.5 rounded-full shadow-md font-black z-20 animate-bounce flex items-center gap-1">
+                {category.hotLabel && <Flame className="w-3 h-3" />}
                 {category.hotLabel || 'TOP'}
               </span>
             )}
