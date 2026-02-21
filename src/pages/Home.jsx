@@ -216,7 +216,7 @@ export default function Home() {
 
         {/* Reklama - Desktop */}
         <div className="my-4 mx-auto hidden sm:block">
-          <div id="container-0a15c12ae0beea74e0cf91c387f1d820"></div>
+          <div id="container-0a15c12ae0beea74e0cf91c387f1d820-desktop"></div>
         </div>
 
         {/* Sekce Kolo Štěstí */}
