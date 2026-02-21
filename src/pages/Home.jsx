@@ -238,18 +238,18 @@ export default function Home() {
                     <Link 
                       to={createPageUrl('ArticleDetail', { id: article.id })} 
                       key={article.id}
-                      className="group bg-gradient-to-br from-purple-900/50 to-slate-900/50 p-6 rounded-2xl border border-purple-500/30 hover:border-purple-400/60 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                      className="group bg-gradient-to-br from-emerald-900/40 to-teal-900/40 p-6 rounded-2xl border border-emerald-500/40 hover:border-emerald-400/60 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
                     >
                       <div>
-                        <div className="text-xs text-purple-300 font-bold uppercase tracking-wider mb-2">Příspěvek</div>
-                        <h3 className="text-xl font-bold text-white group-hover:text-purple-200 transition-colors mb-2">
+                        <div className="text-xs text-emerald-300 font-bold uppercase tracking-wider mb-2">Příspěvek</div>
+                        <h3 className="text-xl font-bold text-white group-hover:text-emerald-200 transition-colors mb-2">
                           {article.title}
                         </h3>
                         <p className="text-slate-300 line-clamp-2 mb-4 text-sm">
                           {article.description || article.title}
                         </p>
                       </div>
-                      <div className="flex items-center text-purple-300 font-semibold gap-1 text-sm group-hover:text-purple-200 transition-colors">
+                      <div className="flex items-center text-emerald-300 font-semibold gap-1 text-sm group-hover:text-emerald-200 transition-colors">
                         Číst návod <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </Link>
