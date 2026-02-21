@@ -162,7 +162,10 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
               <Input
                 type="number"
                 value={formData.sort_order}
-                onChange={(e) => setFormData({ ...formData, sort_order: parseInt(e.target.value) || 0 })}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value);
+                  setFormData({ ...formData, sort_order: isNaN(val) ? 0 : val });
+                }}
               />
             </div>
           </div>
