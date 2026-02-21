@@ -210,7 +210,7 @@ export default function Home() {
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
         {/* Reklama */}
-        <div className="-mb-40 sm:mb-4 mx-auto scale-50 sm:scale-100 origin-top" style={{width: 'fit-content'}}>
+        <div className="-mb-40 sm:mb-4 mx-auto" style={{width: 'fit-content', display: 'flex', flexWrap: 'nowrap'}}>
           <div id="container-0a15c12ae0beea74e0cf91c387f1d820"></div>
         </div>
 
