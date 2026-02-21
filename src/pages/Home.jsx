@@ -223,7 +223,7 @@ export default function Home() {
             <Share2 className="w-4 h-4 mr-2" /> Sdílet s přáteli
           </Button>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
