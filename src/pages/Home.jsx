@@ -205,9 +205,8 @@ export default function Home() {
                   ))
                 )}
               </div>
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
 
         {/* Footer info s počítadlem */}
         <div className="mt-20 text-center border-t pt-10 border-slate-200">
