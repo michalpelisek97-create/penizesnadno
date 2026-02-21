@@ -158,7 +158,17 @@ export default function Home() {
       if (adContainer) {
         adContainer.appendChild(mobileScript);
       }
-    }
+
+      // Reklama nad články
+      const articlesAdContainer = document.getElementById('mobile-ad-articles');
+      if (articlesAdContainer) {
+        const articlesScript = document.createElement('script');
+        articlesScript.async = true;
+        articlesScript.src = 'https://www.highperformanceformat.com/87afe0cbb8dd8164f2c3a4a2524323d6/invoke.js';
+        articlesScript.setAttribute('data-cfasync', 'false');
+        articlesAdContainer.appendChild(articlesScript);
+      }
+      }
 
     // Hlavní reklama
     const mainScript = document.createElement('script');
