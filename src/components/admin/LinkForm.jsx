@@ -33,6 +33,12 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  React.useEffect(() => {
+    if (editingLink) {
+      setFormData(editingLink);
+    }
+  }, [editingLink?.id]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
