@@ -210,7 +210,7 @@ export default function Home() {
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
         {/* Reklama */}
-        <div className="-mb-20 sm:mb-4 mx-auto scale-50 sm:scale-100 origin-top" style={{width: 'fit-content'}}>
+        <div className="-mb-40 sm:mb-4 mx-auto scale-50 sm:scale-100 origin-top" style={{width: 'fit-content'}}>
           <div id="container-0a15c12ae0beea74e0cf91c387f1d820"></div>
         </div>
 
@@ -221,7 +221,7 @@ export default function Home() {
 
         {/* Sekce Odkazy (Bonusy) */}
           {selectedCategory !== 'Článek' && selectedCategory !== 'wheel' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20 -mt-6 sm:mt-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20 -mt-12 sm:mt-0">
               {isLoading ? (
                 [...Array(6)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
               ) : (
