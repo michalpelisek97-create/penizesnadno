@@ -19,11 +19,11 @@ const WheelOfFortune = () => {
   ];
 
   const prizes = [
-    { text: 'Bonus Coinbase', color: '#2c3e50' },
-    { text: 'AirBank Bonus', color: '#f1c40f' },
-    { text: 'Těžba RollerCoin', color: '#00d4ff' },
-    { text: 'HoneyGain Credit', color: '#2c3e50' },
-    { text: 'RB Odměna', color: '#f1c40f' }
+    { text: '🪙 Coinbase', symbol: '🪙', fullName: 'Bonus Coinbase', color: '#2c3e50' },
+    { text: '🏦 AirBank', symbol: '🏦', fullName: 'AirBank Bonus', color: '#f1c40f' },
+    { text: '⛏️ RollerCoin', symbol: '⛏️', fullName: 'Těžba RollerCoin', color: '#00d4ff' },
+    { text: '🍯 HoneyGain', symbol: '🍯', fullName: 'HoneyGain Credit', color: '#2c3e50' },
+    { text: '💳 Raiffeisen', symbol: '💳', fullName: 'RB Odměna', color: '#f1c40f' }
   ];
 
   const smartlinkUrl = 'https://www.effectivegatecpm.com/whifkrp4te?key=06123d4024c40ca03236d07ac020b0c6';
