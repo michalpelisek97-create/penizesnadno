@@ -198,7 +198,8 @@ export default function Home() {
                 ) : (
                   articles.map((article) => (
                     <Link 
-                      to={createPageUrl('ArticleDetail', { id: article.id })} 
+                      to={createPageUrl('ArticleDetail')}
+                      state={{ article }}
                       key={article.id}
                       className="group bg-white p-6 rounded-2xl border border-slate-200 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
                     >
