@@ -22,7 +22,7 @@ export default function Admin() {
   // Všechna data taháme z ReferralLink
   const { data: allData = [] } = useQuery({
     queryKey: ['admin-data'],
-    queryFn: () => base44.entities.ReferralLink.list('-created_at'),
+    queryFn: () => base44.entities.ReferralLink.filter({}, '-created_date', 1000),
   });
 
   // Rozdělení na odkazy a články pro zobrazení v tabulkách
