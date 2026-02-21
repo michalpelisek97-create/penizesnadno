@@ -85,9 +85,9 @@ export default function Admin() {
           </div>
         )}
 
-        <AnimatePresence mode="wait">
+        <div>
           {showForm ? (
-            <motion.div key="form" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <div>
               {activeTab === 'links' ? (
                 <LinkForm 
                   onSuccess={handleSuccess} 
@@ -105,9 +105,9 @@ export default function Admin() {
                   </div>
                 </form>
               )}
-            </motion.div>
+            </div>
           ) : (
-            <div key={activeTab}>
+            <div>
               {activeTab === 'links' ? (
                 <LinkTable links={links} onEdit={(item) => { setEditingItem(item); setShowForm(true); }} />
               ) : (
@@ -128,7 +128,7 @@ export default function Admin() {
               )}
             </div>
           )}
-        </AnimatePresence>
+        </div>
       </div>
     </div>
   );

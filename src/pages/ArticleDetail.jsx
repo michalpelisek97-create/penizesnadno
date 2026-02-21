@@ -49,7 +49,7 @@ export default function ArticleDetail() {
           <ArrowLeft className="mr-2 h-4 w-4" /> Zpět
         </Button>
 
-        <motion.article initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <article>
           <div className="flex items-center gap-2 text-purple-600 font-bold uppercase text-xs mb-4">
             <FileText className="w-4 h-4" /> Návod / Článek
           </div>
@@ -62,7 +62,7 @@ export default function ArticleDetail() {
             className="prose prose-slate prose-lg max-w-none"
             dangerouslySetInnerHTML={{ __html: article.content || article.description }} 
           />
-        </motion.article>
+        </article>
       </div>
     </div>
   );
