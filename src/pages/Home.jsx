@@ -74,7 +74,11 @@ export default function Home() {
   // 4. API Data Fetching - Vše taháme z ReferralLink kvůli limitům
   const { data: allData = [], isLoading } = useQuery({
     queryKey: ['referral-links'],
-    queryFn: () => base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 50),
+    queryFn: async () => {
+      const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 50);
+      // Odstraň velké content pole z článků pro úvodní stránku - načte se až na detail
+      return data.map(({ content, ...rest }) => rest);
+    },
   });
 
   // Rozdělení dat na bonusy a články na základě příznaku is_article
