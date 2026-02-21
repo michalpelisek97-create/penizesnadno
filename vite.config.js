@@ -14,37 +14,40 @@ export default defineConfig({
     react(),
   ],
   build: {
-    // 1. ELIMINACE BLOKUJÍCÍHO CSS:
-    // Limit 40KB zajistí, že se vaše 12.7KB CSS vloží přímo do JS.
-    // Tím zmizí samostatný síťový požadavek na CSS a zrychlí se vykreslení.
-    assetsInlineLimit: 40960, 
+    // 1. MAXIMÁLNÍ INLINING (Zruší samostatný soubor CSS)
+    // Protože máš latenci 865ms, nechceme žádné extra soubory. 
+    // Vše do 100KB nacpeme do hlavního JS balíku.
+    assetsInlineLimit: 102400, 
     
-    // 2. AUTOMATICKÝ PRELOAD:
-    // Vite sám vloží <link rel="modulepreload"> do index.html pro hlavní JS balíčky.
+    // Zabráníme rozdělování CSS do malých souborů
+    cssCodeSplit: false,
+
+    // 2. RYCHLEJŠÍ NAČÍTÁNÍ
     modulePreload: {
-      polyfill: true
+      polyfill: false // Moderní prohlížeče ho nepotřebují, ušetříš pár KB
     },
 
-    // 3. AGRESIVNÍ MINIFIKACE:
-    // Terser odstraní nepotřebný kód a logy, což zmenší velikost stahovaných zdrojů.
+    // 3. AGRESIVNÍ ZMENŠENÍ VELIKOSTI
     minify: 'terser',
     terserOptions: {
       compress: {
         drop_console: true,
         drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info'] // Odstraní i specifické logy
+        pure_funcs: ['console.log', 'console.info', 'console.debug']
+      },
+      mangle: {
+        toplevel: true // Více zkomprimuje názvy proměnných
       }
     },
 
     rollupOptions: {
       output: {
-        // 4. CHUNKING (ROZDĚLENÍ KÓDU):
-        // Oddělíme React od vašeho kódu. Prohlížeč si React uloží do mezipaměti 
-        // a při aktualizaci vašeho webu ho nebude muset stahovat znovu.
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom'],
-          'vendor-utils': ['axios'] // Pokud používáte axios, přidejte ho sem
-        }
+        // 4. JEDEN HLAVNÍ BALÍK (Odstraní řetězení)
+        // Pro malý web je lepší mít vše v jednom 'index.js' než čekat na 3 menší.
+        manualChunks: undefined, 
+        entryFileNames: `assets/[name].js`,
+        chunkFileNames: `assets/[name].js`,
+        assetFileNames: `assets/[name].[ext]`
       },
     },
   },
