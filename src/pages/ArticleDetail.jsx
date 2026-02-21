@@ -6,7 +6,6 @@ import { ArrowLeft, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { generateSchemaData } from '@/components/utils/seoHelper';
-import ReactMarkdown from 'react-markdown';
 
 export default function ArticleDetail() {
   const { id } = useParams();
