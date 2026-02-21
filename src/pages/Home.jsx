@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, lazy, Suspense } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
@@ -8,11 +8,13 @@ import {
   ArrowRight, 
   Share2 
 } from 'lucide-react';
-import LinkCard from '@/components/links/LinkCard';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { createPageUrl } from '@/utils'; // DŮLEŽITÉ: Přidán import pro routování
+import { createPageUrl } from '@/utils';
+
+// Lazy load LinkCard - obsahuje framer-motion, načte se až po prvním renderu
+const LinkCard = lazy(() => import('@/components/links/LinkCard'));
 
 // 1. Komponenta pro NEKONEČNĚ STOUPAJÍCÍ počítadlo
 const InfiniteCounter = ({ startValue }) => {
