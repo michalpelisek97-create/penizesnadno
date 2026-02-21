@@ -168,31 +168,31 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden text-white">
+    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50 to-slate-50 overflow-hidden text-slate-900">
       <main className="relative z-10 max-w-6xl mx-auto px-4 py-12 sm:py-16">
         
         {/* Header - statický, bez animace pro rychlejší LCP */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400/50 shadow-sm mb-6">
-            <Sparkles className="w-4 h-4 text-amber-300" />
-            <span className="text-sm font-medium text-amber-100">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-100 to-orange-100 border border-amber-300 shadow-sm mb-6">
+            <Sparkles className="w-4 h-4 text-amber-600" />
+            <span className="text-sm font-medium text-amber-900">
               Dnes aktivní bonusy pro vás ({getFormattedDate()})
             </span>
           </div>
           
           {/* LCP element - inline styly pro rychlejší render */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 tracking-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
             Vyzkoušej
-            <span className="bg-gradient-to-r from-amber-300 via-pink-300 to-rose-300 bg-clip-text text-transparent"> & Ušetři</span>
+            <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
           </h1>
         </div>
 
         {/* Notifikace - lazy animace po načtení stránky */}
         <div className="flex justify-center mb-12 h-10">
-          <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-400/50 shadow-sm">
-            <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <p className="text-sm font-medium text-emerald-100 text-center">
-              <span className="font-bold text-white">{notifications[notifIndex].name}</span> získal(a) bonus u <span className="text-emerald-300 font-bold">{notifications[notifIndex].app}</span>
+          <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-gradient-to-r from-emerald-100 to-teal-100 border border-emerald-300 shadow-sm">
+            <div className="h-2 w-2 rounded-full bg-emerald-600 animate-pulse" />
+            <p className="text-sm font-medium text-emerald-900 text-center">
+              <span className="font-bold">{notifications[notifIndex].name}</span> získal(a) bonus u <span className="text-emerald-700 font-bold">{notifications[notifIndex].app}</span>
             </p>
           </div>
         </div>
@@ -225,9 +225,9 @@ export default function Home() {
         {/* Sekce Články */}
           {(selectedCategory === 'Článek' || selectedCategory === 'all') && (
             <div className="space-y-8">
-               <div className="flex items-center gap-3 mb-8 border-b pb-6 border-purple-600/30">
-                <FileText className="w-6 h-6 text-purple-300" />
-                <h2 className="text-3xl font-bold text-white">Návody a články</h2>
+               <div className="flex items-center gap-3 mb-8 border-b pb-6 border-purple-200">
+                <FileText className="w-6 h-6 text-purple-600" />
+                <h2 className="text-3xl font-bold text-slate-900">Návody a články</h2>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -238,18 +238,18 @@ export default function Home() {
                     <Link 
                       to={createPageUrl('ArticleDetail', { id: article.id })} 
                       key={article.id}
-                      className="group bg-gradient-to-br from-purple-900/50 to-slate-900/50 p-6 rounded-2xl border border-purple-500/30 hover:border-purple-400/60 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                      className="group bg-gradient-to-br from-purple-50 to-slate-50 p-6 rounded-2xl border border-purple-200 hover:border-purple-400 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
                     >
                       <div>
-                        <div className="text-xs text-purple-300 font-bold uppercase tracking-wider mb-2">Příspěvek</div>
-                        <h3 className="text-xl font-bold text-white group-hover:text-purple-200 transition-colors mb-2">
+                        <div className="text-xs text-purple-600 font-bold uppercase tracking-wider mb-2">Příspěvek</div>
+                        <h3 className="text-xl font-bold text-slate-900 group-hover:text-purple-700 transition-colors mb-2">
                           {article.title}
                         </h3>
-                        <p className="text-slate-300 line-clamp-2 mb-4 text-sm">
+                        <p className="text-slate-600 line-clamp-2 mb-4 text-sm">
                           {article.description || article.title}
                         </p>
                       </div>
-                      <div className="flex items-center text-purple-300 font-semibold gap-1 text-sm group-hover:text-purple-200 transition-colors">
+                      <div className="flex items-center text-purple-600 font-semibold gap-1 text-sm group-hover:text-purple-700 transition-colors">
                         Číst návod <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </Link>
@@ -260,15 +260,15 @@ export default function Home() {
           )}
 
         {/* Footer info s počítadlem */}
-        <div className="mt-20 bg-gradient-to-r from-emerald-900/40 to-teal-900/40 border border-emerald-500/40 rounded-2xl p-8 text-center">
-          <p className="text-sm font-medium text-emerald-200 mb-3">Uživatelé s námi už ušetřili</p>
-          <div className="text-5xl font-bold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent mb-6">
+        <div className="mt-20 bg-gradient-to-r from-emerald-100 to-teal-100 border border-emerald-300 rounded-2xl p-8 text-center">
+          <p className="text-sm font-medium text-slate-700 mb-3">Uživatelé s námi už ušetřili</p>
+          <div className="text-5xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-6">
             <InfiniteCounter startValue={142255} />
           </div>
           <Button 
             variant="outline" 
             size="sm" 
-            className="text-emerald-300 border-emerald-400 hover:bg-emerald-500/20"
+            className="text-emerald-700 border-emerald-300 hover:bg-emerald-100"
             onClick={handleShare}
           >
             <Share2 className="w-4 h-4 mr-2" /> Sdílet s přáteli
