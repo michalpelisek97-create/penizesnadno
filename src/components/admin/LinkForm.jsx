@@ -20,17 +20,17 @@ const categories = [
 ];
 
 export default function LinkForm({ onSuccess, editingLink, onCancel }) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(() => ({
     url: editingLink?.url || '',
     title: editingLink?.title || '',
     description: editingLink?.description || '',
     image_url: editingLink?.image_url || '',
     category: editingLink?.category || '', 
     categories: editingLink?.categories || [], 
-    cta_text: editingLink?.cta_text || 'Získat bonus',
+    cta_text: editingLink?.cta_text !== undefined && editingLink?.cta_text !== null ? editingLink.cta_text : 'Získat bonus',
     is_active: editingLink?.is_active !== undefined ? editingLink.is_active : true,
-    sort_order: editingLink?.sort_order || 0
-  });
+    sort_order: editingLink?.sort_order !== undefined ? editingLink.sort_order : 0
+  }));
   const [isLoading, setIsLoading] = useState(false);
 
   React.useEffect(() => {
