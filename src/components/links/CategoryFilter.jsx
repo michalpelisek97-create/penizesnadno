@@ -8,7 +8,8 @@ import {
   LayoutGrid, 
   FileText,
   ShoppingBag, // Přidaná ikona pro nákupy
-  Dice5 // Ikona pro Kolo
+  Dice5, // Ikona pro Kolo
+  Flame // Ikona ohně
 } from 'lucide-react';
 
 const categories = [
