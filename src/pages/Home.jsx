@@ -301,10 +301,6 @@ export default function Home() {
               <InfiniteCounter startValue={142255} />
             </div>
             
-            <div className="text-lg font-bold text-yellow-100 mb-6 drop-shadow-lg">
-              JACKPOT! 💰 JACKPOT! 💰 JACKPOT!
-            </div>
-            
             <Button 
               variant="outline" 
               size="sm" 
