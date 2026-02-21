@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Link2, Sparkles, Globe, Image as ImageIcon } from 'lucide-react';
+import { Loader2, Link2, Sparkles, Image as ImageIcon } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
@@ -20,19 +20,33 @@ const categories = [
 ];
 
 export default function LinkForm({ onSuccess, editingLink, onCancel }) {
-  const [formData, setFormData] = useState(editingLink || {
+  // Inicializace stavu - přidáváme button_text pro kompatibilitu
+  const [formData, setFormData] = useState({
     url: '',
     title: '',
     description: '',
     image_url: '',
     category: '', 
     categories: [], 
-    cta_text: 'Získat bonus',
+    button_text: 'Získat bonus', // Změněno z cta_text na button_text pro sjednocení
     is_active: true,
-    sort_order: 0
+    sort_order: 0,
+    ...editingLink // Přepíše výchozí hodnoty daty z editace, pokud existují
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingMeta, setIsFetchingMeta] = useState(false);
+
+  // Pokud se změní editingLink (např. při přepnutí mezi položkami), zaktualizujeme stav
+  useEffect(() => {
+    if (editingLink) {
+      setFormData({
+        ...editingLink,
+        // Zajistíme, aby button_text měl hodnotu, i když v DB byl pod cta_text
+        button_text: editingLink.button_text || editingLink.cta_text || 'Získat bonus'
+      });
+    }
+  }, [editingLink]);
 
   const fetchOpenGraphData = async () => {
     if (!formData.url) {
@@ -71,14 +85,14 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
     e.preventDefault();
     setIsLoading(true);
 
-    // DŮLEŽITÉ: Nastavíme hlavní 'category' podle prvního zaškrtnutého políčka.
-    // Pokud je zaškrtnuto "Nákup levně", v Home.jsx se díky filtru 'link.category === selectedCategory'
-    // tato položka zobrazí JEN tehdy, když je vybrána tato kategorie.
     const mainCat = formData.categories.length > 0 ? formData.categories[0] : 'other';
     
+    // Posíláme button_text i cta_text pro jistotu, aby se to uložilo správně v každém případě
     const finalData = {
       ...formData,
-      category: mainCat
+      category: mainCat,
+      cta_text: formData.button_text, // Synchronizace obou polí
+      button_text: formData.button_text
     };
 
     try {
@@ -91,6 +105,7 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
       }
       onSuccess();
     } catch (e) {
+      console.error(e);
       toast.error('Chyba při ukládání');
     } finally {
       setIsLoading(false);
@@ -102,7 +117,7 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
       <CardHeader className="border-b">
         <CardTitle className="flex items-center gap-2">
           <Link2 className="w-5 h-5" />
-          {editingLink ? 'Upravit' : 'Nový odkaz'}
+          {editingLink ? 'Upravit odkaz' : 'Nový odkaz'}
         </CardTitle>
       </CardHeader>
       <CardContent className="pt-6 space-y-5">
@@ -141,7 +156,6 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
             />
           </div>
 
-          {/* VRÁCENÉ POLE PRO OBRÁZEK */}
           <div className="space-y-2">
             <Label>URL Obrázku</Label>
             <div className="relative">
@@ -159,7 +173,7 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
           </div>
 
           <div className="space-y-2">
-            <Label className="text-red-500 font-bold">Kategorie (Pokud chceš, aby to bylo JEN v Nákup levně, zaškrtni JEN tu jednu)</Label>
+            <Label className="text-red-500 font-bold">Kategorie</Label>
             <div className="grid grid-cols-2 gap-2 p-3 border rounded-lg bg-slate-50">
               {categories.map((cat) => (
                 <div key={cat.id} className="flex items-center space-x-2">
@@ -181,10 +195,11 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Text tlačítka</Label>
+              <Label>Text tlačítka (Název tlačítka)</Label>
               <Input
-                value={formData.cta_text}
-                onChange={(e) => setFormData({ ...formData, cta_text: e.target.value })}
+                value={formData.button_text} // Změněno na button_text
+                onChange={(e) => setFormData({ ...formData, button_text: e.target.value })}
+                placeholder="Např. Získat bonus"
               />
             </div>
             <div className="space-y-2">
