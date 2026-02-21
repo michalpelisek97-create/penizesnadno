@@ -153,7 +153,11 @@ export default function Home() {
       const mobileScript = document.createElement('script');
       mobileScript.async = true;
       mobileScript.src = 'https://www.highperformanceformat.com/8d435fcf615b84048a82837131497a64/invoke.js';
-      document.body.appendChild(mobileScript);
+      mobileScript.setAttribute('data-cfasync', 'false');
+      const adContainer = document.getElementById('mobile-ad-top');
+      if (adContainer) {
+        adContainer.appendChild(mobileScript);
+      }
     }
 
     // Hlavní reklama
