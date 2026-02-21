@@ -231,11 +231,6 @@ export default function Home() {
             </div>
           )}
 
-        {/* Reklama mezi produkty */}
-        <div className="my-12 max-w-2xl mx-auto">
-          <div id="container-0a15c12ae0beea74e0cf91c387f1d820"></div>
-        </div>
-
         {/* Sekce Články */}
           {(selectedCategory === 'Článek' || selectedCategory === 'all') && (
             <div className="space-y-8">
@@ -274,8 +269,13 @@ export default function Home() {
             </div>
           )}
 
-        {/* Footer info s počítadlem - Jackpot style */}
-        <div className="mt-20 relative">
+        {/* Reklama */}
+        <div className="my-16 flex justify-center">
+          <div className="max-w-sm" id="container-0a15c12ae0beea74e0cf91c387f1d820"></div>
+        </div>
+
+         {/* Footer info s počítadlem - Jackpot style */}
+        <div className="mt-12 relative">
           <style>{`
             @keyframes jackpot-glow {
               0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4), 0 0 40px rgba(34, 197, 94, 0.2); }
