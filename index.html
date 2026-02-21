@@ -2,12 +2,18 @@
 <html lang="cs">
   <head>
     <meta charset="UTF-8" />
-    <!-- PRECONNECT: Klíčové pro bleskové LCP -->
+    
+    <!-- 1. PRECONNECT & DNS-PREFETCH: Nejdůležitější pro zrychlení prvního obrázku -->
+    <link rel="preconnect" href="https://media.herni-kupony.cz" crossorigin>
     <link rel="preconnect" href="https://play-lh.googleusercontent.com" crossorigin>
+    <link rel="dns-prefetch" href="https://media.herni-kupony.cz">
+    <link rel="dns-prefetch" href="https://play-lh.googleusercontent.com">
+    
+    <!-- Ostatní služby -->
     <link rel="preconnect" href="https://ctpool.net" crossorigin>
     <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
     
-    <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" fetchpriority="high" />
+    <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="manifest" href="/manifest.json" />
     
@@ -17,20 +23,31 @@
     <title>Vyzkoušej & Ušetři</title>
     
     <style>
+      /* 2. ZABRÁNĚNÍ POSUNU (CLS): Rezervace místa pro hlavní nadpis */
       #root { min-height: 100vh; }
-      body { background-color: white; margin: 0; transition: opacity 0.3s ease; }
+      body { 
+        background-color: white; 
+        margin: 0; 
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      /* Rychlé zobrazení bez čekání na JS */
+      .loading-placeholder {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-weight: bold;
+        color: #6366f1;
+      }
     </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Dočasný placeholder pro lepší vnímání rychlosti uživatelem -->
+      <div class="loading-placeholder">Načítám bonusy...</div>
+    </div>
     
-    <script type="module" src="/src/main.jsx"></script>
-    
-    <script>
-      // Elegantní zobrazení, které neháže chyby v konzoli
-      window.addEventListener('load', () => {
-        if (document.body) document.body.style.opacity = '1';
-      });
-    </script>
+    <!-- 3. DEFER: Skripty neblokují vykreslování HTML -->
+    <script type="module" src="/src/main.jsx" defer></script>
   </body>
 </html>
