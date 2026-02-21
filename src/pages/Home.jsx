@@ -151,15 +151,8 @@ export default function Home() {
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
         {/* Sekce Odkazy (Bonusy) */}
-        <AnimatePresence mode="wait">
           {selectedCategory !== 'Článek' && (
-            <motion.div 
-              key="links-section"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20"
-            >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
               {isLoading ? (
                 [...Array(6)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
               ) : filteredLinks.map((link, index) => {
