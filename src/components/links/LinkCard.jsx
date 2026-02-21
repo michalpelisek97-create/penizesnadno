@@ -100,6 +100,7 @@ export default function LinkCard({ link }) {
             </Button>
           </a>
         </div>
+        </div>
       </div>
     </div>
   );
