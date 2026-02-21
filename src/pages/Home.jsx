@@ -114,6 +114,29 @@ export default function Home() {
     return filtered.slice(0, displayCount);
   }, [selectedCategory, links, displayCount]);
 
+  // Nastavit Schema.org data pro domovskou stránku
+  useEffect(() => {
+    if (filteredLinks.length > 0) {
+      const schemaEl = document.querySelector('script[type="application/ld+json"][data-collection="true"]');
+      if (schemaEl) schemaEl.remove();
+      
+      const newSchema = document.createElement('script');
+      newSchema.type = 'application/ld+json';
+      newSchema.setAttribute('data-collection', 'true');
+      newSchema.textContent = JSON.stringify(generateSchemaData('collectionPage', {
+        title: 'Nejlepší bonusy a cashback v Česku',
+        description: 'Kompletní sbírka dostupných bonusů a cashbacku',
+        items: filteredLinks.slice(0, 10).map(link => ({
+          title: link.title,
+          description: link.description,
+          image_url: link.image_url,
+          url: link.url
+        }))
+      }));
+      document.head.appendChild(newSchema);
+    }
+  }, [filteredLinks]);
+
   // Infinite scroll - načít více když se dostaneme blízko konce
   useEffect(() => {
     const handleScroll = () => {
