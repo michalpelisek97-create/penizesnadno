@@ -138,9 +138,33 @@ export default function Home() {
     }
   }, [filteredLinks]);
 
-  // Nepoužíváme automatické reklamy - způsobují problémy s videem
+  // Načíst bezpečné reklamy skript (bez video obsahu)
    useEffect(() => {
-     // Reklamy vypnuty - způsobují automatické spouštění videa
+     window.atOptions = {
+       'key': '87afe0cbb8dd8164f2c3a4a2524323d6',
+       'format': 'iframe',
+       'height': 50,
+       'width': 320,
+       'params': {}
+     };
+     
+     const createAdScript = (containerId) => {
+       const container = document.getElementById(containerId);
+       if (container) {
+         const script = document.createElement('script');
+         script.async = true;
+         script.src = 'https://www.highperformanceformat.com/87afe0cbb8dd8164f2c3a4a2524323d6/invoke.js';
+         script.setAttribute('data-cfasync', 'false');
+         container.appendChild(script);
+       }
+     };
+     
+     setTimeout(() => {
+       if (window.innerWidth < 768) {
+         createAdScript('mobile-ad-top');
+       }
+       createAdScript('mobile-ad-articles');
+     }, 500);
    }, []);
 
   useEffect(() => {
