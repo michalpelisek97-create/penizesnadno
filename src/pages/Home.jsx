@@ -119,24 +119,21 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 overflow-hidden text-slate-900">
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-12 sm:py-16">
         
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-6"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm mb-6">
-            <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
+        {/* Header - statický, bez animace pro rychlejší LCP */}
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-slate-200/60 shadow-sm mb-6">
+            <Sparkles className="w-4 h-4 text-amber-500" />
             <span className="text-sm font-medium text-slate-700">
               Dnes aktivní bonusy pro vás ({getFormattedDate()})
             </span>
           </div>
           
+          {/* LCP element - inline styly pro rychlejší render */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
             Vyzkoušej
             <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent"> & Ušetři</span>
           </h1>
-        </motion.div>
+        </div>
 
         {/* Notifikace */}
         <div className="flex justify-center mb-12 h-10">
