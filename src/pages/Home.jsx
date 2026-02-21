@@ -208,6 +208,11 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
+        {/* Reklama */}
+        <div className="my-8">
+          <div id="container-0a15c12ae0beea74e0cf91c387f1d820"></div>
+        </div>
+
         {/* Sekce Odkazy (Bonusy) */}
           {selectedCategory !== 'Článek' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
