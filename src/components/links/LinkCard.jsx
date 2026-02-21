@@ -22,7 +22,7 @@ const categoryLabels = {
   other: 'Ostatní'
 };
 
-export default function LinkCard({ link }) {
+export default function LinkCard({ link, priority = false }) {
   const primaryCategory = link.category || (Array.isArray(link.categories) ? link.categories[0] : 'other');
   const gradientClass = categoryColors[primaryCategory] || categoryColors.other;
 
