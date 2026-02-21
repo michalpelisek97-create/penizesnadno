@@ -210,7 +210,7 @@ export default function Home() {
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
         {/* Reklama */}
-        <div className="my-4 max-w-[280px] sm:max-w-full mx-auto scale-50 sm:scale-100 origin-top">
+        <div className="my-4 flex flex-wrap justify-center gap-2 sm:max-w-full mx-auto">
           <div id="container-0a15c12ae0beea74e0cf91c387f1d820"></div>
         </div>
 
