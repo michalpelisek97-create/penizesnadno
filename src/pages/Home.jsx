@@ -225,9 +225,9 @@ export default function Home() {
         {/* Sekce Články */}
           {(selectedCategory === 'Článek' || selectedCategory === 'all') && (
             <div className="space-y-8">
-               <div className="flex items-center gap-3 mb-8 border-b pb-6 border-slate-200">
-                <FileText className="w-6 h-6 text-purple-600" />
-                <h2 className="text-3xl font-bold text-slate-900">Návody a články</h2>
+               <div className="flex items-center gap-3 mb-8 border-b pb-6 border-purple-600/30">
+                <FileText className="w-6 h-6 text-purple-300" />
+                <h2 className="text-3xl font-bold text-white">Návody a články</h2>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
