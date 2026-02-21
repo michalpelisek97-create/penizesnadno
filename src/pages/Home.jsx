@@ -13,8 +13,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 
-// Lazy load komponenty pro menší bundle
-const LinkCard = React.lazy(() => import('@/components/links/LinkCard'));
+// Přímý import - LinkCard musí být ready dřív než data dorazí
+import LinkCard from '@/components/links/LinkCard';
 
 // 1. Komponenta pro NEKONEČNĚ STOUPAJÍCÍ počítadlo
 const InfiniteCounter = ({ startValue }) => {
@@ -72,12 +72,12 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [notifications.length]);
 
-  // 4. API Data Fetching - Minimální data přes backend funkci
+  // 4. API Data Fetching - Vše taháme z ReferralLink kvůli limitům
   const { data: allData = [], isLoading } = useQuery({
     queryKey: ['referral-links'],
     queryFn: async () => {
-      const res = await base44.functions.invoke('getHomeLinks');
-      return res.data.map(({ description, ...rest }) => ({
+      const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 30);
+      return data.map(({ content: _content, description, ...rest }) => ({
         ...rest,
         description: description ? description.substring(0, 120) : null,
       }));
@@ -174,9 +174,7 @@ export default function Home() {
                           🔥 NEJOBLÍBENĚJŠÍ
                         </div>
                       )}
-                      <React.Suspense fallback={<Skeleton className="h-64 w-full rounded-2xl" />}>
-                        <LinkCard link={link} priority={index < 3} />
-                      </React.Suspense>
+                      <LinkCard link={link} priority={index < 3} />
                     </div>
                   );
                 })
@@ -198,8 +196,7 @@ export default function Home() {
                 ) : (
                   articles.map((article) => (
                     <Link 
-                      to={createPageUrl('ArticleDetail')}
-                      state={{ article }}
+                      to={createPageUrl('ArticleDetail', { id: article.id })} 
                       key={article.id}
                       className="group bg-white p-6 rounded-2xl border border-slate-200 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
                     >
