@@ -37,6 +37,7 @@ const InfiniteCounter = ({ startValue }) => {
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
+  const [displayCount, setDisplayCount] = useState(12);
 
   // Funkce pro získání dnešního data
   const getFormattedDate = () => {
