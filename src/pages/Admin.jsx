@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 
-import { Plus, Link2, FileText, ArrowLeft } from 'lucide-react';
+import { Plus, Link2, FileText, ArrowLeft, RefreshCw } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
@@ -17,6 +18,7 @@ export default function Admin() {
   const [activeTab, setActiveTab] = useState('links');
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+  const [syncing, setSyncing] = useState(false);
   const queryClient = useQueryClient();
 
   // Všechna data taháme z ReferralLink
@@ -33,6 +35,23 @@ export default function Admin() {
     queryClient.invalidateQueries({ queryKey: ['admin-data'] });
     setEditingItem(null);
     setShowForm(false);
+  };
+
+  const handleSyncEhub = async () => {
+    setSyncing(true);
+    try {
+      const response = await base44.functions.invoke('syncEhubShops', {});
+      if (response.data.success) {
+        toast.success(response.data.message);
+        queryClient.invalidateQueries({ queryKey: ['admin-data'] });
+      } else {
+        toast.error('Chyba při synchronizaci');
+      }
+    } catch (err) {
+      toast.error('Chyba: ' + err.message);
+    } finally {
+      setSyncing(false);
+    }
   };
 
   const handleArticleSubmit = async (e) => {
@@ -75,13 +94,23 @@ export default function Admin() {
         </div>
 
         {!showForm && (
-          <div className="flex gap-4 mb-8">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <div className="flex gap-4 mb-8 items-center justify-between">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
               <TabsList className="grid w-full max-w-md grid-cols-2">
                 <TabsTrigger value="links"><Link2 className="mr-2 h-4 w-4" /> Odkazy</TabsTrigger>
                 <TabsTrigger value="articles"><FileText className="mr-2 h-4 w-4" /> Články</TabsTrigger>
               </TabsList>
             </Tabs>
+            {activeTab === 'links' && (
+              <Button 
+                onClick={handleSyncEhub} 
+                disabled={syncing}
+                variant="outline"
+              >
+                <RefreshCw className="mr-2 h-4 w-4" />
+                {syncing ? 'Synchronizuji...' : 'Sync eHUB'}
+              </Button>
+            )}
           </div>
         )}
 
