@@ -1,10 +1,11 @@
-import React from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom'; // Přidán useLocation
+import React, { useEffect } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { ArrowLeft, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { generateSchemaData } from '@/components/utils/seoHelper';
 
 export default function ArticleDetail() {
   const { id } = useParams();
@@ -18,11 +19,45 @@ export default function ArticleDetail() {
   const { data: fetchedArticle, isLoading } = useQuery({
     queryKey: ['article', id],
     queryFn: () => base44.entities.ReferralLink.get(id),
-    enabled: !passedArticle && !!id, // Spustí se jen když passedArticle chybí
+    enabled: !passedArticle && !!id,
   });
 
   // Použijeme buď předaná data, nebo načtená
   const article = passedArticle || fetchedArticle;
+
+  // Nastavit meta tagy a schema.org data
+  useEffect(() => {
+    if (article) {
+      const baseUrl = window.location.origin;
+      document.title = `${article.title} - Návod a Tip | Vyzkoušej & Ušetři`;
+      
+      const setMeta = (name, content, isProperty = false) => {
+        let el = document.querySelector(isProperty ? `meta[property="${name}"]` : `meta[name="${name}"]`);
+        if (!el) {
+          el = document.createElement('meta');
+          isProperty ? el.setAttribute('property', name) : el.setAttribute('name', name);
+          document.head.appendChild(el);
+        }
+        el.setAttribute('content', content);
+      };
+
+      setMeta('description', article.description || article.title);
+      setMeta('og:title', `${article.title} - Návod`, true);
+      setMeta('og:description', article.description || article.title, true);
+      setMeta('og:image', article.image_url || '', true);
+      setMeta('og:url', window.location.href, true);
+
+      // Přidat Schema.org data
+      let schemaEl = document.querySelector('script[type="application/ld+json"][data-article="true"]');
+      if (schemaEl) schemaEl.remove();
+      
+      const newSchema = document.createElement('script');
+      newSchema.type = 'application/ld+json';
+      newSchema.setAttribute('data-article', 'true');
+      newSchema.textContent = JSON.stringify(generateSchemaData('article', article));
+      document.head.appendChild(newSchema);
+    }
+  }, [article]);
 
   if (isLoading && !passedArticle) {
     return (
