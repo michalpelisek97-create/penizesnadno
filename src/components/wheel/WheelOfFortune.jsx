@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 
 const WheelOfFortune = () => {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
-  const [rotation, setRotation] = useState(0);
   const [winnerIndex, setWinnerIndex] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [rotation, setRotation] = useState(0);
+  const canvasRef = useRef(null);
 
   // Base64 zakódované referral linky
   const encodedLinks = [
@@ -35,9 +36,71 @@ const WheelOfFortune = () => {
     }
   }, []);
 
+  // Kreslení kola na canvas
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = 150;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Save state
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate((rotation * Math.PI) / 180);
+
+    // Draw slices
+    prizes.forEach((prize, index) => {
+      const sliceAngle = (360 / prizes.length) * (Math.PI / 180);
+      const startAngle = (index * 360) / prizes.length * (Math.PI / 180);
+
+      // Draw slice
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.arc(0, 0, radius, startAngle, startAngle + sliceAngle);
+      ctx.closePath();
+      ctx.fillStyle = prize.color;
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Draw text
+      ctx.save();
+      ctx.rotate(startAngle + sliceAngle / 2);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 12px Arial';
+      ctx.fillText(prize.text, radius - 30, 5);
+      ctx.restore();
+    });
+
+    // Draw center circle
+    ctx.beginPath();
+    ctx.arc(0, 0, 40, 0, 2 * Math.PI);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.strokeStyle = '#f1c40f';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Draw SPIN text
+    ctx.fillStyle = '#2c3e50';
+    ctx.font = 'bold 20px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('SPIN', 0, 0);
+
+    ctx.restore();
+  }, [rotation]);
+
   const handleUnlock = () => {
     window.open(smartlinkUrl, '_blank');
-    // Simuluj odemčení po kliknutí
     setTimeout(() => {
       localStorage.setItem('wheel_unlocked', 'true');
       setIsUnlocked(true);
@@ -56,106 +119,56 @@ const WheelOfFortune = () => {
     if (!isUnlocked || isSpinning) return;
 
     setIsSpinning(true);
-    const spinCount = 5 + Math.random() * 5; // 5-10 otáček
+    const spinCount = 5 + Math.random() * 5;
     const randomPrize = Math.floor(Math.random() * prizes.length);
-    const finalRotation = spinCount * 360 + (randomPrize * 72); // 360 / 5 = 72 stupňů
+    const finalRotation = spinCount * 360 + (randomPrize * 72);
 
-    setRotation(finalRotation);
-    setWinnerIndex(randomPrize);
+    // Animate rotation
+    let currentRotation = 0;
+    const startTime = Date.now();
+    const duration = 3000;
 
-    // Po animaci (3s) zobraz modal
-    setTimeout(() => {
-      setIsSpinning(false);
-      setShowModal(true);
-    }, 3000);
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeProgress = 0.25 * progress - 1.25 * progress ** 2 + 2 * progress ** 3;
+      currentRotation = easeProgress * finalRotation;
+      setRotation(currentRotation);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        setRotation(finalRotation);
+        setWinnerIndex(randomPrize);
+        setIsSpinning(false);
+        setShowModal(true);
+      }
+    };
+
+    requestAnimationFrame(animate);
   };
 
   const closeModal = () => {
     setShowModal(false);
-    // Po zavření modalu resetuj stav na odemčení
     setIsUnlocked(false);
     localStorage.removeItem('wheel_unlocked');
   };
 
   return (
     <div style={styles.container}>
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(var(--rotation)); }
-        }
-
-        .wheel-rotating {
-          animation: spin 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-      `}</style>
-
       <div style={styles.wheelSection}>
         <h1 style={styles.title}>🎡 Kolo Štěstí</h1>
         <p style={styles.subtitle}>Odemkni a vyhraj skvělé bonusy!</p>
 
         {/* Kolo */}
         <div style={styles.wheelContainer}>
-          <svg
-            style={{
-              ...styles.wheel,
-              transform: `rotate(${rotation}deg)`,
-              transition: isSpinning ? 'none' : 'transform 0.3s ease-out'
-            }}
-            viewBox="0 0 400 400"
-            width="300"
-            height="300"
-          >
-            {prizes.map((prize, index) => {
-              const angle = (index * 360) / prizes.length;
-              const rad = (angle * Math.PI) / 180;
-
-              return (
-                <g key={index}>
-                  {/* Slice */}
-                  <path
-                    d={`M 200 200 L ${200 + 180 * Math.cos(rad)} ${200 + 180 * Math.sin(rad)} A 180 180 0 0 1 ${200 + 180 * Math.cos(rad + (72 * Math.PI) / 180)} ${200 + 180 * Math.sin(rad + (72 * Math.PI) / 180)} Z`}
-                    fill={prize.color}
-                    stroke="#fff"
-                    strokeWidth="2"
-                  />
-                  {/* Text */}
-                  <text
-                    x="200"
-                    y="200"
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    transform={`rotate(${angle + 36} 200 200) translate(120, 0)`}
-                    fill="#fff"
-                    fontSize="14"
-                    fontWeight="bold"
-                    fontFamily="Arial, sans-serif"
-                    textLength="100"
-                  >
-                    {prize.text}
-                  </text>
-                </g>
-              );
-            })}
-
-            {/* Kruh uprostřed */}
-            <circle cx="200" cy="200" r="40" fill="#fff" stroke="#f1c40f" strokeWidth="3" />
-            <text
-              x="200"
-              y="200"
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fill="#2c3e50"
-              fontSize="20"
-              fontWeight="bold"
-              fontFamily="Arial, sans-serif"
-            >
-              SPIN
-            </text>
-          </svg>
-
-          {/* Ukazatel na vrcholu */}
           <div style={styles.pointer}></div>
+          <canvas
+            ref={canvasRef}
+            width={320}
+            height={320}
+            style={styles.canvas}
+          />
         </div>
 
         {/* Tlačítka */}
@@ -252,9 +265,9 @@ const styles = {
     filter: 'drop-shadow(0 0 30px rgba(0, 212, 255, 0.4))'
   },
 
-  wheel: {
+  canvas: {
     filter: 'drop-shadow(0 0 20px rgba(241, 196, 15, 0.3))',
-    transformOrigin: 'center center'
+    maxWidth: '100%'
   },
 
   pointer: {
@@ -308,7 +321,6 @@ const styles = {
     letterSpacing: '1px'
   },
 
-  // Modal styles
   modalOverlay: {
     position: 'fixed',
     top: 0,
@@ -331,8 +343,7 @@ const styles = {
     width: '100%',
     position: 'relative',
     border: '2px solid #f1c40f',
-    boxShadow: '0 0 40px rgba(241, 196, 15, 0.4), 0 0 80px rgba(0, 212, 255, 0.2)',
-    animation: 'slideIn 0.3s ease-out'
+    boxShadow: '0 0 40px rgba(241, 196, 15, 0.4), 0 0 80px rgba(0, 212, 255, 0.2)'
   },
 
   closeButton: {
