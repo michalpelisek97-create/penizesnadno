@@ -80,7 +80,7 @@ export default function ArticleDetail() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <style>{`
-        .article-container { color: #2c3e50; }
+        .article-container { color: #2c3e50; background: white; padding: 40px; border-radius: 15px; margin-top: 20px; }
         .article-container .content-card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); border-top: 5px solid #27ae60; }
         .article-container h1 { color: #1a1a1a; text-align: center; font-size: 2.5em; margin-bottom: 30px; }
         .article-container h2 { color: #2c3e50; margin-top: 40px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
