@@ -101,6 +101,6 @@ export default function LinkCard({ link }) {
           </a>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
