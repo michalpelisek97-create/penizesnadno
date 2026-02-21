@@ -243,7 +243,7 @@ const styles = {
   },
 
   title: {
-    fontSize: '56px',
+    fontSize: '84px',
     fontWeight: 'bold',
     color: '#ff0000',
     marginBottom: '10px',
