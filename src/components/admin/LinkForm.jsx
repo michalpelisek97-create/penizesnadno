@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Link2, Sparkles, Image as ImageIcon } from 'lucide-react';
+import { Loader2, Link2, Sparkles, Image as ImageIcon, Upload, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
@@ -20,33 +20,47 @@ const categories = [
 ];
 
 export default function LinkForm({ onSuccess, editingLink, onCancel }) {
-  // Inicializace stavu - přidáváme button_text pro kompatibilitu
+  const fileInputRef = useRef(null);
   const [formData, setFormData] = useState({
     url: '',
     title: '',
     description: '',
     image_url: '',
-    category: '', 
     categories: [], 
-    button_text: 'Získat bonus', // Změněno z cta_text na button_text pro sjednocení
+    button_text: 'Získat bonus',
     is_active: true,
     sort_order: 0,
-    ...editingLink // Přepíše výchozí hodnoty daty z editace, pokud existují
+    ...editingLink
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingMeta, setIsFetchingMeta] = useState(false);
 
-  // Pokud se změní editingLink (např. při přepnutí mezi položkami), zaktualizujeme stav
   useEffect(() => {
     if (editingLink) {
       setFormData({
         ...editingLink,
-        // Zajistíme, aby button_text měl hodnotu, i když v DB byl pod cta_text
         button_text: editingLink.button_text || editingLink.cta_text || 'Získat bonus'
       });
     }
   }, [editingLink]);
+
+  // Funkce pro zpracování nahraného souboru
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error('Obrázek je příliš velký (max 2MB)');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, image_url: reader.result }));
+        toast.success('Obrázek připraven k uložení');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const fetchOpenGraphData = async () => {
     if (!formData.url) {
@@ -87,11 +101,10 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
 
     const mainCat = formData.categories.length > 0 ? formData.categories[0] : 'other';
     
-    // Posíláme button_text i cta_text pro jistotu, aby se to uložilo správně v každém případě
     const finalData = {
       ...formData,
       category: mainCat,
-      cta_text: formData.button_text, // Synchronizace obou polí
+      cta_text: formData.button_text,
       button_text: formData.button_text
     };
 
@@ -105,7 +118,6 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
       }
       onSuccess();
     } catch (e) {
-      console.error(e);
       toast.error('Chyba při ukládání');
     } finally {
       setIsLoading(false);
@@ -124,7 +136,7 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
         <form onSubmit={handleSubmit} className="space-y-5">
           
           <div className="space-y-2">
-            <Label>URL adresa *</Label>
+            <Label className="font-bold">URL adresa *</Label>
             <div className="flex gap-2">
               <Input
                 type="url"
@@ -139,42 +151,85 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label>Název *</Label>
-            <Input
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              required
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="font-bold">Název *</Label>
+              <Input
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="font-bold">Text tlačítka</Label>
+              <Input
+                value={formData.button_text}
+                onChange={(e) => setFormData({ ...formData, button_text: e.target.value })}
+                placeholder="Získat bonus"
+              />
+            </div>
           </div>
 
           <div className="space-y-2">
-            <Label>Popis</Label>
+            <Label>Popis bonusu</Label>
             <Textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="h-20"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label>URL Obrázku</Label>
-            <div className="relative">
-              <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input
-                className="pl-10"
-                value={formData.image_url}
-                onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                placeholder="https://img.com"
-              />
+          {/* SEKCE PRO OBRÁZEK - VYLEPŠENÁ O NAHRÁVÁNÍ */}
+          <div className="space-y-3 p-4 border rounded-xl bg-slate-50/50">
+            <Label className="font-bold flex items-center gap-2">
+              <ImageIcon className="w-4 h-4" /> Obrázek (Nahrajte pro lepší rychlost)
+            </Label>
+            
+            <div className="flex flex-col gap-3">
+              <div className="flex gap-2">
+                <Input
+                  className="bg-white"
+                  value={formData.image_url?.startsWith('data:') ? '✅ Soubor připraven k uložení' : formData.image_url}
+                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                  placeholder="Vložte URL nebo nahrajte soubor"
+                />
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  onChange={handleFileUpload} 
+                  accept="image/*" 
+                  className="hidden" 
+                />
+                <Button 
+                  type="button" 
+                  variant="secondary" 
+                  onClick={() => fileInputRef.current.click()}
+                  className="shrink-0"
+                >
+                  <Upload className="w-4 h-4 mr-2" /> Nahrát
+                </Button>
+              </div>
+
+              {formData.image_url && (
+                <div className="relative w-full h-32 rounded-lg overflow-hidden border bg-white group">
+                  <img src={formData.image_url} className="w-full h-full object-contain" alt="Náhled" />
+                  <Button 
+                    type="button" 
+                    variant="destructive" 
+                    size="icon" 
+                    className="absolute top-2 right-2 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => setFormData({ ...formData, image_url: '' })}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
             </div>
-            {formData.image_url && (
-              <img src={formData.image_url} className="mt-2 h-20 w-full object-cover rounded-md border" alt="Preview" />
-            )}
           </div>
 
           <div className="space-y-2">
-            <Label className="text-red-500 font-bold">Kategorie</Label>
-            <div className="grid grid-cols-2 gap-2 p-3 border rounded-lg bg-slate-50">
+            <Label className="font-bold">Kategorie</Label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-3 border rounded-lg bg-white">
               {categories.map((cat) => (
                 <div key={cat.id} className="flex items-center space-x-2">
                   <Checkbox
@@ -187,34 +242,16 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
                       setFormData({ ...formData, categories: newCats });
                     }}
                   />
-                  <Label htmlFor={`cat-${cat.id}`} className="text-sm cursor-pointer">{cat.label}</Label>
+                  <Label htmlFor={`cat-${cat.id}`} className="text-xs cursor-pointer">{cat.label}</Label>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Text tlačítka (Název tlačítka)</Label>
-              <Input
-                value={formData.button_text} // Změněno na button_text
-                onChange={(e) => setFormData({ ...formData, button_text: e.target.value })}
-                placeholder="Např. Získat bonus"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Pořadí</Label>
-              <Input
-                type="number"
-                value={formData.sort_order}
-                onChange={(e) => setFormData({ ...formData, sort_order: parseInt(e.target.value) || 0 })}
-              />
-            </div>
-          </div>
-
           <div className="flex gap-2 pt-4">
-            <Button type="submit" className="flex-1" disabled={isLoading}>
-              {isLoading ? 'Ukládám...' : 'Uložit'}
+            <Button type="submit" className="flex-1 bg-slate-900" disabled={isLoading}>
+              {isLoading ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : null}
+              {editingLink ? 'Uložit změny' : 'Vytvořit odkaz'}
             </Button>
             <Button type="button" variant="ghost" onClick={onCancel}>Zrušit</Button>
           </div>
