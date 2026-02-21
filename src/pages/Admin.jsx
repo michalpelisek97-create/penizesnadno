@@ -41,6 +41,7 @@ export default function Admin() {
     const data = {
       title: formData.get('title'),
       content: formData.get('content'),
+      button_text: formData.get('button_text'), // Přidáno pro ukládání textu u článků
       is_article: true,
       is_active: true,
       categories: ['clanek']
@@ -98,6 +99,10 @@ export default function Admin() {
                 <form onSubmit={handleArticleSubmit} className="bg-white p-6 rounded-xl border shadow-sm space-y-4">
                   <h2 className="text-xl font-bold mb-4">{editingItem ? 'Upravit článek' : 'Nový článek'}</h2>
                   <Input name="title" defaultValue={editingItem?.title} placeholder="Název článku" required />
+                  
+                  {/* Nové pole pro text tlačítka u článku */}
+                  <Input name="button_text" defaultValue={editingItem?.button_text} placeholder="Text tlačítka (např. Registrovat se)" />
+                  
                   <Textarea name="content" defaultValue={editingItem?.content} placeholder="Obsah článku..." className="min-h-[400px]" required />
                   <div className="flex gap-2 pt-4">
                     <Button type="submit">Uložit článek</Button>
@@ -116,7 +121,7 @@ export default function Admin() {
                     <div key={art.id} className="bg-white p-5 rounded-xl border flex justify-between items-center">
                       <div className="flex flex-col">
                         <span className="font-bold">{art.title}</span>
-                        <span className="text-xs text-slate-400">Článek</span>
+                        <span className="text-xs text-slate-400">Článek {art.button_text && `• Tlačítko: ${art.button_text}`}</span>
                       </div>
                       <div className="flex gap-2">
                         <Button variant="outline" size="sm" onClick={() => { setEditingItem(art); setShowForm(true); }}>Upravit</Button>
@@ -133,4 +138,3 @@ export default function Admin() {
     </div>
   );
 }
-
