@@ -35,7 +35,17 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
 
   React.useEffect(() => {
     if (editingLink) {
-      setFormData(editingLink);
+      setFormData({
+        url: editingLink.url || '',
+        title: editingLink.title || '',
+        description: editingLink.description || '',
+        image_url: editingLink.image_url || '',
+        category: editingLink.category || '', 
+        categories: editingLink.categories || [], 
+        cta_text: editingLink.cta_text || 'Získat bonus',
+        is_active: editingLink.is_active !== undefined ? editingLink.is_active : true,
+        sort_order: editingLink.sort_order || 0
+      });
     }
   }, [editingLink?.id]);
 
