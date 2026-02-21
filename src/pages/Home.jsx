@@ -239,7 +239,7 @@ export default function Home() {
         <div className="mt-20 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-8 text-center">
           <p className="text-sm font-medium text-slate-600 mb-3">Uživatelé s námi už ušetřili</p>
           <div className="text-5xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-6">
-            <InfiniteCounter startValue={125000} />
+            <InfiniteCounter startValue={142255} />
           </div>
           <Button 
             variant="outline" 
