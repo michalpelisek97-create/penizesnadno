@@ -60,7 +60,7 @@ export default function CategoryFilter({ selected, onSelect }) {
                 NOVÉ
               </span>
             )}
-          </motion.button>
+            </button>
         );
       })}
     </div>
