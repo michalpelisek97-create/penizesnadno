@@ -79,25 +79,36 @@ export default function ArticleDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <Button variant="ghost" onClick={() => navigate('/')} className="mb-8">
+        <Button variant="ghost" onClick={() => navigate('/')} className="mb-8 text-white hover:text-gray-200">
           <ArrowLeft className="mr-2 h-4 w-4" /> Zpět
         </Button>
 
-        <article>
-          <div className="flex items-center gap-2 text-purple-600 font-bold uppercase text-xs mb-4">
+        <article className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8">
+          <div className="flex items-center gap-2 text-emerald-400 font-bold uppercase text-xs mb-6">
             <FileText className="w-4 h-4" /> Návod / Článek
           </div>
           
-          <h1 className="text-4xl font-extrabold mb-8 leading-tight">
+          <h1 className="text-4xl font-extrabold mb-8 leading-tight text-white">
             {article.title}
           </h1>
 
-          <div 
-            className="prose prose-slate prose-lg max-w-none"
-            dangerouslySetInnerHTML={{ __html: article.content || article.description }} 
-          />
+          <div className="prose prose-invert prose-lg max-w-none">
+            <ReactMarkdown
+              components={{
+                h2: ({node, ...props}) => <h2 className="text-2xl font-bold mt-8 mb-4 text-white" {...props} />,
+                h3: ({node, ...props}) => <h3 className="text-xl font-bold mt-6 mb-3 text-white" {...props} />,
+                p: ({node, ...props}) => <p className="mb-4 text-slate-200 leading-relaxed" {...props} />,
+                ul: ({node, ...props}) => <ul className="list-disc list-inside mb-4 space-y-2" {...props} />,
+                ol: ({node, ...props}) => <ol className="list-decimal list-inside mb-4 space-y-2" {...props} />,
+                li: ({node, ...props}) => <li className="text-slate-200" {...props} />,
+                a: ({node, ...props}) => <a className="text-emerald-400 hover:text-emerald-300 underline" {...props} />,
+              }}
+            >
+              {article.content || article.description || ''}
+            </ReactMarkdown>
+          </div>
         </article>
       </div>
     </div>
