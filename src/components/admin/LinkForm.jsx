@@ -53,14 +53,18 @@ export default function LinkForm({ onSuccess, editingLink, onCancel }) {
     e.preventDefault();
     setIsLoading(true);
 
-    // DŮLEŽITÉ: Nastavíme hlavní 'category' podle prvního zaškrtnutého políčka.
-    // Pokud je zaškrtnuto "Nákup levně", v Home.jsx se díky filtru 'link.category === selectedCategory'
-    // tato položka zobrazí JEN tehdy, když je vybrána tato kategorie.
     const mainCat = formData.categories.length > 0 ? formData.categories[0] : 'other';
-    
+
     const finalData = {
-      ...formData,
-      category: mainCat
+      url: formData.url,
+      title: formData.title,
+      description: formData.description,
+      image_url: formData.image_url,
+      categories: formData.categories,
+      category: mainCat,
+      cta_text: formData.cta_text || 'Získat bonus',
+      is_active: formData.is_active,
+      sort_order: formData.sort_order
     };
 
     try {
