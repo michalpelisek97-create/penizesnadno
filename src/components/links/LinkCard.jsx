@@ -48,7 +48,7 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
               }
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               alt={link.title}
-              loading={priority ? "eager" : "lazy"}
+              loading={loading}
               fetchpriority={priority ? "high" : "auto"}
               decoding={priority ? "sync" : "async"}
               width="400"
