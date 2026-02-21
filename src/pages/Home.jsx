@@ -278,6 +278,11 @@ export default function Home() {
             </div>
           )}
 
+        {/* Druhá reklama */}
+        <div className="my-12 flex justify-center">
+          <div className="w-full max-w-2xl"></div>
+        </div>
+
         {/* Footer info s počítadlem - Jackpot style */}
         <div className="mt-20 relative">
           <style>{`
