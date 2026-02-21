@@ -29,12 +29,10 @@ export default function CategoryFilter({ selected, onSelect }) {
         const isSelected = selected === category.id;
         
         return (
-          <motion.button
-            key={category.id}
-            onClick={() => onSelect(category.id)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className={`
+          <button
+              key={category.id}
+              onClick={() => onSelect(category.id)}
+              className={`
               relative px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-300
               flex items-center gap-2 overflow-visible
               ${isSelected 
