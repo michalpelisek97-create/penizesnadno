@@ -164,19 +164,23 @@ export default function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
               {isLoading ? (
                 [...Array(6)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
-              ) : filteredLinks.map((link, index) => {
-                const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
-                return (
-                  <div key={link.id} className="relative">
-                    {isFavorite && (
-                      <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
-                        🔥 NEJOBLÍBENĚJŠÍ
+              ) : (
+                <Suspense fallback={[...Array(6)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)}>
+                  {filteredLinks.map((link, index) => {
+                    const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
+                    return (
+                      <div key={link.id} className="relative">
+                        {isFavorite && (
+                          <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
+                            🔥 NEJOBLÍBENĚJŠÍ
+                          </div>
+                        )}
+                        <LinkCard link={link} index={index} />
                       </div>
-                    )}
-                    <LinkCard link={link} index={index} />
-                  </div>
-                );
-              })}
+                    );
+                  })}
+                </Suspense>
+              )}
             </div>
           )}
 
