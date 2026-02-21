@@ -195,7 +195,7 @@ export default function Home() {
                           {article.title}
                         </h3>
                         <p className="text-slate-600 line-clamp-2 mb-4 text-sm">
-                          {article.content?.replace(/<[^>]*>?/gm, '').substring(0, 150)}...
+                          {article.description || article.title}
                         </p>
                       </div>
                       <div className="flex items-center text-purple-600 font-semibold gap-1 text-sm">
