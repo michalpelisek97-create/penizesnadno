@@ -135,22 +135,14 @@ export default function Home() {
           </h1>
         </div>
 
-        {/* Notifikace */}
+        {/* Notifikace - lazy animace po načtení stránky */}
         <div className="flex justify-center mb-12 h-10">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={notifIndex}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.1 }}
-              className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white border border-emerald-100 shadow-sm shadow-emerald-100/30"
-            >
-              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-sm font-medium text-slate-700 text-center">
-                <span className="font-bold">{notifications[notifIndex].name}</span> získal(a) bonus u <span className="text-emerald-600 font-bold">{notifications[notifIndex].app}</span>
-              </p>
-            </motion.div>
-          </AnimatePresence>
+          <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white border border-emerald-100 shadow-sm">
+            <div className="h-2 w-2 rounded-full bg-emerald-500" />
+            <p className="text-sm font-medium text-slate-700 text-center">
+              <span className="font-bold">{notifications[notifIndex].name}</span> získal(a) bonus u <span className="text-emerald-600 font-bold">{notifications[notifIndex].app}</span>
+            </p>
+          </div>
         </div>
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
