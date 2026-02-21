@@ -96,18 +96,33 @@ export default function Home() {
 
   // FILTRACE: Logika pro zobrazení bonusů
   const filteredLinks = useMemo(() => {
+    let filtered;
     if (selectedCategory === 'all') {
-      return links.filter(link => 
+      filtered = links.filter(link => 
         link.category !== 'Nákup levně' && 
         !(Array.isArray(link.categories) && link.categories.includes('Nákup levně'))
       );
+    } else if (selectedCategory === 'Článek') {
+      return [];
+    } else {
+      filtered = links.filter(link => 
+        link.category === selectedCategory || 
+        (Array.isArray(link.categories) && link.categories.includes(selectedCategory))
+      );
     }
-    if (selectedCategory === 'Článek') return [];
-    return links.filter(link => 
-      link.category === selectedCategory || 
-      (Array.isArray(link.categories) && link.categories.includes(selectedCategory))
-    );
-  }, [selectedCategory, links]);
+    return filtered.slice(0, displayCount);
+  }, [selectedCategory, links, displayCount]);
+
+  // Infinite scroll - načít více když se dostaneme blízko konce
+  useEffect(() => {
+    const handleScroll = () => {
+      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+        setDisplayCount(prev => prev + 12);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // 5. Marketingové sdílení
   const handleShare = async () => {
