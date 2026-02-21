@@ -274,8 +274,8 @@ export default function Home() {
         {/* Sekce Články */}
           {(selectedCategory === 'Článek' || selectedCategory === 'all') && (
             <div className="space-y-8">
-              {/* Mobilní reklama nad články */}
-              <div className="md:hidden flex justify-center mb-8">
+              {/* Reklama nad články */}
+              <div className="flex justify-center mb-8">
                 <div id="mobile-ad-articles" style={{height: '50px', width: '320px'}} />
               </div>
 
