@@ -236,7 +236,8 @@ export default function Home() {
                 ) : (
                   articles.map((article) => (
                     <Link 
-                      to={createPageUrl('ArticleDetail', { id: article.id })} 
+                      to={createPageUrl('ArticleDetail', { id: article.id })}
+                      state={{ articleData: article }}
                       key={article.id}
                       className="group bg-gradient-to-br from-emerald-900/40 to-teal-900/40 p-6 rounded-2xl border border-emerald-500/40 hover:border-emerald-400/60 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
                     >
