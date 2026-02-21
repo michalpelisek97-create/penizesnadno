@@ -33,20 +33,27 @@ export default function LinkCard({ link, priority = false }) {
     <div className="group relative">
       <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         {/* Image Section */}
-        <div className="relative h-40 overflow-hidden">
-          {link.image_url ? (
+        <div className="relative h-40 overflow-hidden bg-gradient-to-br from-slate-200 to-slate-300">
+          {link.image_url && !imgError ? (
             <img
               src={
                 link.image_url?.includes('images.unsplash.com')
                   ? link.image_url.split('?')[0] + '?w=400&q=60&fm=webp'
                   : link.image_url
               }
+              srcSet={
+                link.image_url?.includes('images.unsplash.com')
+                  ? `${link.image_url.split('?')[0]}?w=200&q=60&fm=webp 200w, ${link.image_url.split('?')[0]}?w=400&q=60&fm=webp 400w, ${link.image_url.split('?')[0]}?w=800&q=60&fm=webp 800w`
+                  : undefined
+              }
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               alt={link.title}
               loading={priority ? "eager" : "lazy"}
-                              fetchpriority={priority ? "high" : "auto"}
-                              decoding={priority ? "sync" : "async"}
+              fetchpriority={priority ? "high" : "auto"}
+              decoding={priority ? "sync" : "async"}
               width="400"
               height="160"
+              onError={handleImageError}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
