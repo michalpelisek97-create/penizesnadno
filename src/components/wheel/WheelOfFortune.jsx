@@ -70,13 +70,13 @@ const WheelOfFortune = () => {
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Draw text
+      // Draw text/emoji
       ctx.save();
       ctx.rotate(startAngle + sliceAngle / 2);
       ctx.textAlign = 'right';
       ctx.fillStyle = '#fff';
-      ctx.font = 'bold 12px Arial';
-      ctx.fillText(prize.text, radius - 30, 5);
+      ctx.font = 'bold 32px Arial';
+      ctx.fillText(prize.symbol, radius - 40, 12);
       ctx.restore();
     });
 
