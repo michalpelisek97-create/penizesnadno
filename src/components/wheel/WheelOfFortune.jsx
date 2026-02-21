@@ -243,11 +243,11 @@ const styles = {
   },
 
   title: {
-    fontSize: '42px',
+    fontSize: '56px',
     fontWeight: 'bold',
-    color: '#f1c40f',
+    color: '#ff0000',
     marginBottom: '10px',
-    textShadow: '0 0 20px rgba(241, 196, 15, 0.5)'
+    textShadow: '0 0 20px rgba(255, 0, 0, 0.6)'
   },
 
   subtitle: {
