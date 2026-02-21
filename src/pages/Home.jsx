@@ -74,9 +74,12 @@ export default function Home() {
   const { data: allData = [], isLoading } = useQuery({
     queryKey: ['referral-links'],
     queryFn: async () => {
-      const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 50);
-      // Odstraň velké content pole z článků pro úvodní stránku - načte se až na detail
-      return data.map(({ content, ...rest }) => rest);
+    const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 30);
+    // Odstraň velké content pole z článků pro úvodní stránku - načte se až na detail
+    return data.map(({ content, description, ...rest }) => ({
+      ...rest,
+      description: description ? description.substring(0, 120) : undefined,
+    }));
     },
   });
 
