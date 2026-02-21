@@ -84,7 +84,7 @@ export default function ArticleDetail() {
           <ArrowLeft className="mr-2 h-4 w-4" /> Zpět
         </Button>
 
-        <article className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8">
+        <article className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 prose prose-invert max-w-none [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-4 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mt-6 [&_h3]:mb-3 [&_p]:mb-4 [&_p]:text-slate-200 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:list-inside [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:list-inside [&_ol]:mb-4 [&_li]:text-slate-200 [&_a]:text-emerald-400 [&_a:hover]:text-emerald-300 [&_a]:underline">
           <div className="flex items-center gap-2 text-emerald-400 font-bold uppercase text-xs mb-6">
             <FileText className="w-4 h-4" /> Návod / Článek
           </div>
@@ -93,21 +93,9 @@ export default function ArticleDetail() {
             {article.title}
           </h1>
 
-          <div className="prose prose-invert prose-lg max-w-none">
-            <ReactMarkdown
-              components={{
-                h2: ({node, ...props}) => <h2 className="text-2xl font-bold mt-8 mb-4 text-white" {...props} />,
-                h3: ({node, ...props}) => <h3 className="text-xl font-bold mt-6 mb-3 text-white" {...props} />,
-                p: ({node, ...props}) => <p className="mb-4 text-slate-200 leading-relaxed" {...props} />,
-                ul: ({node, ...props}) => <ul className="list-disc list-inside mb-4 space-y-2" {...props} />,
-                ol: ({node, ...props}) => <ol className="list-decimal list-inside mb-4 space-y-2" {...props} />,
-                li: ({node, ...props}) => <li className="text-slate-200" {...props} />,
-                a: ({node, ...props}) => <a className="text-emerald-400 hover:text-emerald-300 underline" {...props} />,
-              }}
-            >
-              {article.content || article.description || ''}
-            </ReactMarkdown>
-          </div>
+          <div 
+            dangerouslySetInnerHTML={{ __html: article.content || article.description || '' }} 
+          />
         </article>
       </div>
     </div>
