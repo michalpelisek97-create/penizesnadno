@@ -46,24 +46,7 @@ export default function Home() {
     });
   };
 
-  // 2. Google AdSense Verifikace
-  useEffect(() => {
-    const meta = document.createElement('meta');
-    meta.name = "google-adsense-account";
-    meta.content = "ca-pub-3492240221253160";
-    document.head.appendChild(meta);
-
-    const script = document.createElement('script');
-    script.src = "https://pagead2.googlesyndication.com";
-    script.async = true;
-    script.crossOrigin = "anonymous";
-    document.head.appendChild(script);
-
-    return () => {
-      if (document.head.contains(meta)) document.head.removeChild(meta);
-      if (document.head.contains(script)) document.head.removeChild(script);
-    };
-  }, []);
+  // AdSense je již v index.html, není potřeba přidávat znovu
 
   // 3. Social Proof Oznámení
   const notifications = useMemo(() => [
