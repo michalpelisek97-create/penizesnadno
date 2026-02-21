@@ -208,6 +208,11 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
+        {/* Reklama */}
+        <div className="my-8">
+          <div id="container-0a15c12ae0beea74e0cf91c387f1d820"></div>
+        </div>
+
         {/* Sekce Odkazy (Bonusy) */}
           {selectedCategory !== 'Článek' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
@@ -269,13 +274,8 @@ export default function Home() {
             </div>
           )}
 
-        {/* Reklama */}
-        <div className="my-16 flex justify-center">
-          <div className="max-w-sm" id="container-0a15c12ae0beea74e0cf91c387f1d820"></div>
-        </div>
-
-         {/* Footer info s počítadlem - Jackpot style */}
-        <div className="mt-12 relative">
+        {/* Footer info s počítadlem - Jackpot style */}
+        <div className="mt-20 relative">
           <style>{`
             @keyframes jackpot-glow {
               0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4), 0 0 40px rgba(34, 197, 94, 0.2); }
