@@ -105,12 +105,14 @@ export default function Home() {
   // FILTRACE: Logika pro zobrazení bonusů
   const filteredLinks = useMemo(() => {
     let filtered;
+    
+    // Základní filtr podle kategorie
     if (selectedCategory === 'all') {
       filtered = links.filter(link => 
         link.category !== 'Nákup levně' && 
         !(Array.isArray(link.categories) && link.categories.includes('Nákup levně'))
       );
-    } else if (selectedCategory === 'Článek') {
+    } else if (selectedCategory === 'Články') {
       return [];
     } else {
       filtered = links.filter(link => 
@@ -118,8 +120,50 @@ export default function Home() {
         (Array.isArray(link.categories) && link.categories.includes(selectedCategory))
       );
     }
+
+    // Pokročilé filtry
+    if (advancedFilters.searchTerm) {
+      filtered = filtered.filter(link => {
+        const searchLower = advancedFilters.searchTerm;
+        const titleMatch = link.title.toLowerCase().includes(searchLower);
+        const descMatch = link.description?.toLowerCase().includes(searchLower);
+        const keywordsMatch = Array.isArray(link.keywords) && 
+          link.keywords.some(kw => kw.toLowerCase().includes(searchLower));
+        return titleMatch || descMatch || keywordsMatch;
+      });
+    }
+
+    // Filtr podle popularity
+    if (advancedFilters.popularityMin > 0) {
+      filtered = filtered.filter(link => (link.popularity_score || 0) >= advancedFilters.popularityMin);
+    }
+
+    // Filtr podle data
+    if (advancedFilters.dateFrom) {
+      const fromDate = new Date(advancedFilters.dateFrom);
+      filtered = filtered.filter(link => {
+        const linkDate = new Date(link.created_date);
+        return linkDate >= fromDate;
+      });
+    }
+
+    // Třídění
+    const sortBy = advancedFilters.sortBy;
+    if (sortBy === 'popular') {
+      filtered.sort((a, b) => (b.popularity_score || 0) - (a.popularity_score || 0));
+    } else if (sortBy === 'views') {
+      filtered.sort((a, b) => (b.views_count || 0) - (a.views_count || 0));
+    } else if (sortBy === 'oldest') {
+      filtered.sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
+    } else if (sortBy === 'alphabetical') {
+      filtered.sort((a, b) => a.title.localeCompare(b.title));
+    } else {
+      // newest - default
+      filtered.sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+    }
+
     return filtered.slice(0, displayCount);
-  }, [selectedCategory, links, displayCount]);
+  }, [selectedCategory, links, displayCount, advancedFilters]);
 
   // Nastavit Schema.org data pro domovskou stránku
   useEffect(() => {
