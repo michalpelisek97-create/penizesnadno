@@ -35,7 +35,7 @@ export default function LinkCard({ link, priority = false }) {
             <img
               src={
                 link.image_url?.includes('images.unsplash.com')
-                  ? link.image_url.replace(/[?&]w=\d+/, '').replace(/[?&]h=\d+/, '') + (link.image_url.includes('?') ? '&w=400&q=60&fm=webp' : '?w=400&q=60&fm=webp')
+                  ? link.image_url.split('?')[0] + '?w=400&q=60&fm=webp'
                   : link.image_url
               }
               alt={link.title}
