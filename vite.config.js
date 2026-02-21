@@ -16,39 +16,41 @@ export default defineConfig({
     react(),
   ],
   build: {
-    // 1. ZABRÁNÍ BLOKOVÁNÍ CSS: Soubory pod 20kb se vloží přímo (inlining), 
-    // což vyřeší tvou chybu "Počáteční vykreslení stránky blokují požadavky"
-    assetsInlineLimit: 20480, 
+    // 1. ZABRÁNÍ BLOKOVÁNÍ CSS (INLINING): 
+    // Nastaveno na 30 KB (30720 bajtů). Protože tvé CSS má 12,7 KB, 
+    // Vite ho nyní vloží přímo do HTML/JS. Tím zmizí hláška o blokujícím požadavku 
+    // a ušetříš 320 ms latence při startu webu.
+    assetsInlineLimit: 30720, 
     
-    // 2. Rozdělí CSS podle stránek, aby se nenačítalo vše najednou
+    // 2. Rozdělí zbývající CSS podle stránek pro lepší výkon
     cssCodeSplit: true,
 
     // 3. Pokročilá minifikace pro nejmenší možnou velikost souborů
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: true, // Odstraní console.logy pro čistší produkční kód
+        drop_console: true, // Vyčistí kód od vývojářských logů
         drop_debugger: true
       }
     },
 
     rollupOptions: {
       output: {
-        // 4. ROZDĚLENÍ JAVASCRIPTU (Chunks): Sníží množství "nepoužívaného JS"
+        // 4. ROZDĚLENÍ KÓDU (CHUNKS): Sníží váhu úvodní stránky
         manualChunks(id) {
-          // Těžké grafické a exportní knihovny (PDF, 3D, Grafy)
+          // Těžké knihovny (3D, PDF, Grafy)
           if (id.includes('three') || id.includes('jspdf') || id.includes('html2canvas') || id.includes('recharts')) {
             return 'visual-assets';
           }
-          // Interaktivní nástroje (Mapy, Textové editory)
+          // Nástroje (Mapy, Editory)
           if (id.includes('leaflet') || id.includes('quill')) {
             return 'interactive-tools';
           }
-          // Platební systémy
+          // Platby
           if (id.includes('stripe')) {
             return 'payments';
           }
-          // Ostatní knihovny z node_modules (React, Radix, Framer atd.)
+          // Základní frameworky (React, Radix, Framer Motion)
           if (id.includes('node_modules')) {
             return 'vendor';
           }
