@@ -229,7 +229,7 @@ export default function Home() {
 
         {/* Mobilní reklama */}
         <div className="md:hidden flex justify-center mb-8">
-          <div id="mobile-ad-top" style={{height: '300px', width: '160px'}} />
+          <div id="mobile-ad-top" style={{height: '50px', width: '320px'}} />
         </div>
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
