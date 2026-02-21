@@ -27,7 +27,9 @@ Deno.serve(async (req) => {
       throw new Error(`eHUB API error: ${response.status} - ${errorText}`);
     }
 
-    const data = await response.json();
+    const textData = await response.text();
+    console.log('eHUB API raw response:', textData);
+    const data = JSON.parse(textData);
     console.log('eHUB API response:', JSON.stringify(data, null, 2));
     const campaigns = Array.isArray(data) ? data : data.data || [];
     console.log('Campaigns parsed:', campaigns.length);
