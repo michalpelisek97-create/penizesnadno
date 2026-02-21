@@ -74,13 +74,17 @@ export default function Home() {
   const { data: allData = [], isLoading } = useQuery({
     queryKey: ['referral-links'],
     queryFn: async () => {
-    const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 30);
-    // Odstraň velké content pole z článků pro úvodní stránku - načte se až na detail
-    return data.map(({ content, description, ...rest }) => ({
-      ...rest,
-      description: description ? description.substring(0, 120) : undefined,
-    }));
+      const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 30);
+      // Odstraň velké content pole + zkrať description pro úvodní stránku
+      return data.map(({ content, description, ...rest }) => ({
+        ...rest,
+        description: description ? description.substring(0, 120) : undefined,
+      }));
     },
+    staleTime: 5 * 60 * 1000,      // data jsou "čerstvá" 5 minut - žádný re-fetch při každém renderu
+    gcTime: 15 * 60 * 1000,        // cache se drží 15 minut v paměti
+    refetchOnWindowFocus: false,    // nefetchovat při přepnutí záložky
+    refetchOnMount: false,          // použij cache při návratu na stránku
   });
 
   // Rozdělení dat na bonusy a články na základě příznaku is_article
