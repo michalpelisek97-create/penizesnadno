@@ -24,20 +24,26 @@ const categoryLabels = {
 };
 
 export default function LinkCard({ link, index }) {
+  // DEBUG: Odstraňte tyto dva řádky po otestování. 
+  // Ukážou vám v konzoli (F12), jaká data reálně přichází z DB.
+  // console.log(`Data pro link ${link.title}:`, link);
+
   const primaryCategory = link.category || (Array.isArray(link.categories) ? link.categories[0] : 'other');
   const gradientClass = categoryColors[primaryCategory] || categoryColors.other;
 
-  // OPRAVA: Dynamický výběr textu tlačítka (prioritu má button_text z adminu)
-  const displayButtonText = link.button_text || link.cta_text || 'Získat bonus';
+  // AGRESIVNÍ FALLBACK: Base44 entity někdy používají různé názvy polí.
+  // Zkontrolujeme všechno: button_text, cta_text i label.
+  const displayButtonText = 
+    link.button_text || 
+    link.cta_text || 
+    link.label || 
+    (primaryCategory === 'banks' ? 'Založit účet' : 'Získat bonus');
 
-  // FUNKCE PRO OPTIMALIZACI OBRÁZKŮ ZA BĚHU
   const getOptimizedImageUrl = (url) => {
     if (!url) return null;
-    
     if (url.includes('googleusercontent.com')) {
       return url.replace(/=w\d+-h\d+/, '=w400').replace(/=s\d+/, '=s400');
     }
-    
     return url;
   };
 
@@ -111,7 +117,6 @@ export default function LinkCard({ link, index }) {
               className={`w-full bg-gradient-to-r ${gradientClass} hover:brightness-110 text-white font-bold py-6 rounded-xl shadow-md transition-all duration-300 group/btn`}
             >
               <Sparkles className="w-4 h-4 mr-2 group-hover/btn:animate-pulse" />
-              {/* OPRAVENO: Nyní používá správnou proměnnou displayButtonText */}
               {displayButtonText}
               <ExternalLink className="w-4 h-4 ml-2 opacity-50" />
             </Button>
