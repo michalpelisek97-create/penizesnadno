@@ -44,7 +44,7 @@ const WheelOfFortune = () => {
     const ctx = canvas.getContext('2d');
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const radius = 150;
+    const radius = 300;
 
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
