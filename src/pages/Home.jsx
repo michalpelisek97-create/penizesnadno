@@ -190,7 +190,7 @@ export default function Home() {
                           🔥 NEJOBLÍBENĚJŠÍ
                         </div>
                       )}
-                      <LinkCard link={link} priority={index < 3} loading="lazy" />
+                      <LinkCard link={link} priority={index < 3} loading={index < 3 ? "eager" : "lazy"} />
                     </div>
                   );
                 })
