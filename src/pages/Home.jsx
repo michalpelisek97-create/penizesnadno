@@ -82,10 +82,11 @@ export default function Home() {
         description: description ? description.substring(0, 120) : null,
       }));
     },
-    staleTime: 5 * 60 * 1000,      // data jsou "čerstvá" 5 minut - žádný re-fetch při každém renderu
-    gcTime: 15 * 60 * 1000,        // cache se drží 15 minut v paměti
-    refetchOnWindowFocus: false,    // nefetchovat při přepnutí záložky
-    refetchOnMount: false,          // použij cache při návratu na stránku
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    placeholderData: [],
   });
 
   // Rozdělení dat na bonusy a články na základě příznaku is_article
