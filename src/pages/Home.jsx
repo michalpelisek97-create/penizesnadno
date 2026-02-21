@@ -267,6 +267,11 @@ export default function Home() {
             </div>
           )}
 
+        {/* Reklama nad články - mobilní */}
+        <div className="md:hidden flex justify-center my-8">
+          <div id="mobile-ad-articles" style={{height: '50px', width: '320px'}} />
+        </div>
+
         {/* Sekce Články */}
           {(selectedCategory === 'Článek' || selectedCategory === 'all') && (
             <div className="space-y-8">
