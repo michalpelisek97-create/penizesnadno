@@ -31,8 +31,8 @@ export default function Admin() {
 
   const handleSuccess = () => {
     queryClient.invalidateQueries({ queryKey: ['admin-data'] });
-    setShowForm(false);
     setEditingItem(null);
+    setShowForm(false);
   };
 
   const handleArticleSubmit = async (e) => {
