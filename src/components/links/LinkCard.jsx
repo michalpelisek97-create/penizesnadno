@@ -27,13 +27,15 @@ export default function LinkCard({ link, index }) {
   const primaryCategory = link.category || (Array.isArray(link.categories) ? link.categories[0] : 'other');
   const gradientClass = categoryColors[primaryCategory] || categoryColors.other;
 
-  // OPRAVA: Teď už taháme data přímo z nového pole v DB
+  // Načtení textu tlačítka z DB
   const displayButtonText = link.button_text || link.cta_text || 'Získat bonus';
 
   const getOptimizedImageUrl = (url) => {
     if (!url) return null;
+    
+    // Agresivnější zmenšení pro mobilní LCP (w300 místo w400)
     if (url.includes('googleusercontent.com')) {
-      return url.replace(/=w\d+-h\d+/, '=w400').replace(/=s\d+/, '=s400');
+      return url.replace(/=w\d+-h\d+/, '=w300').replace(/=s\d+/, '=s300');
     }
     return url;
   };
@@ -52,37 +54,63 @@ export default function LinkCard({ link, index }) {
       
       <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         
+        {/* Image Section */}
         <div className="relative h-40 overflow-hidden bg-slate-100">
           {optimizedSrc ? (
             <img 
               src={optimizedSrc} 
               alt={link.title}
-              loading={index === 0 ? "eager" : "lazy"} 
-              fetchPriority={index === 0 ? "high" : "auto"}
+              // ZMĚNA: První dvě karty (index 0 a 1) se načtou okamžitě, zbytek líně.
+              // To je klíčové pro mobilní LCP, kde jsou často vidět 2 karty pod sebou.
+              loading={index < 2 ? "eager" : "lazy"} 
+              fetchPriority={index < 2 ? "high" : "auto"}
               decoding="async"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              onError={(e) => { e.target.style.display = 'none'; }}
             />
           ) : (
             <div className={`w-full h-full bg-gradient-to-br ${gradientClass} flex items-center justify-center`}>
-              {primaryCategory === 'Nákup levně' ? <ShoppingBag className="w-16 h-16 text-white/80" /> : <Gift className="w-16 h-16 text-white/80" />}
+              {primaryCategory === 'Nákup levně' ? (
+                <ShoppingBag className="w-16 h-16 text-white/80" />
+              ) : (
+                <Gift className="w-16 h-16 text-white/80" />
+              )}
             </div>
           )}
           
           <div className="absolute top-3 left-3 flex flex-wrap gap-1">
-            {(Array.isArray(link.categories) ? link.categories : [primaryCategory]).map((cat) => (
-              <div key={cat} className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase text-white bg-gradient-to-r ${categoryColors[cat] || categoryColors.other} shadow-lg`}>
+            {(Array.isArray(link.categories) && link.categories.length > 0 ? link.categories : [primaryCategory]).map((cat) => (
+              <div 
+                key={cat}
+                className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase text-white bg-gradient-to-r ${categoryColors[cat] || categoryColors.other} shadow-lg`}
+              >
                 {categoryLabels[cat] || cat}
               </div>
             ))}
           </div>
         </div>
 
+        {/* Content Section */}
         <div className="p-5">
-          <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-1">{link.title}</h3>
-          <p className="text-sm text-slate-500 mb-4 line-clamp-2 leading-relaxed h-10">{link.description}</p>
+          <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-1">
+            {link.title}
+          </h3>
+          
+          {link.description && (
+            <p className="text-sm text-slate-500 mb-4 line-clamp-2 leading-relaxed h-10">
+              {link.description}
+            </p>
+          )}
 
-          <a href={link.url} target="_blank" rel="noopener noreferrer" className="block">
-            <Button className={`w-full bg-gradient-to-r ${gradientClass} hover:brightness-110 text-white font-bold py-6 rounded-xl shadow-md transition-all duration-300 group/btn`}>
+          <a 
+            href={link.url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="block"
+          >
+            <Button 
+              className={`w-full bg-gradient-to-r ${gradientClass} hover:brightness-110 text-white font-bold py-6 rounded-xl shadow-md transition-all duration-300 group/btn`}
+            >
               <Sparkles className="w-4 h-4 mr-2 group-hover/btn:animate-pulse" />
               {displayButtonText}
               <ExternalLink className="w-4 h-4 ml-2 opacity-50" />
