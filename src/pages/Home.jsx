@@ -139,38 +139,42 @@ export default function Home() {
   }, [filteredLinks]);
 
   // Infinite scroll - načít více když se dostaneme blízko konce
-  // Načíst reklamy skripty
-  useEffect(() => {
-    // Reklama
-      window.atOptions = {
-        'key': '87afe0cbb8dd8164f2c3a4a2524323d6',
-        'format': 'iframe',
-        'height': 50,
-        'width': 320,
-        'params': {}
-      };
-      const createAdScript = (containerId) => {
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = 'https://www.highperformanceformat.com/87afe0cbb8dd8164f2c3a4a2524323d6/invoke.js';
-        script.setAttribute('data-cfasync', 'false');
-        const container = document.getElementById(containerId);
-        if (container) {
-          container.appendChild(script);
-        }
-      };
-      if (window.innerWidth < 768) {
-        createAdScript('mobile-ad-top');
-      }
-      createAdScript('mobile-ad-articles');
+   // Načíst reklamy skripty
+   useEffect(() => {
+     // Reklama
+       window.atOptions = {
+         'key': '87afe0cbb8dd8164f2c3a4a2524323d6',
+         'format': 'iframe',
+         'height': 50,
+         'width': 320,
+         'params': {}
+       };
+       const createAdScript = (containerId) => {
+         const container = document.getElementById(containerId);
+         if (container) {
+           const script = document.createElement('script');
+           script.async = true;
+           script.src = 'https://www.highperformanceformat.com/87afe0cbb8dd8164f2c3a4a2524323d6/invoke.js';
+           script.setAttribute('data-cfasync', 'false');
+           container.appendChild(script);
+         }
+       };
 
-    // Hlavní reklama
-    const mainScript = document.createElement('script');
-    mainScript.async = true;
-    mainScript.src = 'https://pl28764392.effectivegatecpm.com/0a15c12ae0beea74e0cf91c387f1d820/invoke.js';
-    mainScript.setAttribute('data-cfasync', 'false');
-    document.body.appendChild(mainScript);
-  }, []);
+       // Delay pro zajištění DOM
+       setTimeout(() => {
+         if (window.innerWidth < 768) {
+           createAdScript('mobile-ad-top');
+         }
+         createAdScript('mobile-ad-articles');
+       }, 500);
+
+     // Hlavní reklama
+     const mainScript = document.createElement('script');
+     mainScript.async = true;
+     mainScript.src = 'https://pl28764392.effectivegatecpm.com/0a15c12ae0beea74e0cf91c387f1d820/invoke.js';
+     mainScript.setAttribute('data-cfasync', 'false');
+     document.body.appendChild(mainScript);
+   }, []);
 
   useEffect(() => {
     const handleScroll = () => {
