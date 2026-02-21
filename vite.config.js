@@ -14,33 +14,36 @@ export default defineConfig({
     react(),
   ],
   build: {
-    // 1. ŘEŠENÍ BLOKUJÍCÍHO CSS:
-    // Zvedneme limit na 40KB. Vaše CSS má 12.7KB, takže se teď "vstřebá" do JS souboru.
-    // Prohlížeč pak stahuje o 1 soubor méně (zmizí ta 695ms latence pro CSS).
+    // 1. ELIMINACE BLOKUJÍCÍHO CSS:
+    // Limit 40KB zajistí, že se vaše 12.7KB CSS vloží přímo do JS.
+    // Tím zmizí samostatný síťový požadavek na CSS a zrychlí se vykreslení.
     assetsInlineLimit: 40960, 
     
-    // 2. MODERNI STRATEGIE NAČÍTÁNÍ:
-    // Vite automaticky generuje <link rel="modulepreload"> do index.html.
+    // 2. AUTOMATICKÝ PRELOAD:
+    // Vite sám vloží <link rel="modulepreload"> do index.html pro hlavní JS balíčky.
     modulePreload: {
       polyfill: true
     },
 
-    cssCodeSplit: true,
+    // 3. AGRESIVNÍ MINIFIKACE:
+    // Terser odstraní nepotřebný kód a logy, což zmenší velikost stahovaných zdrojů.
     minify: 'terser',
     terserOptions: {
       compress: {
         drop_console: true,
-        drop_debugger: true
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info'] // Odstraní i specifické logy
       }
     },
 
     rollupOptions: {
       output: {
-        // 3. OPTIMALIZACE VENDOR CHUNK:
-        // Pomůže snížit velikost hlavního index.js tím, že knihovny dá stranou.
+        // 4. CHUNKING (ROZDĚLENÍ KÓDU):
+        // Oddělíme React od vašeho kódu. Prohlížeč si React uloží do mezipaměti 
+        // a při aktualizaci vašeho webu ho nebude muset stahovat znovu.
         manualChunks: {
           'vendor-react': ['react', 'react-dom'],
-          // Pokud máte další velké knihovny, nechte je v manualChunks níže
+          'vendor-utils': ['axios'] // Pokud používáte axios, přidejte ho sem
         }
       },
     },
