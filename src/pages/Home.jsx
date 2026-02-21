@@ -76,8 +76,8 @@ export default function Home() {
   const { data: allData = [], isLoading } = useQuery({
     queryKey: ['referral-links'],
     queryFn: async () => {
-      const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 30);
-      return data.map(({ content: _content, description, ...rest }) => ({
+      const res = await base44.functions.invoke('getHomeLinks');
+      return res.data.map(({ description, ...rest }) => ({
         ...rest,
         description: description ? description.substring(0, 120) : null,
       }));
