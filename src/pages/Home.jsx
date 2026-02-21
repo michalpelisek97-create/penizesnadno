@@ -72,7 +72,7 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [notifications.length]);
 
-  // 4. API Data Fetching - Vše taháme z ReferralLink kvůli limitům
+  // 4. API Data Fetching - Minimální data přes backend funkci
   const { data: allData = [], isLoading } = useQuery({
     queryKey: ['referral-links'],
     queryFn: async () => {
