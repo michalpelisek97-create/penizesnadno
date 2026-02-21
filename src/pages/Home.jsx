@@ -13,8 +13,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 
-// Přímý import - LinkCard musí být ready dřív než data dorazí
-import LinkCard from '@/components/links/LinkCard';
+// Lazy load komponenty pro menší bundle
+const LinkCard = React.lazy(() => import('@/components/links/LinkCard'));
 
 // 1. Komponenta pro NEKONEČNĚ STOUPAJÍCÍ počítadlo
 const InfiniteCounter = ({ startValue }) => {
