@@ -40,6 +40,12 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
   const [displayCount, setDisplayCount] = useState(12);
+  const [advancedFilters, setAdvancedFilters] = useState({
+    searchTerm: '',
+    sortBy: 'newest',
+    popularityMin: 0,
+    dateFrom: null
+  });
 
   // Funkce pro získání dnešního data
   const getFormattedDate = () => {
