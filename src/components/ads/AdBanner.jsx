@@ -19,7 +19,7 @@ export default function AdBanner() {
 
   return (
     <div className="flex justify-center my-6">
-      <div ref={ref} style={{ width: '160px', height: '300px', overflow: 'hidden' }} />
+      <div ref={ref} style={{ width: '320px', height: '50px', overflow: 'hidden' }} />
     </div>
   );
 }
