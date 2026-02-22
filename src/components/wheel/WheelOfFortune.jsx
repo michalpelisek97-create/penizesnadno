@@ -96,7 +96,6 @@ const WheelOfFortune = () => {
   const handleUnlock = () => {
     window.open(smartlinkUrl, '_blank');
     setTimeout(() => {
-      localStorage.setItem('wheel_unlocked', 'true');
       setIsUnlocked(true);
     }, 1000);
   };
