@@ -138,16 +138,6 @@ export default function Home() {
     }
   }, [filteredLinks]);
 
-  // Infinite scroll - načít více když se dostaneme blízko konce
-  // Načíst reklamu skript
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = 'https://pl28764392.effectivegatecpm.com/0a15c12ae0beea74e0cf91c387f1d820/invoke.js';
-    script.setAttribute('data-cfasync', 'false');
-    document.body.appendChild(script);
-  }, []);
-
   useEffect(() => {
     const handleScroll = () => {
       if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
