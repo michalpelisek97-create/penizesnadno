@@ -138,36 +138,15 @@ export default function Home() {
     }
   }, [filteredLinks]);
 
-  // Načíst bezpečné reklamy skript (bez video obsahu)
-   useEffect(() => {
-     window.atOptions = {
-       'key': '87afe0cbb8dd8164f2c3a4a2524323d6',
-       'format': 'iframe',
-       'height': 50,
-       'width': 320,
-       'params': {}
-     };
-     
-     const createAdScript = (containerId) => {
-       const container = document.getElementById(containerId);
-       if (container) {
-         const script = document.createElement('script');
-         script.async = true;
-         script.src = 'https://www.highperformanceformat.com/87afe0cbb8dd8164f2c3a4a2524323d6/invoke.js';
-         script.setAttribute('data-cfasync', 'false');
-         container.appendChild(script);
-       }
-     };
-     
-     setTimeout(() => {
-       if (window.innerWidth < 768) {
-         createAdScript('mobile-ad-top');
-         createAdScript('mobile-ad-articles');
-       } else {
-         createAdScript('desktop-ad-notif');
-       }
-     }, 500);
-   }, []);
+  // Infinite scroll - načít více když se dostaneme blízko konce
+  // Načíst reklamu skript
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://pl28764392.effectivegatecpm.com/0a15c12ae0beea74e0cf91c387f1d820/invoke.js';
+    script.setAttribute('data-cfasync', 'false');
+    document.body.appendChild(script);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -219,8 +198,7 @@ export default function Home() {
         </div>
 
         {/* Notifikace - lazy animace po načtení stránky */}
-        <div className="flex justify-center items-center gap-6 mb-12">
-          <div className="hidden md:block" id="desktop-ad-notif" style={{height: '50px', width: '320px'}} />
+        <div className="flex justify-center mb-12 h-10">
           <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-400/50 shadow-sm">
             <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
             <p className="text-sm font-medium text-emerald-100 text-center">
@@ -229,16 +207,12 @@ export default function Home() {
           </div>
         </div>
 
-
-
-        {/* Mobilní reklama */}
-        <div className="md:hidden flex justify-center mb-8">
-          <div id="mobile-ad-top" style={{height: '50px', width: '320px'}} />
-        </div>
-
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-
+        {/* Reklama */}
+        <div className="my-8">
+          <div id="container-0a15c12ae0beea74e0cf91c387f1d820"></div>
+        </div>
 
         {/* Sekce Kolo Štěstí */}
         {selectedCategory === 'wheel' && (
@@ -270,12 +244,7 @@ export default function Home() {
 
         {/* Sekce Články */}
           {(selectedCategory === 'Článek' || selectedCategory === 'all') && (
-             <div className="space-y-8">
-               {/* Reklama nad články */}
-               <div className="flex justify-center mb-8">
-                 <div id="mobile-ad-articles" style={{height: '50px', width: '320px'}} />
-               </div>
-
+            <div className="space-y-8">
                <div className="flex items-center gap-3 mb-8 border-b pb-6 border-emerald-600/30">
                 <FileText className="w-6 h-6 text-emerald-300" />
                 <h2 className="text-3xl font-bold text-white">Návody a články</h2>
