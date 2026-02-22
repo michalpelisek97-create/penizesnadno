@@ -15,10 +15,10 @@ import { createPageUrl } from '@/utils';
 
 import LinkCard from '@/components/links/LinkCard';
 import WheelCard from '@/components/wheel/WheelCard';
-const AdBanner = React.lazy(() => import('@/components/ads/AdBanner'));
 import { generateSchemaData } from '@/components/utils/seoHelper';
 
 // Lazy import těžkých komponent
+const AdBanner = React.lazy(() => import('@/components/ads/AdBanner'));
 const WheelOfFortune = React.lazy(() => import('@/components/wheel/WheelOfFortune'));
 
 // 1. Komponenta pro NEKONEČNĚ STOUPAJÍCÍ počítadlo
