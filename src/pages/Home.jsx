@@ -277,6 +277,7 @@ export default function Home() {
                 )}
               </div>
             </div>
+            </React.Suspense>
           )}
 
         {/* Footer info s počítadlem - Jackpot style */}
