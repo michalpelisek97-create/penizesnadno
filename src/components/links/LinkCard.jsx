@@ -64,7 +64,7 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
   // Preload LCP image
   React.useEffect(() => {
     if (priority && link.image_url && !link.image_url.startsWith('data:')) {
-      const existing = document.querySelector(`link[rel="preload"][data-card-lcp]`);
+      const existing = document.querySelector(`link[rel="preload"][href="${getOptimizedSrc(link.image_url)}"]`);
       if (!existing) {
         const link_el = document.createElement('link');
         link_el.rel = 'preload';
@@ -75,7 +75,7 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
         document.head.prepend(link_el);
       }
     }
-  }, []);
+  }, [priority, link.image_url]);
 
   return (
     <div className="group relative">
