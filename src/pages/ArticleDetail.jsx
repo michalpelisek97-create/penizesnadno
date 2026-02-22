@@ -110,13 +110,18 @@ export default function ArticleDetail() {
         .article-wrap h3 { color: #2c3e50; margin-top: 30px; margin-bottom: 15px; font-size: 1.2em; }
         .article-wrap p { line-height: 1.8; margin-bottom: 20px; }
         @media (max-width: 640px) {
-          .article-wrap { padding: 16px; border-radius: 12px; font-size: 15px; }
-          .article-wrap h1 { font-size: 1.6em; margin-bottom: 20px; }
-          .article-wrap h2 { font-size: 1.3em; margin-top: 25px; margin-bottom: 15px; }
-          .article-wrap h3 { font-size: 1.05em; margin-top: 20px; margin-bottom: 10px; }
-          .article-wrap p { line-height: 1.7; margin-bottom: 15px; }
-          .article-wrap ul, .article-wrap ol { margin-left: 15px; margin-bottom: 15px; }
-          .article-wrap li { margin-bottom: 6px; font-size: 0.95em; }
+          .article-wrap { padding: 12px 16px; border-radius: 10px; font-size: 14.5px; }
+          .article-wrap h1 { font-size: 1.5em; margin-bottom: 16px; line-height: 1.3; }
+          .article-wrap h2 { font-size: 1.2em; margin-top: 20px; margin-bottom: 12px; padding-bottom: 8px; }
+          .article-wrap h3 { font-size: 1em; margin-top: 16px; margin-bottom: 10px; }
+          .article-wrap p { line-height: 1.65; margin-bottom: 12px; }
+          .article-wrap ul, .article-wrap ol { margin-left: 16px; margin-bottom: 12px; }
+          .article-wrap li { margin-bottom: 5px; font-size: 0.95em; }
+          .article-wrap table { font-size: 0.9em; }
+          .article-wrap td, .article-wrap th { padding: 8px 10px; }
+          .article-wrap .content-card { padding: 20px; margin: 15px 0; }
+          .article-wrap .bonus-section { padding: 16px; margin: 15px 0; }
+          .article-wrap .step-box { padding: 15px; margin: 12px 0; }
         }
         .article-wrap ul, .article-wrap ol { margin-left: 20px; margin-bottom: 15px; }
         .article-wrap li { margin-bottom: 8px; }
