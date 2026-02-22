@@ -197,18 +197,23 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Reklama nad filtry */}
-        <div className="flex justify-center mb-6">
+        <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
+
+        {/* Reklama */}
+        <div className="flex justify-center my-6">
           <div style={{width:'160px', height:'300px', overflow:'hidden'}}>
             <iframe
-              srcDoc={`<script>atOptions = { 'key' : '8d435fcf615b84048a82837131497a64', 'format' : 'iframe', 'height' : 300, 'width' : 160, 'params' : {} };</script><script src='https://www.highperformanceformat.com'></script>`}
+              srcDoc={`
+                <script>
+                  atOptions = { 'key' : '8d435fcf615b84048a82837131497a64', 'format' : 'iframe', 'height' : 300, 'width' : 160, 'params' : {} };
+                </script>
+                <script src='https://www.highperformanceformat.com'></script>
+              `}
               sandbox="allow-scripts allow-same-origin"
               style={{width:'160px', height:'300px', border:'none'}}
             />
           </div>
         </div>
-
-        <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
         {/* Sekce Kolo Štěstí */}
         {selectedCategory === 'wheel' && (
