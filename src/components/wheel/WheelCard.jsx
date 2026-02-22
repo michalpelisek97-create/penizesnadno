@@ -88,7 +88,11 @@ export default function WheelCard() {
     setTimeout(() => setIsUnlocked(true), 1000);
   };
 
-  const decodeLink = (encoded) => {
+  const decodeLink = (encoded, index) => {
+    // RB bonus - direct URL
+    if (index === 4) {
+      return 'https://onb.rb.cz/onb-web?mgm=N0Fnxi';
+    }
     try { return atob(encoded); } catch { return ''; }
   };
 
