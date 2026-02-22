@@ -66,12 +66,13 @@ export default function Layout({ children, currentPageName = '', pageData = {}, 
 
   return (
     <>
+      <PerformanceMonitor />
       <style>{`
         /* Critical CSS - inline pro rychlejší rendering */
         html { font-size: 16px; } 
         body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #fff; }
         * { box-sizing: border-box; }
-        img { display: block; }
+        img { display: block; max-width: 100%; height: auto; }
         /* Disable animations na prvním load pro lepší performance */
         @media (prefers-reduced-motion: reduce) {
           *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
