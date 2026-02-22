@@ -173,15 +173,15 @@ const WheelOfFortune = () => {
     <div className="group relative">
       <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 border border-purple-500/40 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
         {/* Header */}
-        <div className="relative h-40 overflow-hidden bg-gradient-to-br from-purple-900 to-indigo-900 flex flex-col items-center justify-center">
+        <div className="relative h-56 bg-gradient-to-br from-purple-900 to-indigo-900 flex flex-col items-center justify-center overflow-visible">
           {/* Pointer */}
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10"
-            style={{ width: 0, height: 0, borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderTop: '14px solid #f1c40f', filter: 'drop-shadow(0 0 6px rgba(241,196,15,0.8))' }}
+          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10"
+            style={{ width: 0, height: 0, borderLeft: '12px solid transparent', borderRight: '12px solid transparent', borderTop: '18px solid #f1c40f', filter: 'drop-shadow(0 0 6px rgba(241,196,15,0.8))' }}
           />
           <canvas
             ref={canvasRef}
-            width={160}
-            height={160}
+            width={200}
+            height={200}
             style={{ maxWidth: '100%', filter: 'drop-shadow(0 0 10px rgba(241,196,15,0.3))' }}
           />
           {!user && (
