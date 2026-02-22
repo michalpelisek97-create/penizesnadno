@@ -28,6 +28,12 @@ export default function WheelCard() {
   const canvasRef = useRef(null);
 
   useEffect(() => {
+    window.open(smartlinkUrl, '_blank');
+    const timer = setTimeout(() => setIsUnlocked(true), 5000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
