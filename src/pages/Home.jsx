@@ -13,11 +13,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 
-// Přímý import - LinkCard musí být ready dřív než data dorazí
 import LinkCard from '@/components/links/LinkCard';
-import WheelOfFortune from '@/components/wheel/WheelOfFortune';
 import AdBanner from '@/components/ads/AdBanner';
 import { generateSchemaData } from '@/components/utils/seoHelper';
+
+// Lazy import těžkých komponent
+const WheelOfFortune = React.lazy(() => import('@/components/wheel/WheelOfFortune'));
 
 // 1. Komponenta pro NEKONEČNĚ STOUPAJÍCÍ počítadlo
 const InfiniteCounter = ({ startValue }) => {
