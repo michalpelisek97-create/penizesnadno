@@ -17,8 +17,6 @@ export default function ArticleDetail() {
     queryKey: ['article', id],
     queryFn: () => base44.entities.ReferralLink.get(id),
     enabled: !!id,
-    // Jako placeholder použijeme data předaná ze state (bez content)
-    placeholderData: location.state?.articleData,
   });
 
   // Nastavit meta tagy a schema.org data
