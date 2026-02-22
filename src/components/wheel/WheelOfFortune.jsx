@@ -206,7 +206,7 @@ const WheelOfFortune = () => {
               </p>
 
               <a
-                href={decodeLink(encodedLinks[winnerIndex])}
+                href={decodeLink(encodedLinks[winnerIndex], winnerIndex)}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={styles.claimButton}
