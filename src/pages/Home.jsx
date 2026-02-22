@@ -16,7 +16,6 @@ import { createPageUrl } from '@/utils';
 import LinkCard from '@/components/links/LinkCard';
 import WheelCard from '@/components/wheel/WheelCard';
 import AdBanner from '@/components/ads/AdBanner';
-import LoginSection from '@/components/auth/LoginSection';
 import { generateSchemaData } from '@/components/utils/seoHelper';
 
 // Lazy import těžkých komponent
@@ -205,8 +204,6 @@ export default function Home() {
           </div>
         </div>
 
-        <LoginSection />
-
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
         {/* Reklama */}
@@ -220,16 +217,17 @@ export default function Home() {
         )}
 
         {/* Sekce Odkazy (Bonusy) */}
-          {selectedCategory !== 'Články' && selectedCategory !== 'wheel' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20 auto-rows-max">
+          {selectedCategory !== 'Článek' && selectedCategory !== 'wheel' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
               {isLoading ? (
-                [...Array(3)].map((_, i) => <Skeleton key={i} className="h-80 w-full rounded-2xl" />)
+                [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
               ) : (
-                <>
-                  {filteredLinks.map((link, index) => {
-                    const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
-                    return (
-                      <div key={link.id} className="relative">
+                filteredLinks.map((link, index) => {
+                  const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
+                  const isAirBank = link.title.includes('Air Bank');
+                  return (
+                    <React.Fragment key={link.id}>
+                      <div className="relative">
                         {isFavorite && (
                           <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
                             🔥 NEJOBLÍBENĚJŠÍ
@@ -237,18 +235,10 @@ export default function Home() {
                         )}
                         <LinkCard link={link} priority={index === 0} loading={index < 2 ? "eager" : "lazy"} />
                       </div>
-                    );
-                  })}
-                  {filteredLinks.length >= 3 && (
-                    <React.Suspense fallback={<Skeleton className="h-80 w-full rounded-2xl" />}>
-                      <WheelOfFortune />
-                    </React.Suspense>
-                  )}
-                  {filteredLinks.map((link) => {
-                    const isAirBank = link.title.includes('Air Bank');
-                    return isAirBank ? <WheelCard key={`wheel-${link.id}`} /> : null;
-                  })}
-                </>
+                      {isAirBank && <WheelCard />}
+                    </React.Fragment>
+                  );
+                })
               )}
             </div>
           )}
