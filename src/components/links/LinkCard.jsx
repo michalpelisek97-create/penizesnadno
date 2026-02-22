@@ -61,22 +61,21 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
     return undefined;
   }, []);
 
-  // Preload LCP image
+  // Preload LCP image immediately
   React.useEffect(() => {
     if (priority && link.image_url && !link.image_url.startsWith('data:')) {
-      const existing = document.querySelector(`link[rel="preload"][href="${getOptimizedSrc(link.image_url)}"]`);
+      const src = getOptimizedSrc(link.image_url);
+      const existing = document.querySelector(`link[rel="preload"][href*="${link.id}"]`);
       if (!existing) {
         const link_el = document.createElement('link');
         link_el.rel = 'preload';
         link_el.as = 'image';
-        link_el.href = getOptimizedSrc(link.image_url);
-        link_el.setAttribute('fetchpriority', 'critical');
-        link_el.setAttribute('imagesrcset', getOptimizedSrc(link.image_url, 200) + ' 200w, ' + getOptimizedSrc(link.image_url, 400) + ' 400w');
-        link_el.setAttribute('data-card-lcp', 'true');
+        link_el.href = src;
+        link_el.setAttribute('fetchpriority', 'high');
         document.head.insertBefore(link_el, document.head.firstChild);
       }
     }
-  }, [priority, link.image_url]);
+  }, [priority, link.image_url, link.id]);
 
   return (
     <div className="group relative" style={{ contain: 'layout style paint' }}>
