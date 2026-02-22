@@ -312,33 +312,35 @@ const styles = {
   },
 
   unlockButton: {
-    padding: '16px 40px',
-    fontSize: '16px',
+    padding: '12px 24px',
+    fontSize: '13px',
     fontWeight: 'bold',
     border: 'none',
-    borderRadius: '50px',
+    borderRadius: '8px',
     background: 'linear-gradient(135deg, #00d4ff, #0099cc)',
     color: '#fff',
     cursor: 'pointer',
     boxShadow: '0 0 20px rgba(0, 212, 255, 0.6)',
     transition: 'all 0.3s ease',
     textTransform: 'uppercase',
-    letterSpacing: '1px'
+    letterSpacing: '0.5px',
+    width: '100%'
   },
 
   spinButton: {
-    padding: '16px 40px',
-    fontSize: '16px',
+    padding: '12px 24px',
+    fontSize: '13px',
     fontWeight: 'bold',
     border: 'none',
-    borderRadius: '50px',
+    borderRadius: '8px',
     background: 'linear-gradient(135deg, #f1c40f, #ffaa00)',
     color: '#2c3e50',
     cursor: 'pointer',
     boxShadow: '0 0 20px rgba(241, 196, 15, 0.6)',
     transition: 'all 0.3s ease',
     textTransform: 'uppercase',
-    letterSpacing: '1px'
+    letterSpacing: '0.5px',
+    width: '100%'
   },
 
   modalOverlay: {
