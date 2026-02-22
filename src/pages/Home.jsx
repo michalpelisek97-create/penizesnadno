@@ -223,7 +223,7 @@ export default function Home() {
         </div>
 
         {/* Notifikace - lazy animace po načtení stránky */}
-        <div className="flex justify-center mb-12 h-10">
+        <div className="flex justify-center mb-12 h-10" data-notif>
           <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-400/50 shadow-sm">
             <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
             <p className="text-sm font-medium text-emerald-100 text-center">
