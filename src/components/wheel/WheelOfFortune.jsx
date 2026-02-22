@@ -133,8 +133,26 @@ const WheelOfFortune = () => {
       } else {
         setRotation(finalRotation);
         setWinnerIndex(randomPrize);
+        setEarnedPoints(prizes[randomPrize].points);
         setIsSpinning(false);
         setShowModal(true);
+        
+        // Přidat body uživateli
+        if (user && prizes[randomPrize].points > 0) {
+          base44.entities.UserCredits.filter({email: user.email})
+            .then(existing => {
+              if (existing.length > 0) {
+                base44.entities.UserCredits.update(existing[0].id, {
+                  points: existing[0].points + prizes[randomPrize].points
+                });
+              } else {
+                base44.entities.UserCredits.create({
+                  email: user.email,
+                  points: prizes[randomPrize].points
+                });
+              }
+            });
+        }
       }
     };
 
