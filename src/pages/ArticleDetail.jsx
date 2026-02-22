@@ -104,11 +104,20 @@ export default function ArticleDetail() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <style>{`
-        .article-wrap { color: #2c3e50; background: white; padding: 40px; border-radius: 15px; margin-top: 20px; }
-        .article-wrap h1 { color: #1a1a1a; text-align: center; font-size: 2.2em; margin-bottom: 30px; }
-        .article-wrap h2 { color: #2c3e50; margin-top: 40px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .article-wrap h3 { color: #2c3e50; margin-top: 30px; margin-bottom: 15px; }
-        .article-wrap p { line-height: 1.7; margin-bottom: 15px; }
+        .article-wrap { color: #2c3e50; background: white; padding: 40px; border-radius: 15px; margin-top: 20px; font-size: 16px; }
+        .article-wrap h1 { color: #1a1a1a; text-align: center; font-size: 2.2em; margin-bottom: 30px; line-height: 1.2; }
+        .article-wrap h2 { color: #2c3e50; margin-top: 40px; border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 1.6em; }
+        .article-wrap h3 { color: #2c3e50; margin-top: 30px; margin-bottom: 15px; font-size: 1.2em; }
+        .article-wrap p { line-height: 1.8; margin-bottom: 20px; }
+        @media (max-width: 640px) {
+          .article-wrap { padding: 16px; border-radius: 12px; font-size: 15px; }
+          .article-wrap h1 { font-size: 1.6em; margin-bottom: 20px; }
+          .article-wrap h2 { font-size: 1.3em; margin-top: 25px; margin-bottom: 15px; }
+          .article-wrap h3 { font-size: 1.05em; margin-top: 20px; margin-bottom: 10px; }
+          .article-wrap p { line-height: 1.7; margin-bottom: 15px; }
+          .article-wrap ul, .article-wrap ol { margin-left: 15px; margin-bottom: 15px; }
+          .article-wrap li { margin-bottom: 6px; font-size: 0.95em; }
+        }
         .article-wrap ul, .article-wrap ol { margin-left: 20px; margin-bottom: 15px; }
         .article-wrap li { margin-bottom: 8px; }
         .article-wrap table { width: 100%; border-collapse: collapse; }
