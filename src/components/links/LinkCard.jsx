@@ -40,6 +40,8 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
         return url.split('?')[0] + `?w=${width}&ssl=1&strip=all`;
       }
       if (url.includes('tosevyplati.cz')) {
+        // Pokud URL už obsahuje _next/image, nebalíme znovu
+        if (url.includes('_next/image')) return url;
         return `https://www.tosevyplati.cz/_next/image?url=${encodeURIComponent(url)}&w=${width}&q=75`;
       }
       // Ostatní domény - jen vrátíme původní URL
