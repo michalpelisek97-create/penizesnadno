@@ -19,6 +19,15 @@ export default function LoginSection() {
           const userCredits = await base44.entities.UserCredits.filter({ email: currentUser.email });
           if (userCredits.length > 0) {
             setCredits(userCredits[0]);
+            
+            // Subscribe na změny kreditu
+            const unsubscribe = base44.entities.UserCredits.subscribe((event) => {
+              if (event.id === userCredits[0].id) {
+                setCredits(event.data);
+              }
+            });
+            
+            return unsubscribe;
           } else {
             // Vytvořit nový záznam kreditu
             const newCredits = await base44.entities.UserCredits.create({
@@ -27,6 +36,15 @@ export default function LoginSection() {
               total_earned: 0
             });
             setCredits(newCredits);
+            
+            // Subscribe na změny nového kreditu
+            const unsubscribe = base44.entities.UserCredits.subscribe((event) => {
+              if (event.id === newCredits.id) {
+                setCredits(event.data);
+              }
+            });
+            
+            return unsubscribe;
           }
         }
       } catch (error) {
@@ -36,7 +54,13 @@ export default function LoginSection() {
       }
     };
 
-    fetchUserData();
+    const unsubscribePromise = fetchUserData();
+    
+    return () => {
+      unsubscribePromise.then(unsub => {
+        if (typeof unsub === 'function') unsub();
+      });
+    };
   }, []);
 
   const handleLogin = () => {
