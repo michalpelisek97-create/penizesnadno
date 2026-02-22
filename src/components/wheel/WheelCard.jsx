@@ -197,7 +197,7 @@ export default function WheelCard() {
               </div>
               <p className="text-slate-300 text-sm mb-6">Klikni níže a vyzvedni si odměnu!</p>
               <a
-                href={decodeLink(encodedLinks[winnerIndex])}
+                href={decodeLink(encodedLinks[winnerIndex], winnerIndex)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-bold py-3 px-8 rounded-full shadow-lg text-sm uppercase tracking-wide"
