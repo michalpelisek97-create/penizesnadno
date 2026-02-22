@@ -27,18 +27,19 @@ const setSEOMeta = (title, description, image, url) => {
   setMeta('twitter:image', image);
 };
 
-// Preload LCP image co nejdříve
-const lcpImageUrl = 'https://www.tosevyplati.cz/_next/image?url=https%3A%2F%2Fim.tosevyplati.cz%2Fraiffeisenbank.jpg&w=828&q=75';
-if (typeof document !== 'undefined') {
+// Preload LCP image co nejdříve - critical priorita
+if (typeof document !== 'undefined' && document.readyState === 'loading') {
+  const lcpImageUrl = 'https://www.tosevyplati.cz/_next/image?url=https%3A%2F%2Fim.tosevyplati.cz%2Fraiffeisenbank.jpg&w=828&q=75';
   const existing = document.querySelector('link[rel="preload"][data-lcp]');
   if (!existing) {
     const preload = document.createElement('link');
     preload.rel = 'preload';
     preload.as = 'image';
     preload.href = lcpImageUrl;
-    preload.setAttribute('fetchpriority', 'high');
+    preload.setAttribute('fetchpriority', 'critical');
     preload.setAttribute('data-lcp', 'true');
-    document.head.prepend(preload);
+    preload.setAttribute('imagesrcset', lcpImageUrl + ' 1x, ' + lcpImageUrl.replace('w=828', 'w=1656') + ' 2x');
+    document.head.insertBefore(preload, document.head.firstChild);
   }
 }
 
