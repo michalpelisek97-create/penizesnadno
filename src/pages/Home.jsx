@@ -105,31 +105,17 @@ export default function Home() {
   }, [notifications.length]);
 
   // 4. API Data Fetching - Ultra-light inicializace (jen 12 záznamů)
-   const { data: allData = [], isLoading } = useQuery({
-     queryKey: ['referral-links'],
-     queryFn: async () => {
-       const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 12);
-       return data.map(({ content, ...rest }) => rest);
-     },
-     staleTime: 60 * 60 * 1000,
-     gcTime: 3 * 60 * 60 * 1000,
-     refetchOnWindowFocus: false,
-     refetchOnMount: false
-   });
-
-   // Lazy load zbývajících záznamů POUZE když je scrollovaný displayCount > 18
-   const { data: allDataMore = [] } = useQuery({
-     queryKey: ['referral-links-more', displayCount],
-     queryFn: async () => {
-       const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 60);
-       return data.map(({ content, ...rest }) => rest);
-     },
-     staleTime: 60 * 60 * 1000,
-     gcTime: 3 * 60 * 60 * 1000,
-     refetchOnWindowFocus: false,
-     refetchOnMount: false,
-     enabled: displayCount > 18
-   });
+  const { data: allData = [], isLoading } = useQuery({
+    queryKey: ['referral-links'],
+    queryFn: async () => {
+      const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 50);
+      return data.map(({ content, ...rest }) => rest);
+    },
+    staleTime: 60 * 60 * 1000,
+    gcTime: 3 * 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false
+  });
 
   // Kombinuj data - initial + lazy loaded
    const combinedData = useMemo(() => {
