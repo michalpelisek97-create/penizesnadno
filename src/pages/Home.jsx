@@ -83,11 +83,14 @@ export default function Home() {
     queryKey: ['referral-links'],
     queryFn: async () => {
       const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 500);
-      return data.map(({ description, content, ...rest }) => ({
-        ...rest,
-        description: description ? description.substring(0, 120) : null,
-        // content vůbec nepotřebujeme na homepage, ušetříme přenos dat
-      }));
+      return data.map(({ description, content, ...rest }) => {
+        // Pro články nenosíme content (je obrovský), jen metadata
+        return {
+          ...rest,
+          description: description ? description.substring(0, 120) : null,
+          // content vůbec nepotřebujeme na homepage
+        };
+      });
     },
     staleTime: 15 * 60 * 1000,
     gcTime: 60 * 60 * 1000,
