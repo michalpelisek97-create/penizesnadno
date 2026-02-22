@@ -1,3 +1,4 @@
+css
 /* Critical performance optimizations */
 
 /* Font display for faster text rendering */
@@ -27,6 +28,8 @@ img {
   display: block;
   max-width: 100%;
   height: auto;
+  /* Prevent CLS on images */
+  aspect-ratio: auto;
 }
 
 /* Optimize animations */
@@ -56,4 +59,11 @@ html {
 .link-card,
 .article-card {
   contain: layout style paint;
+}
+
+/* Optimize container queries for performance */
+@supports (contain: content) {
+  [class*="grid"] {
+    contain: layout style;
+  }
 }
