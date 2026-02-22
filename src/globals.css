@@ -1,0 +1,59 @@
+/* Critical performance optimizations */
+
+/* Font display for faster text rendering */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Reduce motion for performance */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Optimize scrolling performance */
+body {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Image performance */
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Optimize animations */
+@media (max-width: 768px) {
+  /* Disable heavy animations on mobile */
+  .animate-bounce,
+  .animate-pulse {
+    animation: none !important;
+    opacity: 0.8;
+  }
+}
+
+/* Optimize form inputs for mobile */
+input,
+textarea,
+select {
+  font-size: 16px; /* Prevents zoom on iOS */
+}
+
+/* Optimize scroll performance */
+html {
+  scroll-behavior: auto; /* Changed from smooth for better mobile performance */
+}
+
+/* CSS containment for better performance */
+.card,
+.link-card,
+.article-card {
+  contain: layout style paint;
+}
