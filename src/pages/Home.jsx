@@ -219,7 +219,7 @@ export default function Home() {
 
         {/* Sekce Odkazy (Bonusy) */}
           {selectedCategory !== 'Článek' && selectedCategory !== 'wheel' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20" style={{ contain: 'layout style paint' }}>
               {isLoading ? (
                 [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
               ) : (
