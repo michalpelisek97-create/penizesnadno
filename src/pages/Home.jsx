@@ -208,7 +208,7 @@ export default function Home() {
           </div>
         </div>
 
-        <HeroWheel />
+        <HeroWheel onWheelClick={() => setSelectedCategory('wheel')} />
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
