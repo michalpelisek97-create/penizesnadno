@@ -10,7 +10,7 @@ const encodedLinks = [
 ];
 
 const prizes = [
-  { text: '🪙 Coinbase', symbol: '🪙', fullName: 'Bonus Coinbase', color: '#2c3e50' },
+  { text: '🪙 CTpool', symbol: '🪙', fullName: 'Bonus CTpool', color: '#2c3e50' },
   { text: '🏦 AirBank', symbol: '🏦', fullName: 'AirBank Bonus', color: '#f1c40f' },
   { text: '⛏️ RollerCoin', symbol: '⛏️', fullName: 'Těžba RollerCoin', color: '#00d4ff' },
   { text: '🍯 HoneyGain', symbol: '🍯', fullName: 'HoneyGain Credit', color: '#2c3e50' },
