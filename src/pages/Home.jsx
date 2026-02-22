@@ -119,9 +119,10 @@ export default function Home() {
      enabled: displayCount > 45 // Aktivuj až když je potřeba
    });
 
-  // Rozdělení dat na bonusy a články na základě příznaku is_article
-  const links = useMemo(() => allData.filter((item) => !item.is_article), [allData]);
-  const articles = useMemo(() => allData.filter((item) => item.is_article), [allData]);
+  // Rozdělení dat na bonusy a články - use full data when available
+   const dataToUse = displayCount > 45 && allDataFull.length > 0 ? allDataFull : allData;
+   const links = useMemo(() => dataToUse.filter((item) => !item.is_article), [dataToUse]);
+   const articles = useMemo(() => allData.filter((item) => item.is_article), [allData]);
 
   // FILTRACE: Logika pro zobrazení bonusů
   const filteredLinks = useMemo(() => {
