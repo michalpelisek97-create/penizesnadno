@@ -28,23 +28,8 @@ const setSEOMeta = (title, description, image, url) => {
   setMeta('twitter:image', image);
 };
 
-// Preconnect + DNS prefetch pro LCP image domains
-if (typeof document !== 'undefined' && !document.querySelector('link[rel="preconnect"][href*="tosevyplati.cz"]')) {
-  // Preconnect na tosevyplati.cz (pro image loading)
-  const preconnect = document.createElement('link');
-  preconnect.rel = 'preconnect';
-  preconnect.href = 'https://www.tosevyplati.cz';
-  document.head.insertBefore(preconnect, document.head.firstChild);
-
-  // Preconnect na im.tosevyplati.cz (pro origin server)
-  const preconnectIm = document.createElement('link');
-  preconnectIm.rel = 'preconnect';
-  preconnectIm.href = 'https://im.tosevyplati.cz';
-  document.head.insertBefore(preconnectIm, document.head.firstChild);
-}
-
-// Preload LCP image co nejdříve
-if (typeof document !== 'undefined') {
+// Preload LCP image co nejdříve - critical priorita
+if (typeof document !== 'undefined' && document.readyState === 'loading') {
   const lcpImageUrl = 'https://www.tosevyplati.cz/_next/image?url=https%3A%2F%2Fim.tosevyplati.cz%2Fraiffeisenbank.jpg&w=828&q=75';
   const existing = document.querySelector('link[rel="preload"][data-lcp]');
   if (!existing) {
@@ -52,7 +37,7 @@ if (typeof document !== 'undefined') {
     preload.rel = 'preload';
     preload.as = 'image';
     preload.href = lcpImageUrl;
-    preload.setAttribute('fetchpriority', 'high');
+    preload.setAttribute('fetchpriority', 'critical');
     preload.setAttribute('data-lcp', 'true');
     preload.setAttribute('imagesrcset', lcpImageUrl + ' 1x, ' + lcpImageUrl.replace('w=828', 'w=1656') + ' 2x');
     document.head.insertBefore(preload, document.head.firstChild);
@@ -83,18 +68,16 @@ export default function Layout({ children, currentPageName = '', pageData = {}, 
     <>
       <PerformanceMonitor />
       <style>{`
-              /* Critical CSS - inline pro rychlejší rendering */
-              html { font-size: 16px; } 
-              body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #fff; }
-              * { box-sizing: border-box; }
-              img { display: block; max-width: 100%; height: auto; content-visibility: auto; }
-              /* Preload LCP image styles */
-              link[data-lcp] { display: none; }
-              /* Disable animations na prvním load pro lepší performance */
-              @media (prefers-reduced-motion: reduce) {
-                *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-              }
-            `}</style>
+        /* Critical CSS - inline pro rychlejší rendering */
+        html { font-size: 16px; } 
+        body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #fff; }
+        * { box-sizing: border-box; }
+        img { display: block; max-width: 100%; height: auto; }
+        /* Disable animations na prvním load pro lepší performance */
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+        }
+      `}</style>
       {children}
     </>
   );
