@@ -238,14 +238,7 @@ export default function Home() {
                         )}
                         <LinkCard link={link} priority={index === 0} loading={index < 2 ? "eager" : "lazy"} />
                       </div>
-                      {isAirBank && (
-                        <>
-                          <WheelCard />
-                          <React.Suspense fallback={<Skeleton className="h-64 w-full rounded-2xl" />}>
-                            <WheelOfFortune />
-                          </React.Suspense>
-                        </>
-                      )}
+                      {isAirBank && <WheelCard />}
                     </React.Fragment>
                   );
                 })

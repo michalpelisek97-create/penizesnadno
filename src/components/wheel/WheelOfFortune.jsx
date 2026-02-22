@@ -170,50 +170,46 @@ const WheelOfFortune = () => {
   };
 
   return (
-    <div className="group relative">
-      <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 border border-purple-500/40 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
-        {/* Header */}
-        <div className="relative h-80 bg-gradient-to-br from-purple-900 to-indigo-900 flex flex-col items-center justify-center overflow-visible">
-          {/* Pointer */}
-          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10"
-            style={{ width: 0, height: 0, borderLeft: '12px solid transparent', borderRight: '12px solid transparent', borderTop: '18px solid #f1c40f', filter: 'drop-shadow(0 0 6px rgba(241,196,15,0.8))' }}
-          />
+    <div style={styles.container}>
+      <div style={styles.wheelSection}>
+        <h1 style={styles.title}>🎡 Kolo Štěstí</h1>
+        <p style={styles.subtitle}>Odemkni a vyhraj skvělé bonusy!</p>
+
+        {/* Kolo */}
+        <div style={styles.wheelContainer}>
+          <div style={styles.pointer}></div>
           <canvas
             ref={canvasRef}
-            width={200}
-            height={200}
-            style={{ maxWidth: '100%', filter: 'drop-shadow(0 0 10px rgba(241,196,15,0.3))' }}
+            width={640}
+            height={640}
+            style={styles.canvas}
           />
-          {!user && (
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-              <span className="text-3xl">🔒</span>
-            </div>
-          )}
         </div>
 
-        {/* Content */}
-        <div className="p-5 flex flex-col flex-1">
-          <p className="text-lg font-semibold text-white mb-2 line-clamp-1">🎡 Kolo Štěstí</p>
-          <p className="text-sm text-slate-400 mb-4 line-clamp-2 leading-relaxed">Odemkni a vyhraj kredity! Každý spin ti přidá peníze do účtu.</p>
+        {/* Login check */}
+        {!user && (
+          <p style={styles.subtitle}>Aby ses mohl účastnit, musíš se nejdříve přihlásit!</p>
+        )}
 
+        {/* Tlačítka */}
+        <div style={styles.buttonContainer}>
           {!user ? (
-            <button disabled className="w-full bg-slate-600 text-white font-medium py-3 rounded-xl text-sm font-bold uppercase opacity-50 cursor-not-allowed">
-              Přihlaste se
-            </button>
+            <p style={{color: '#00d4ff', fontSize: '16px'}}>Přihlašte se pro účast</p>
           ) : !isUnlocked ? (
-            <button
-              onClick={handleAdClick}
-              className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:opacity-90 text-white font-medium py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-sm font-bold uppercase tracking-wide"
-            >
-              🔓 Odemknout kolo
+            <button style={styles.unlockButton} onClick={handleAdClick}>
+              🎬 KLIKNI NA REKLAMU
             </button>
           ) : (
             <button
+              style={{
+                ...styles.spinButton,
+                opacity: isSpinning ? 0.7 : 1,
+                cursor: isSpinning ? 'not-allowed' : 'pointer'
+              }}
               onClick={handleSpin}
               disabled={isSpinning}
-              className="w-full bg-gradient-to-r from-amber-400 to-orange-500 hover:opacity-90 text-slate-900 font-bold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-sm uppercase tracking-wide disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isSpinning ? '⏳ Točím...' : '🎯 Roztočit kolo'}
+              {isSpinning ? '⏳ TOČENÍ...' : '🎯 ROZTOČIT KOLO'}
             </button>
           )}
         </div>
@@ -246,6 +242,101 @@ const WheelOfFortune = () => {
 };
 
 const styles = {
+  container: {
+    minHeight: '100vh',
+    background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '20px',
+    fontFamily: 'Arial, sans-serif'
+  },
+
+  wheelSection: {
+    textAlign: 'center',
+    maxWidth: '600px',
+    width: '100%'
+  },
+
+  title: {
+    fontSize: '84px',
+    fontWeight: 'bold',
+    color: '#ff0000',
+    marginBottom: '10px',
+    textShadow: '0 0 20px rgba(255, 0, 0, 0.6)'
+  },
+
+  subtitle: {
+    fontSize: '18px',
+    color: '#00d4ff',
+    marginBottom: '30px',
+    textShadow: '0 0 10px rgba(0, 212, 255, 0.3)'
+  },
+
+  wheelContainer: {
+    position: 'relative',
+    display: 'flex',
+    justifyContent: 'center',
+    marginBottom: '40px',
+    filter: 'drop-shadow(0 0 30px rgba(0, 212, 255, 0.4))'
+  },
+
+  canvas: {
+    filter: 'drop-shadow(0 0 20px rgba(241, 196, 15, 0.3))',
+    maxWidth: '100%'
+  },
+
+  pointer: {
+    position: 'absolute',
+    top: '-10px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: '0',
+    height: '0',
+    borderLeft: '15px solid transparent',
+    borderRight: '15px solid transparent',
+    borderTop: '25px solid #f1c40f',
+    filter: 'drop-shadow(0 0 10px rgba(241, 196, 15, 0.8))',
+    zIndex: 10
+  },
+
+  buttonContainer: {
+    display: 'flex',
+    gap: '15px',
+    justifyContent: 'center',
+    flexWrap: 'wrap'
+  },
+
+  unlockButton: {
+    padding: '16px 40px',
+    fontSize: '16px',
+    fontWeight: 'bold',
+    border: 'none',
+    borderRadius: '50px',
+    background: 'linear-gradient(135deg, #00d4ff, #0099cc)',
+    color: '#fff',
+    cursor: 'pointer',
+    boxShadow: '0 0 20px rgba(0, 212, 255, 0.6)',
+    transition: 'all 0.3s ease',
+    textTransform: 'uppercase',
+    letterSpacing: '1px'
+  },
+
+  spinButton: {
+    padding: '16px 40px',
+    fontSize: '16px',
+    fontWeight: 'bold',
+    border: 'none',
+    borderRadius: '50px',
+    background: 'linear-gradient(135deg, #f1c40f, #ffaa00)',
+    color: '#2c3e50',
+    cursor: 'pointer',
+    boxShadow: '0 0 20px rgba(241, 196, 15, 0.6)',
+    transition: 'all 0.3s ease',
+    textTransform: 'uppercase',
+    letterSpacing: '1px'
+  },
+
   modalOverlay: {
     position: 'fixed',
     top: 0,
@@ -319,6 +410,23 @@ const styles = {
     color: '#cbd5e1',
     marginBottom: '25px',
     lineHeight: '1.6'
+  },
+
+  claimButton: {
+    display: 'inline-block',
+    padding: '14px 35px',
+    fontSize: '15px',
+    fontWeight: 'bold',
+    border: 'none',
+    borderRadius: '50px',
+    background: 'linear-gradient(135deg, #f1c40f, #ffaa00)',
+    color: '#2c3e50',
+    textDecoration: 'none',
+    cursor: 'pointer',
+    boxShadow: '0 0 20px rgba(241, 196, 15, 0.6)',
+    transition: 'all 0.3s ease',
+    textTransform: 'uppercase',
+    letterSpacing: '1px'
   }
 };
 
