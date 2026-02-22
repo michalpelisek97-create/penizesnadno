@@ -239,101 +239,6 @@ const WheelOfFortune = () => {
 };
 
 const styles = {
-  container: {
-    minHeight: '100vh',
-    background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif'
-  },
-
-  wheelSection: {
-    textAlign: 'center',
-    maxWidth: '600px',
-    width: '100%'
-  },
-
-  title: {
-    fontSize: '84px',
-    fontWeight: 'bold',
-    color: '#ff0000',
-    marginBottom: '10px',
-    textShadow: '0 0 20px rgba(255, 0, 0, 0.6)'
-  },
-
-  subtitle: {
-    fontSize: '18px',
-    color: '#00d4ff',
-    marginBottom: '30px',
-    textShadow: '0 0 10px rgba(0, 212, 255, 0.3)'
-  },
-
-  wheelContainer: {
-    position: 'relative',
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: '40px',
-    filter: 'drop-shadow(0 0 30px rgba(0, 212, 255, 0.4))'
-  },
-
-  canvas: {
-    filter: 'drop-shadow(0 0 20px rgba(241, 196, 15, 0.3))',
-    maxWidth: '100%'
-  },
-
-  pointer: {
-    position: 'absolute',
-    top: '-10px',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: '0',
-    height: '0',
-    borderLeft: '15px solid transparent',
-    borderRight: '15px solid transparent',
-    borderTop: '25px solid #f1c40f',
-    filter: 'drop-shadow(0 0 10px rgba(241, 196, 15, 0.8))',
-    zIndex: 10
-  },
-
-  buttonContainer: {
-    display: 'flex',
-    gap: '15px',
-    justifyContent: 'center',
-    flexWrap: 'wrap'
-  },
-
-  unlockButton: {
-    padding: '16px 40px',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    border: 'none',
-    borderRadius: '50px',
-    background: 'linear-gradient(135deg, #00d4ff, #0099cc)',
-    color: '#fff',
-    cursor: 'pointer',
-    boxShadow: '0 0 20px rgba(0, 212, 255, 0.6)',
-    transition: 'all 0.3s ease',
-    textTransform: 'uppercase',
-    letterSpacing: '1px'
-  },
-
-  spinButton: {
-    padding: '16px 40px',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    border: 'none',
-    borderRadius: '50px',
-    background: 'linear-gradient(135deg, #f1c40f, #ffaa00)',
-    color: '#2c3e50',
-    cursor: 'pointer',
-    boxShadow: '0 0 20px rgba(241, 196, 15, 0.6)',
-    transition: 'all 0.3s ease',
-    textTransform: 'uppercase',
-    letterSpacing: '1px'
-  },
-
   modalOverlay: {
     position: 'fixed',
     top: 0,
@@ -407,23 +312,6 @@ const styles = {
     color: '#cbd5e1',
     marginBottom: '25px',
     lineHeight: '1.6'
-  },
-
-  claimButton: {
-    display: 'inline-block',
-    padding: '14px 35px',
-    fontSize: '15px',
-    fontWeight: 'bold',
-    border: 'none',
-    borderRadius: '50px',
-    background: 'linear-gradient(135deg, #f1c40f, #ffaa00)',
-    color: '#2c3e50',
-    textDecoration: 'none',
-    cursor: 'pointer',
-    boxShadow: '0 0 20px rgba(241, 196, 15, 0.6)',
-    transition: 'all 0.3s ease',
-    textTransform: 'uppercase',
-    letterSpacing: '1px'
   }
 };
 
