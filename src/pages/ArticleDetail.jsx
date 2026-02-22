@@ -15,7 +15,10 @@ export default function ArticleDetail() {
   // Vždy fetchujeme plná data článku (content byl vynechán na homepage kvůli optimalizaci)
   const { data: article, isLoading } = useQuery({
     queryKey: ['article', id],
-    queryFn: () => base44.entities.ReferralLink.get(id),
+    queryFn: async () => {
+      const results = await base44.entities.ReferralLink.filter({ id });
+      return results[0] || null;
+    },
     enabled: !!id,
   });
 
