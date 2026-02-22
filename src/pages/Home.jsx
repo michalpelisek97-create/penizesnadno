@@ -225,23 +225,31 @@ export default function Home() {
               {isLoading ? (
                 [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
               ) : (
-                filteredLinks.map((link, index) => {
-                  const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
-                  const isAirBank = link.title.includes('Air Bank');
-                  return (
-                    <React.Fragment key={link.id}>
-                      <div className="relative">
-                        {isFavorite && (
-                          <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
-                            🔥 NEJOBLÍBENĚJŠÍ
-                          </div>
+                <>
+                  {filteredLinks.map((link, index) => {
+                    const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
+                    const isAirBank = link.title.includes('Air Bank');
+                    return (
+                      <React.Fragment key={link.id}>
+                        <div className="relative">
+                          {isFavorite && (
+                            <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
+                              🔥 NEJOBLÍBENĚJŠÍ
+                            </div>
+                          )}
+                          <LinkCard link={link} priority={index === 0} loading={index < 2 ? "eager" : "lazy"} />
+                        </div>
+                        {isAirBank && (
+                          <>
+                            <WheelCard />
+                            <div key="wheel-spacer-above"></div>
+                          </>
                         )}
-                        <LinkCard link={link} priority={index === 0} loading={index < 2 ? "eager" : "lazy"} />
-                      </div>
-                      {isAirBank && <WheelCard />}
-                    </React.Fragment>
-                  );
-                })
+                      </React.Fragment>
+                    );
+                  })}
+                  <WheelCard />
+                </>
               )}
             </div>
           )}
