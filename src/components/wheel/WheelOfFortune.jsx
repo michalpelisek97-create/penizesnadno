@@ -210,7 +210,6 @@ const WheelOfFortune = () => {
           </button>
         )}
       </div>
-    </div>
 
       {/* Modal */}
       {showModal && (
