@@ -205,6 +205,8 @@ export default function Home() {
           </div>
         </div>
 
+        <LoginSection />
+
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
         {/* Reklama */}
