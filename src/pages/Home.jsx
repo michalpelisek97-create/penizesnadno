@@ -82,13 +82,14 @@ export default function Home() {
     queryKey: ['referral-links'],
     queryFn: async () => {
       const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 500);
-      return data.map(({ description, ...rest }) => ({
+      return data.map(({ description, content, ...rest }) => ({
         ...rest,
         description: description ? description.substring(0, 120) : null,
+        // content vůbec nepotřebujeme na homepage, ušetříme přenos dat
       }));
     },
-    staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
+    staleTime: 15 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     placeholderData: [],
