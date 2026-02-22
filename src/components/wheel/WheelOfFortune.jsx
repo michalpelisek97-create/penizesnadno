@@ -180,8 +180,8 @@ const WheelOfFortune = () => {
           <div style={styles.pointer}></div>
           <canvas
             ref={canvasRef}
-            width={640}
-            height={640}
+            width={200}
+            height={200}
             style={styles.canvas}
           />
         </div>
