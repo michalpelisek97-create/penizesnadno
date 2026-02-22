@@ -206,7 +206,9 @@ export default function Home() {
 
         {/* Sekce Kolo Štěstí */}
         {selectedCategory === 'wheel' && (
-          <WheelOfFortune />
+          <React.Suspense fallback={<div className="h-64 flex items-center justify-center text-white">Načítám...</div>}>
+            <WheelOfFortune />
+          </React.Suspense>
         )}
 
         {/* Sekce Odkazy (Bonusy) */}
