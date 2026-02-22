@@ -42,6 +42,14 @@ img {
   }
 }
 
+/* Optimize LCP image loading */
+img[loading="eager"][fetchpriority="critical"],
+img[fetchpriority="high"] {
+  content-visibility: auto;
+  contain: strict;
+  decoding: sync;
+}
+
 /* Optimize form inputs for mobile */
 input,
 textarea,
