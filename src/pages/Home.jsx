@@ -208,6 +208,8 @@ export default function Home() {
           </div>
         </div>
 
+        <HeroWheel />
+
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
         {/* Reklama - Lazy load */}
