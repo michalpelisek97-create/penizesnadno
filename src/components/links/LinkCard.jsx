@@ -23,11 +23,14 @@ const categoryLabels = {
 };
 
 export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
-  const primaryCategory = link.category || (Array.isArray(link.categories) ? link.categories[0] : 'other');
+  const primaryCategory = React.useMemo(
+    () => link.category || (Array.isArray(link.categories) ? link.categories[0] : 'other'),
+    [link.category, link.categories]
+  );
   const gradientClass = categoryColors[primaryCategory] || categoryColors.other;
   const [imgError, setImgError] = React.useState(false);
 
-    const handleImageError = () => setImgError(true);
+  const handleImageError = React.useCallback(() => setImgError(true), []);
 
     // Optimalizuje URL obrázku podle domény
     const getOptimizedSrc = (url, width = 400) => {
