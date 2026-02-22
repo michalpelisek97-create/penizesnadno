@@ -28,13 +28,7 @@ const WheelOfFortune = () => {
 
   const smartlinkUrl = 'https://www.effectivegatecpm.com/whifkrp4te?key=06123d4024c40ca03236d07ac020b0c6';
 
-  // Zkontroluj localStorage při loadování
-  useEffect(() => {
-    const unlocked = localStorage.getItem('wheel_unlocked');
-    if (unlocked) {
-      setIsUnlocked(true);
-    }
-  }, []);
+  // Kolo je vždy zamčené při příchodu na stránku
 
   // Kreslení kola na canvas
   useEffect(() => {
