@@ -238,7 +238,16 @@ export default function Home() {
                         )}
                         <LinkCard link={link} priority={index === 0} loading={index < 2 ? "eager" : "lazy"} />
                       </div>
-                      {isAirBank && <WheelCard />}
+                      {isAirBank && (
+                        <div className="col-span-1 sm:col-span-2 lg:col-span-3 space-y-6">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <WheelCard />
+                          </div>
+                          <React.Suspense fallback={<div className="h-96 flex items-center justify-center text-white">Načítám Kolo Štěstí...</div>}>
+                            <WheelOfFortune />
+                          </React.Suspense>
+                        </div>
+                      )}
                     </React.Fragment>
                   );
                 })
