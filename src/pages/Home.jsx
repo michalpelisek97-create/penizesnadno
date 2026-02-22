@@ -141,7 +141,7 @@ export default function Home() {
       );
     }
     return filtered.slice(0, displayCount);
-  }, [selectedCategory, links, displayCount]);
+  }, [selectedCategory, links, displayCount, dataToUse]);
 
   // Nastavit Schema.org data pro domovskou stránku
   useEffect(() => {
