@@ -34,12 +34,13 @@ const WheelOfFortune = () => {
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const radius = 300;
+    const size = canvas.width;
+    const centerX = size / 2;
+    const centerY = size / 2;
+    const radius = size / 2 - 4;
 
     // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, size, size);
 
     // Save state
     ctx.save();
@@ -48,10 +49,9 @@ const WheelOfFortune = () => {
 
     // Draw slices
     prizes.forEach((prize, index) => {
-      const sliceAngle = (360 / prizes.length) * (Math.PI / 180);
-      const startAngle = (index * 360) / prizes.length * (Math.PI / 180);
+      const sliceAngle = (2 * Math.PI) / prizes.length;
+      const startAngle = index * sliceAngle;
 
-      // Draw slice
       ctx.beginPath();
       ctx.moveTo(0, 0);
       ctx.arc(0, 0, radius, startAngle, startAngle + sliceAngle);
@@ -62,28 +62,28 @@ const WheelOfFortune = () => {
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Draw text/emoji
       ctx.save();
       ctx.rotate(startAngle + sliceAngle / 2);
       ctx.textAlign = 'right';
       ctx.fillStyle = '#fff';
-      ctx.font = 'bold 32px Arial';
-      ctx.fillText(prize.text, radius - 40, 12);
+      ctx.font = `bold ${size * 0.07}px Arial`;
+      ctx.fillText(prize.text, radius - 8, 6);
       ctx.restore();
     });
 
     // Draw center circle
+    const centerR = size * 0.13;
     ctx.beginPath();
-    ctx.arc(0, 0, 80, 0, 2 * Math.PI);
+    ctx.arc(0, 0, centerR, 0, 2 * Math.PI);
     ctx.fillStyle = '#fff';
     ctx.fill();
     ctx.strokeStyle = '#f1c40f';
-    ctx.lineWidth = 6;
+    ctx.lineWidth = 3;
     ctx.stroke();
 
     // Draw SPIN text
     ctx.fillStyle = '#2c3e50';
-    ctx.font = 'bold 40px Arial';
+    ctx.font = `bold ${size * 0.07}px Arial`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('SPIN', 0, 0);
@@ -170,67 +170,72 @@ const WheelOfFortune = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.wheelSection}>
-        <h1 style={styles.title}>🎡 Kolo Štěstí</h1>
-        <p style={styles.subtitle}>Odemkni a vyhraj skvělé bonusy!</p>
-
-        {/* Kolo */}
-        <div style={styles.wheelContainer}>
-          <div style={styles.pointer}></div>
-          <canvas
-            ref={canvasRef}
-            width={200}
-            height={200}
-            style={styles.canvas}
-          />
-        </div>
-
-        {/* Login check */}
-        {!user && (
-          <p style={styles.subtitle}>Aby ses mohl účastnit, musíš se nejdříve přihlásit!</p>
+    <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 border border-purple-500/40 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
+      {/* Header */}
+      <div className="relative flex-1 overflow-hidden bg-gradient-to-br from-purple-900 to-indigo-900 flex flex-col items-center justify-center min-h-40">
+        {/* Pointer */}
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10"
+          style={{ width: 0, height: 0, borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderTop: '14px solid #f1c40f', filter: 'drop-shadow(0 0 6px rgba(241,196,15,0.8))' }}
+        />
+        <canvas
+          ref={canvasRef}
+          width={160}
+          height={160}
+          className="w-40 h-40"
+          style={{ filter: 'drop-shadow(0 0 10px rgba(241,196,15,0.3))' }}
+        />
+        {/* Locked overlay */}
+        {!isUnlocked && (
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <span className="text-3xl">🔒</span>
+          </div>
         )}
+      </div>
 
-        {/* Tlačítka */}
-        <div style={styles.buttonContainer}>
-          {!user ? (
-            <p style={{color: '#00d4ff', fontSize: '16px'}}>Přihlašte se pro účast</p>
-          ) : !isUnlocked ? (
-            <button style={styles.unlockButton} onClick={handleAdClick}>
-              🎬 KLIKNI NA REKLAMU
-            </button>
-          ) : (
-            <button
-              style={{
-                ...styles.spinButton,
-                opacity: isSpinning ? 0.7 : 1,
-                cursor: isSpinning ? 'not-allowed' : 'pointer'
-              }}
-              onClick={handleSpin}
-              disabled={isSpinning}
-            >
-              {isSpinning ? '⏳ TOČENÍ...' : '🎯 ROZTOČIT KOLO'}
-            </button>
-          )}
-        </div>
+      {/* Content */}
+      <div className="p-5 flex flex-col">
+        <p className="text-lg font-semibold text-white mb-2 line-clamp-1">🎡 Kolo Štěstí</p>
+        <p className="text-sm text-slate-400 mb-4 line-clamp-2 leading-relaxed">Odemkni a vyhraj skvělé bonusy!</p>
+
+        {!user ? (
+          <p className="text-center text-sm text-cyan-400">Přihlašte se pro účast</p>
+        ) : !isUnlocked ? (
+          <button
+            onClick={handleAdClick}
+            className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:opacity-90 text-white font-medium py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-sm font-bold uppercase tracking-wide"
+          >
+            🔓 Odemknout
+          </button>
+        ) : (
+          <button
+            onClick={handleSpin}
+            disabled={isSpinning}
+            className="w-full bg-gradient-to-r from-amber-400 to-orange-500 hover:opacity-90 text-slate-900 font-bold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-sm uppercase tracking-wide disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            {isSpinning ? '⏳ Točím...' : '🎯 Roztočit'}
+          </button>
+        )}
       </div>
 
       {/* Modal */}
       {showModal && (
-        <div style={styles.modalOverlay} onClick={closeModal}>
-          <div style={styles.modal} onClick={e => e.stopPropagation()}>
-            <button style={styles.closeButton} onClick={closeModal}>
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={closeModal}>
+          <div
+            className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 max-w-sm w-full relative border-2 border-yellow-400"
+            style={{ boxShadow: '0 0 40px rgba(241,196,15,0.4)' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <button className="absolute top-3 right-3 text-yellow-400 hover:text-yellow-200" onClick={closeModal}>
               <X size={24} />
             </button>
-
-            <div style={styles.modalContent}>
-              <h2 style={styles.modalTitle}>🎉 Gratulujeme!</h2>
-              <p style={styles.modalText}>Vyhrál jsi:</p>
-              <div style={styles.prizeDisplay}>
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-yellow-400 mb-3">🎉 Gratulujeme!</h2>
+              <p className="text-cyan-400 text-lg mb-4">Vyhrál jsi:</p>
+              <div className="text-2xl font-bold text-yellow-400 bg-yellow-400/10 border-2 border-yellow-400 rounded-xl p-4 mb-5">
                 {prizes[winnerIndex]?.fullName}
-                {earnedPoints > 0 && <div style={{fontSize: '24px', marginTop: '10px'}}>+{earnedPoints} kreditů</div>}
+                {earnedPoints > 0 && <div className="text-base mt-2">+{earnedPoints} kreditů</div>}
               </div>
-              <p style={styles.modalDescription}>
+              <p className="text-slate-300 text-sm">
                 {earnedPoints === 0 ? 'Zkus to znovu!' : 'Kredity byly přidány do tvého účtu!'}
               </p>
             </div>
@@ -239,201 +244,6 @@ const WheelOfFortune = () => {
       )}
     </div>
   );
-};
-
-const styles = {
-  container: {
-    background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif',
-    borderRadius: '16px',
-    border: '1px solid rgba(139, 92, 246, 0.3)',
-    minHeight: '450px'
-  },
-
-  wheelSection: {
-    textAlign: 'center',
-    width: '100%'
-  },
-
-  title: {
-    fontSize: '28px',
-    fontWeight: 'bold',
-    color: '#ff0000',
-    marginBottom: '8px',
-    textShadow: '0 0 20px rgba(255, 0, 0, 0.6)'
-  },
-
-  subtitle: {
-    fontSize: '14px',
-    color: '#00d4ff',
-    marginBottom: '16px',
-    textShadow: '0 0 10px rgba(0, 212, 255, 0.3)'
-  },
-
-  wheelContainer: {
-    position: 'relative',
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: '20px',
-    filter: 'drop-shadow(0 0 30px rgba(0, 212, 255, 0.4))'
-  },
-
-  canvas: {
-    filter: 'drop-shadow(0 0 20px rgba(241, 196, 15, 0.3))',
-    maxWidth: '100%',
-    width: '200px',
-    height: '200px'
-  },
-
-  pointer: {
-    position: 'absolute',
-    top: '-5px',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: '0',
-    height: '0',
-    borderLeft: '6px solid transparent',
-    borderRight: '6px solid transparent',
-    borderTop: '10px solid #f1c40f',
-    filter: 'drop-shadow(0 0 10px rgba(241, 196, 15, 0.8))',
-    zIndex: 10
-  },
-
-  buttonContainer: {
-    display: 'flex',
-    gap: '15px',
-    justifyContent: 'center',
-    flexWrap: 'wrap'
-  },
-
-  unlockButton: {
-    padding: '12px 24px',
-    fontSize: '13px',
-    fontWeight: 'bold',
-    border: 'none',
-    borderRadius: '8px',
-    background: 'linear-gradient(135deg, #00d4ff, #0099cc)',
-    color: '#fff',
-    cursor: 'pointer',
-    boxShadow: '0 0 20px rgba(0, 212, 255, 0.6)',
-    transition: 'all 0.3s ease',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-    width: '100%'
-  },
-
-  spinButton: {
-    padding: '12px 24px',
-    fontSize: '13px',
-    fontWeight: 'bold',
-    border: 'none',
-    borderRadius: '8px',
-    background: 'linear-gradient(135deg, #f1c40f, #ffaa00)',
-    color: '#2c3e50',
-    cursor: 'pointer',
-    boxShadow: '0 0 20px rgba(241, 196, 15, 0.6)',
-    transition: 'all 0.3s ease',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-    width: '100%'
-  },
-
-  modalOverlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: 'rgba(0, 0, 0, 0.8)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1000,
-    padding: '20px'
-  },
-
-  modal: {
-    background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
-    borderRadius: '20px',
-    padding: '40px 30px',
-    maxWidth: '400px',
-    width: '100%',
-    position: 'relative',
-    border: '2px solid #f1c40f',
-    boxShadow: '0 0 40px rgba(241, 196, 15, 0.4), 0 0 80px rgba(0, 212, 255, 0.2)'
-  },
-
-  closeButton: {
-    position: 'absolute',
-    top: '15px',
-    right: '15px',
-    background: 'none',
-    border: 'none',
-    color: '#f1c40f',
-    cursor: 'pointer',
-    padding: '5px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-
-  modalContent: {
-    textAlign: 'center'
-  },
-
-  modalTitle: {
-    fontSize: '32px',
-    color: '#f1c40f',
-    marginBottom: '15px',
-    textShadow: '0 0 10px rgba(241, 196, 15, 0.5)'
-  },
-
-  modalText: {
-    fontSize: '18px',
-    color: '#00d4ff',
-    marginBottom: '20px'
-  },
-
-  prizeDisplay: {
-    fontSize: '28px',
-    fontWeight: 'bold',
-    color: '#f1c40f',
-    background: 'rgba(241, 196, 15, 0.1)',
-    padding: '20px',
-    borderRadius: '10px',
-    border: '2px solid #f1c40f',
-    marginBottom: '25px',
-    textShadow: '0 0 10px rgba(241, 196, 15, 0.6)'
-  },
-
-  modalDescription: {
-    fontSize: '14px',
-    color: '#cbd5e1',
-    marginBottom: '25px',
-    lineHeight: '1.6'
-  },
-
-  claimButton: {
-    display: 'inline-block',
-    padding: '14px 35px',
-    fontSize: '15px',
-    fontWeight: 'bold',
-    border: 'none',
-    borderRadius: '50px',
-    background: 'linear-gradient(135deg, #f1c40f, #ffaa00)',
-    color: '#2c3e50',
-    textDecoration: 'none',
-    cursor: 'pointer',
-    boxShadow: '0 0 20px rgba(241, 196, 15, 0.6)',
-    transition: 'all 0.3s ease',
-    textTransform: 'uppercase',
-    letterSpacing: '1px'
-  }
 };
 
 export default WheelOfFortune;
