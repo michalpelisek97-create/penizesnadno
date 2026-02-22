@@ -218,11 +218,13 @@ export default function Home() {
         </React.Suspense>
 
         {/* Sekce Kolo Štěstí */}
-        {selectedCategory === 'wheel' &&
-        <React.Suspense fallback={<div className="h-64 flex items-center justify-center text-white">Načítám...</div>}>
-            <WheelOfFortune />
-          </React.Suspense>
-        }
+         {selectedCategory === 'wheel' &&
+         <React.Suspense fallback={<div className="h-64 flex items-center justify-center text-white">Načítám...</div>}>
+             <div data-wheel-section>
+               <WheelOfFortune />
+             </div>
+           </React.Suspense>
+         }
 
         {/* Sekce Odkazy (Bonusy) */}
           {selectedCategory !== 'Článek' && selectedCategory !== 'wheel' &&
