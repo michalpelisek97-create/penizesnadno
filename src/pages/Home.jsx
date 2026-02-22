@@ -16,6 +16,7 @@ import { createPageUrl } from '@/utils';
 import LinkCard from '@/components/links/LinkCard';
 import WheelCard from '@/components/wheel/WheelCard';
 import AdBanner from '@/components/ads/AdBanner';
+import LoginSection from '@/components/auth/LoginSection';
 import { generateSchemaData } from '@/components/utils/seoHelper';
 
 // Lazy import těžkých komponent
