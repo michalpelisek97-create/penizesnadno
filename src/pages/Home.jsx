@@ -235,23 +235,23 @@ export default function Home() {
               ) : (
 
           filteredLinks.map((link, index) => {
+            if (index === 0) return null; // Již je vykresleno výše
             const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
             const isAirBank = link.title.includes('Air Bank');
             return (
               <React.Fragment key={link.id}>
-                      <div className="relative">
-                        {isFavorite &&
-                  <div className="bg-gradient-to-r text-[10px] mx-2 my-5 py-2 font-bold rounded-full absolute -top-3 -right-2 z-20 from-amber-500 to-orange-600 shadow-lg border-2 border-white animate-bounce">
-                            🔥 NEJOBLÍBENĚJŠÍ
-                          </div>
-                  }
-                        <LinkCard link={link} priority={index === 0} loading={index < 2 ? "eager" : "lazy"} />
-                      </div>
-                      {isAirBank && <WheelCard />}
-                    </React.Fragment>);
-
+                <div className="relative">
+                  {isFavorite && (
+                    <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
+                      🔥 NEJOBLÍBENĚJŠÍ
+                    </div>
+                  )}
+                  <LinkCard link={link} priority={false} loading={index < 3 ? "eager" : "lazy"} />
+                </div>
+                {isAirBank && <WheelCard />}
+              </React.Fragment>
+            );
           })
-          }
             </div>
         }
 
