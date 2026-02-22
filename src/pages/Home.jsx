@@ -156,10 +156,7 @@ export default function Home() {
     }
   }, [filteredLinks]);
 
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [handleScroll]);
+
 
   // 5. Marketingové sdílení
   const handleShare = async () => {
