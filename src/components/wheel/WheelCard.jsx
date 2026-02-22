@@ -152,7 +152,7 @@ export default function WheelCard() {
           {/* Content */}
           <div className="p-5 flex flex-col flex-1">
             <p className="text-lg font-semibold text-white mb-2 line-clamp-1">🎡 Kolo Štěstí</p>
-            <p className="text-sm text-slate-400 mb-4 line-clamp-2 leading-relaxed">Odemkni a vyhraj skvělé bonusy! Coinbase, AirBank, RollerCoin a další.</p>
+            <p className="text-sm text-slate-400 mb-4 line-clamp-2 leading-relaxed">Odemkni a vyhraj skvělé bonusy! CTpool, AirBank, RollerCoin a další.</p>
 
             {!isUnlocked ? (
               <button
