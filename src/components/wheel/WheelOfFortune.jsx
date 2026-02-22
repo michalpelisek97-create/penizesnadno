@@ -292,14 +292,14 @@ const styles = {
 
   pointer: {
     position: 'absolute',
-    top: '-10px',
+    top: '-5px',
     left: '50%',
     transform: 'translateX(-50%)',
     width: '0',
     height: '0',
-    borderLeft: '15px solid transparent',
-    borderRight: '15px solid transparent',
-    borderTop: '25px solid #f1c40f',
+    borderLeft: '6px solid transparent',
+    borderRight: '6px solid transparent',
+    borderTop: '10px solid #f1c40f',
     filter: 'drop-shadow(0 0 10px rgba(241, 196, 15, 0.8))',
     zIndex: 10
   },
