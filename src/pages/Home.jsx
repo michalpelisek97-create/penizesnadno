@@ -217,8 +217,9 @@ export default function Home() {
         </div>
 
         {/* Notifikace - lazy animace po načtení stránky */}
-        <div className="flex justify-center mb-12 h-10">
-          <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-400/50 shadow-sm">
+        <div className="flex justify-center items-center gap-6 mb-12 h-10">
+            <div className="hidden md:block" id="desktop-ad-notif" style={{height: '50px', width: '320px'}} />
+            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-400/50 shadow-sm">
             <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
             <p className="text-sm font-medium text-emerald-100 text-center">
               <span className="font-bold text-white">{notifications[notifIndex].name}</span> získal(a) bonus u <span className="text-emerald-300 font-bold">{notifications[notifIndex].app}</span>
