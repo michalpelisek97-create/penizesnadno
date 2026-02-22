@@ -28,8 +28,6 @@ const WheelOfFortune = () => {
 
   const adUrl = 'https://www.effectivegatecpm.com/ij547nkxe?key=8b2ae4a3228e917760d4cc1d37ea46f6';
 
-  // Kolo je vždy zamčené při příchodu na stránku
-
   // Kreslení kola na canvas
   useEffect(() => {
     const canvas = canvasRef.current;
