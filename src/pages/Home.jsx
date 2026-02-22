@@ -257,9 +257,21 @@ export default function Home() {
           </>
           )}
 
+        {/* Reklama - Lazy load */}
+        <React.Suspense fallback={<div className="h-[50px] sm:h-[90px]" />}>
+          <AdBanner />
+        </React.Suspense>
+
+        {/* Sekce Kolo Štěstí */}
+        {selectedCategory === 'wheel' && (
+          <React.Suspense fallback={<div className="h-64 flex items-center justify-center text-white">Načítám...</div>}>
+            <WheelOfFortune />
+          </React.Suspense>
+        )}
+
         {/* Sekce Články */}
-          {(selectedCategory === 'Článek' || selectedCategory === 'all') &&
-        <div className="space-y-8">
+        {(selectedCategory === 'Článek' || selectedCategory === 'all') && (
+          <div className="space-y-8">
                <div className="flex items-center gap-3 mb-8 border-b pb-6 border-emerald-600/30">
                 <FileText className="w-6 h-6 text-emerald-300" />
                 <h2 className="text-3xl font-bold text-white">Návody a články</h2>
