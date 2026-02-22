@@ -143,14 +143,15 @@ export default function Home() {
   }, [filteredLinks]);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = useCallback(() => {
       if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-        setDisplayCount(prev => prev + 6);
+        setDisplayCount(prev => Math.min(prev + 6, links.length));
       }
-    };
-    window.addEventListener('scroll', handleScroll);
+    }, [links.length]);
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [links.length]);
 
   // 5. Marketingové sdílení
   const handleShare = async () => {
