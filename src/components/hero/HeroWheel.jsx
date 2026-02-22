@@ -132,35 +132,35 @@ export default function HeroWheel({ onWheelClick }) {
 
         @media (max-width: 640px) {
           .hero-wheel-container {
-            padding: 25px 20px;
-            margin-bottom: 20px;
-            border-radius: 15px;
+            padding: 12px 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
           }
 
           .hero-wheel-title {
-            font-size: 1.5em;
-            margin-bottom: 12px;
+            font-size: 0.75em;
+            margin-bottom: 6px;
           }
 
           .hero-wheel-subtitle {
-            font-size: 0.95em;
-            margin-bottom: 18px;
+            font-size: 0.475em;
+            margin-bottom: 9px;
           }
 
           .hero-tip-box {
-            padding: 15px 16px;
-            margin-bottom: 18px;
-            border-radius: 10px;
+            padding: 7px 8px;
+            margin-bottom: 9px;
+            border-radius: 5px;
           }
 
           .hero-tip-text {
-            font-size: 0.9em;
+            font-size: 0.45em;
           }
 
           .hero-cta-button {
-            padding: 15px 30px;
-            font-size: 0.95em;
-            border-radius: 15px;
+            padding: 7px 15px;
+            font-size: 0.475em;
+            border-radius: 8px;
           }
         }
       `}</style>
