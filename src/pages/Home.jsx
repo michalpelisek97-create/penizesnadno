@@ -230,11 +230,13 @@ export default function Home() {
                     const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
                     const isAirBank = link.title.includes('Air Bank');
                     return (
-                      <React.Fragment key={link.id}>
+                      <div key={link.id}>
                         {index === 2 && (
-                          <React.Suspense fallback={<Skeleton className="h-96 w-full rounded-2xl" />}>
-                            <WheelOfFortune />
-                          </React.Suspense>
+                          <div key="wheel-card">
+                            <React.Suspense fallback={<Skeleton className="h-96 w-full rounded-2xl" />}>
+                              <WheelOfFortune />
+                            </React.Suspense>
+                          </div>
                         )}
                         <div className="relative">
                           {isFavorite && (
@@ -245,7 +247,7 @@ export default function Home() {
                           <LinkCard link={link} priority={index === 0} loading={index < 2 ? "eager" : "lazy"} />
                         </div>
                         {isAirBank && <WheelCard />}
-                      </React.Fragment>
+                      </div>
                     );
                   })}
                 </>
