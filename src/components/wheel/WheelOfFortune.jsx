@@ -221,19 +221,13 @@ const WheelOfFortune = () => {
             <div style={styles.modalContent}>
               <h2 style={styles.modalTitle}>🎉 Gratulujeme!</h2>
               <p style={styles.modalText}>Vyhrál jsi:</p>
-              <div style={styles.prizeDisplay}>{prizes[winnerIndex]?.fullName}</div>
+              <div style={styles.prizeDisplay}>
+                {prizes[winnerIndex]?.fullName}
+                {earnedPoints > 0 && <div style={{fontSize: '24px', marginTop: '10px'}}>+{earnedPoints} bodů</div>}
+              </div>
               <p style={styles.modalDescription}>
-                Klikni na tlačítko níže a vyzvedni si svou odměnu!
+                {earnedPoints === 0 ? 'Zkus to znovu!' : 'Body byly přidány do tvého účtu!'}
               </p>
-
-              <a
-                href={decodeLink(encodedLinks[winnerIndex], winnerIndex)}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={styles.claimButton}
-              >
-                💰 VYZVEDNOUT ODMĚNU
-              </a>
             </div>
           </div>
         </div>
