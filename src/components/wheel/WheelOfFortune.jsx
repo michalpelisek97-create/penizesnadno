@@ -243,33 +243,35 @@ const WheelOfFortune = () => {
 
 const styles = {
   container: {
-    minHeight: '100vh',
     background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
     display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     padding: '20px',
-    fontFamily: 'Arial, sans-serif'
+    fontFamily: 'Arial, sans-serif',
+    borderRadius: '16px',
+    border: '1px solid rgba(139, 92, 246, 0.3)',
+    minHeight: '450px'
   },
 
   wheelSection: {
     textAlign: 'center',
-    maxWidth: '600px',
     width: '100%'
   },
 
   title: {
-    fontSize: '84px',
+    fontSize: '28px',
     fontWeight: 'bold',
     color: '#ff0000',
-    marginBottom: '10px',
+    marginBottom: '8px',
     textShadow: '0 0 20px rgba(255, 0, 0, 0.6)'
   },
 
   subtitle: {
-    fontSize: '18px',
+    fontSize: '14px',
     color: '#00d4ff',
-    marginBottom: '30px',
+    marginBottom: '16px',
     textShadow: '0 0 10px rgba(0, 212, 255, 0.3)'
   },
 
@@ -277,13 +279,15 @@ const styles = {
     position: 'relative',
     display: 'flex',
     justifyContent: 'center',
-    marginBottom: '40px',
+    marginBottom: '20px',
     filter: 'drop-shadow(0 0 30px rgba(0, 212, 255, 0.4))'
   },
 
   canvas: {
     filter: 'drop-shadow(0 0 20px rgba(241, 196, 15, 0.3))',
-    maxWidth: '100%'
+    maxWidth: '100%',
+    width: '200px',
+    height: '200px'
   },
 
   pointer: {
