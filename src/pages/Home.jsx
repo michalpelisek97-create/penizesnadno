@@ -86,23 +86,29 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [notifications.length]);
 
-  // 4. API Data Fetching - optimalizováno pro rychlé načtení
-  const { data: allData = [], isLoading } = useQuery({
-    queryKey: ['referral-links'],
-    queryFn: async () => {
-      const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 300);
-      return data.map(({ description, content, ...rest }) => {
-        return {
-          ...rest,
-          description: description ? description.substring(0, 100) : null
-        };
-      });
-    },
-    staleTime: 60 * 60 * 1000,
-    gcTime: 3 * 60 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false
-  });
+  // 4. API Data Fetching - odložit o 2.5s pro lepší LCP
+   useEffect(() => {
+     const timeout = setTimeout(() => setShouldLoadData(true), 2500);
+     return () => clearTimeout(timeout);
+   }, []);
+
+   const { data: allData = [], isLoading } = useQuery({
+     queryKey: ['referral-links'],
+     queryFn: async () => {
+       const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 300);
+       return data.map(({ description, content, ...rest }) => {
+         return {
+           ...rest,
+           description: description ? description.substring(0, 100) : null
+         };
+       });
+     },
+     enabled: shouldLoadData,
+     staleTime: 60 * 60 * 1000,
+     gcTime: 3 * 60 * 60 * 1000,
+     refetchOnWindowFocus: false,
+     refetchOnMount: false
+   });
 
   // Rozdělení dat na bonusy a články na základě příznaku is_article
   const links = useMemo(() => allData.filter((item) => !item.is_article), [allData]);
