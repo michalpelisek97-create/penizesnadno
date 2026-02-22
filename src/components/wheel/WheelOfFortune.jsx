@@ -137,18 +137,23 @@ const WheelOfFortune = () => {
         setIsSpinning(false);
         setShowModal(true);
         
-        // Přidat body uživateli
+        // Přidat kredity uživateli
         if (user && prizes[randomPrize].points > 0) {
           base44.entities.UserCredits.filter({email: user.email})
             .then(existing => {
+              const newBalance = (existing[0]?.balance || 0) + prizes[randomPrize].points;
+              const newEarned = (existing[0]?.total_earned || 0) + prizes[randomPrize].points;
+              
               if (existing.length > 0) {
                 base44.entities.UserCredits.update(existing[0].id, {
-                  points: existing[0].points + prizes[randomPrize].points
+                  balance: newBalance,
+                  total_earned: newEarned
                 });
               } else {
                 base44.entities.UserCredits.create({
                   email: user.email,
-                  points: prizes[randomPrize].points
+                  balance: prizes[randomPrize].points,
+                  total_earned: prizes[randomPrize].points
                 });
               }
             });
