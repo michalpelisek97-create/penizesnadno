@@ -68,7 +68,7 @@ const WheelOfFortune = () => {
       ctx.textAlign = 'right';
       ctx.fillStyle = '#fff';
       ctx.font = 'bold 32px Arial';
-      ctx.fillText(prize.symbol, radius - 40, 12);
+      ctx.fillText(prize.text, radius - 40, 12);
       ctx.restore();
     });
 
