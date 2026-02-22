@@ -162,6 +162,8 @@ export default function Home() {
      setTimeout(() => {
        if (window.innerWidth < 768) {
          createAdScript('mobile-ad-top');
+       } else {
+         createAdScript('desktop-ad-notif');
        }
        createAdScript('mobile-ad-articles');
      }, 500);
