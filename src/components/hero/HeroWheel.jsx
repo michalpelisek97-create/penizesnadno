@@ -167,8 +167,8 @@ export default function HeroWheel({ onWheelClick }) {
 
       <div className="hero-wheel-container" id="hero-wheel">
         <h1 className="hero-wheel-title">💵 PENÍZE RYCHLE A BEZ INVESTIC</h1>
-        <p className="hero-wheel-subtitle">
-          Vyzvedni si své bonusy: 3 000 Kč od bank a krypto hrou RollerCoin!
+        <p className="hero-wheel-subtitle">Vyzvedni si své bonusy: 3 500 Kč od bank a krypto například hrou RollerCoin!
+
         </p>
 
         <div className="hero-tip-box">
@@ -181,6 +181,6 @@ export default function HeroWheel({ onWheelClick }) {
           🎡 ROZTOČIT KOLO ŠTĚSTÍ
         </button>
       </div>
-    </>
-  );
+    </>);
+
 }
