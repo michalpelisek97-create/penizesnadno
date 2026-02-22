@@ -98,13 +98,23 @@ const WheelOfFortune = () => {
     }, 500);
   };
 
+  const getWeightedPrizeIndex = () => {
+    const rand = Math.random() * 100;
+    if (rand < 50) return 0; // 50% - Nic
+    if (rand < 90) return 1; // 40% - 5 bodů
+    if (rand < 120) return 2; // 30% - 7 bodů
+    if (rand < 129) return 3; // 9% - 10 bodů
+    if (rand < 134) return 4; // 5% - 50 bodů
+    return 5; // 1% - 1000 bodů
+  };
+
   const handleSpin = () => {
     if (!isUnlocked || isSpinning) return;
 
     setIsSpinning(true);
     const spinCount = 5 + Math.random() * 5;
-    const randomPrize = Math.floor(Math.random() * prizes.length);
-    const finalRotation = spinCount * 360 + (randomPrize * 72);
+    const randomPrize = getWeightedPrizeIndex();
+    const finalRotation = spinCount * 360 + (randomPrize * 60);
 
     // Animate rotation
     let currentRotation = 0;
