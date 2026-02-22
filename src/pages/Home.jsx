@@ -216,7 +216,7 @@ export default function Home() {
           {selectedCategory !== 'Článek' && selectedCategory !== 'wheel' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
               {isLoading ? (
-                [...Array(6)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
+                [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
               ) : (
                 filteredLinks.map((link, index) => {
                   const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
@@ -227,7 +227,7 @@ export default function Home() {
                           🔥 NEJOBLÍBENĚJŠÍ
                         </div>
                       )}
-                      <LinkCard link={link} priority={index < 3} loading={index < 3 ? "eager" : "lazy"} />
+                      <LinkCard link={link} priority={index === 0} loading={index < 2 ? "eager" : "lazy"} />
                     </div>
                   );
                 })
