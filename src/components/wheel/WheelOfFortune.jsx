@@ -144,7 +144,6 @@ const WheelOfFortune = () => {
   const closeModal = () => {
     setShowModal(false);
     setIsUnlocked(false);
-    localStorage.removeItem('wheel_unlocked');
   };
 
   return (
