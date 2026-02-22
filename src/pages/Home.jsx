@@ -24,16 +24,28 @@ const WheelOfFortune = React.lazy(() => import('@/components/wheel/WheelOfFortun
 // 1. Komponenta pro NEKONEČNĚ STOUPAJÍCÍ počítadlo
 const InfiniteCounter = ({ startValue }) => {
   const [count, setCount] = useState(startValue);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsVisible(entry.isIntersecting);
+    }, { threshold: 0.5 });
+
+    const el = document.querySelector('[data-counter]');
+    if (el) observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible) return;
     const interval = setInterval(() => {
       setCount((prev) => prev + Math.floor(Math.random() * 5) + 1);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isVisible]);
 
   return (
-    <span className="tabular-nums">
+    <span className="tabular-nums" data-counter>
       {count.toLocaleString('cs-CZ')} Kč
     </span>);
 
