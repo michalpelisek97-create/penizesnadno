@@ -15,6 +15,7 @@ import { createPageUrl } from '@/utils';
 
 import LinkCard from '@/components/links/LinkCard';
 import WheelCard from '@/components/wheel/WheelCard';
+import HeroWheel from '@/components/hero/HeroWheel';
 import { generateSchemaData } from '@/components/utils/seoHelper';
 
 // Lazy import těžkých komponent
