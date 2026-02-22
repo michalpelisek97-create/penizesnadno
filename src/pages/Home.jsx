@@ -112,9 +112,9 @@ export default function Home() {
      enabled: displayCount > 18
    });
 
-  // Rozdělení dat na bonusy a články - use full data when available
-   const dataToUse = displayCount > 45 && allDataFull.length > 0 ? allDataFull : allData;
-   const links = useMemo(() => dataToUse.filter((item) => !item.is_article), [dataToUse]);
+  // Kombinuj data - initial + lazy loaded
+   const combinedData = useMemo(() => [...allData, ...allDataMore], [allData, allDataMore]);
+   const links = useMemo(() => combinedData.filter((item) => !item.is_article), [combinedData]);
    const articles = useMemo(() => allData.filter((item) => item.is_article), [allData]);
 
   // FILTRACE: Logika pro zobrazení bonusů
