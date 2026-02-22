@@ -235,7 +235,7 @@ export default function Home() {
               ) : (
 
           filteredLinks.map((link, index) => {
-            if (index === 0) return null; // Již je vykresleno výše
+            if (index === 0) return null;
             const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
             const isAirBank = link.title.includes('Air Bank');
             return (
@@ -251,9 +251,11 @@ export default function Home() {
                 {isAirBank && <WheelCard />}
               </React.Fragment>
             );
-          })
-            </div>
-        }
+          })}
+          )}
+          </div>
+          </>
+          )}
 
         {/* Sekce Články */}
           {(selectedCategory === 'Článek' || selectedCategory === 'all') &&
