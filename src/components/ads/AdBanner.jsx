@@ -18,10 +18,7 @@ export default function AdBanner() {
 </html>`;
 
   return (
-    <div className="flex justify-center my-6">
-      <div className="rounded-xl overflow-hidden ring-2 ring-amber-400/40 shadow-lg shadow-amber-500/20 bg-black/30 backdrop-blur-sm p-1">
-        <div className="text-[10px] text-amber-400/60 text-center mb-1 uppercase tracking-widest font-semibold">Reklama</div>
-
+    <div className="flex justify-center mb-2 mt-0">
         {/* Mobilní reklama */}
         <div className="block sm:hidden">
           <iframe
@@ -41,7 +38,6 @@ export default function AdBanner() {
             scrolling="no"
           />
         </div>
-      </div>
     </div>
   );
 }
