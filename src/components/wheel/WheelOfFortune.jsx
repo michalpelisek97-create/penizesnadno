@@ -170,43 +170,53 @@ const WheelOfFortune = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-purple-500/40 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 p-6 flex flex-col h-full">
-      <h2 className="text-xl font-semibold text-white mb-2">🎡 Kolo Štěstí</h2>
-      <p className="text-sm text-slate-400 mb-4">Odemkni a vyhraj kredity!</p>
+    <div className="group relative">
+      <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 border border-purple-500/40 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
+        {/* Header */}
+        <div className="relative h-40 overflow-hidden bg-gradient-to-br from-purple-900 to-indigo-900 flex flex-col items-center justify-center">
+          {/* Pointer */}
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10"
+            style={{ width: 0, height: 0, borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderTop: '14px solid #f1c40f', filter: 'drop-shadow(0 0 6px rgba(241,196,15,0.8))' }}
+          />
+          <canvas
+            ref={canvasRef}
+            width={160}
+            height={160}
+            style={{ maxWidth: '100%', filter: 'drop-shadow(0 0 10px rgba(241,196,15,0.3))' }}
+          />
+          {!user && (
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <span className="text-3xl">🔒</span>
+            </div>
+          )}
+        </div>
 
-      {/* Kolo */}
-      <div className="flex justify-center mb-6 relative flex-1">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10"
-          style={{ width: 0, height: 0, borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderTop: '14px solid #f1c40f', filter: 'drop-shadow(0 0 6px rgba(241,196,15,0.8))' }}
-        />
-        <canvas
-          ref={canvasRef}
-          width={240}
-          height={240}
-          className="max-w-full"
-          style={{ filter: 'drop-shadow(0 0 10px rgba(241,196,15,0.3))' }}
-        />
-      </div>
+        {/* Content */}
+        <div className="p-5 flex flex-col flex-1">
+          <p className="text-lg font-semibold text-white mb-2 line-clamp-1">🎡 Kolo Štěstí</p>
+          <p className="text-sm text-slate-400 mb-4 line-clamp-2 leading-relaxed">Odemkni a vyhraj kredity! Každý spin ti přidá peníze do účtu.</p>
 
-      {/* Tlačítka */}
-      <div className="flex gap-2 w-full">
-        {!user ? (
-          <button disabled className="w-full bg-slate-600 text-white font-medium py-2 rounded-lg text-xs font-bold uppercase opacity-50 cursor-not-allowed">
-            🔒 Přihlaste se
-          </button>
-        ) : !isUnlocked ? (
-          <button onClick={handleAdClick} className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-medium py-2 rounded-lg text-xs font-bold uppercase transition-all">
-            🔓 Odemknout
-          </button>
-        ) : (
-          <button
-            onClick={handleSpin}
-            disabled={isSpinning}
-            className="flex-1 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-slate-900 font-bold py-2 rounded-lg text-xs uppercase disabled:opacity-70 disabled:cursor-not-allowed transition-all"
-          >
-            {isSpinning ? '⏳ Točím...' : '🎯 Roztočit'}
-          </button>
-        )}
+          {!user ? (
+            <button disabled className="w-full bg-slate-600 text-white font-medium py-3 rounded-xl text-sm font-bold uppercase opacity-50 cursor-not-allowed">
+              Přihlaste se
+            </button>
+          ) : !isUnlocked ? (
+            <button
+              onClick={handleAdClick}
+              className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:opacity-90 text-white font-medium py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-sm font-bold uppercase tracking-wide"
+            >
+              🔓 Odemknout kolo
+            </button>
+          ) : (
+            <button
+              onClick={handleSpin}
+              disabled={isSpinning}
+              className="w-full bg-gradient-to-r from-amber-400 to-orange-500 hover:opacity-90 text-slate-900 font-bold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-sm uppercase tracking-wide disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isSpinning ? '⏳ Točím...' : '🎯 Roztočit kolo'}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Modal */}
