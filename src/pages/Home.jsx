@@ -144,7 +144,7 @@ export default function Home() {
   useEffect(() => {
     const handleScroll = () => {
       if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-        setDisplayCount(prev => prev + 12);
+        setDisplayCount(prev => prev + 6);
       }
     };
     window.addEventListener('scroll', handleScroll);
