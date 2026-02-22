@@ -170,50 +170,47 @@ const WheelOfFortune = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.wheelSection}>
-        <h1 style={styles.title}>🎡 Kolo Štěstí</h1>
-        <p style={styles.subtitle}>Odemkni a vyhraj skvělé bonusy!</p>
+    <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-purple-500/40 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 p-6 flex flex-col h-full">
+      <h2 className="text-xl font-semibold text-white mb-2">🎡 Kolo Štěstí</h2>
+      <p className="text-sm text-slate-400 mb-4">Odemkni a vyhraj kredity!</p>
 
-        {/* Kolo */}
-        <div style={styles.wheelContainer}>
-          <div style={styles.pointer}></div>
-          <canvas
-            ref={canvasRef}
-            width={640}
-            height={640}
-            style={styles.canvas}
-          />
-        </div>
-
-        {/* Login check */}
-        {!user && (
-          <p style={styles.subtitle}>Aby ses mohl účastnit, musíš se nejdříve přihlásit!</p>
-        )}
-
-        {/* Tlačítka */}
-        <div style={styles.buttonContainer}>
-          {!user ? (
-            <p style={{color: '#00d4ff', fontSize: '16px'}}>Přihlašte se pro účast</p>
-          ) : !isUnlocked ? (
-            <button style={styles.unlockButton} onClick={handleAdClick}>
-              🎬 KLIKNI NA REKLAMU
-            </button>
-          ) : (
-            <button
-              style={{
-                ...styles.spinButton,
-                opacity: isSpinning ? 0.7 : 1,
-                cursor: isSpinning ? 'not-allowed' : 'pointer'
-              }}
-              onClick={handleSpin}
-              disabled={isSpinning}
-            >
-              {isSpinning ? '⏳ TOČENÍ...' : '🎯 ROZTOČIT KOLO'}
-            </button>
-          )}
-        </div>
+      {/* Kolo */}
+      <div className="flex justify-center mb-4 relative">
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10"
+          style={{ width: 0, height: 0, borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderTop: '14px solid #f1c40f', filter: 'drop-shadow(0 0 6px rgba(241,196,15,0.8))' }}
+        />
+        <canvas
+          ref={canvasRef}
+          width={300}
+          height={300}
+          style={{ maxWidth: '100%', filter: 'drop-shadow(0 0 10px rgba(241,196,15,0.3))' }}
+        />
       </div>
+
+      {/* Login check */}
+      {!user && (
+        <p className="text-xs text-blue-300 text-center mb-4">Přihlaste se pro účast</p>
+      )}
+
+      {/* Tlačítka */}
+      <div className="flex justify-center">
+        {!user ? (
+          <p className="text-xs text-blue-300">Přihlašte se</p>
+        ) : !isUnlocked ? (
+          <button onClick={handleAdClick} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:opacity-90 text-white font-medium py-2 rounded-lg text-xs font-bold uppercase">
+            🔓 Odemknout
+          </button>
+        ) : (
+          <button
+            onClick={handleSpin}
+            disabled={isSpinning}
+            className="w-full bg-gradient-to-r from-amber-400 to-orange-500 hover:opacity-90 text-slate-900 font-bold py-2 rounded-lg text-xs uppercase disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            {isSpinning ? '⏳ Točím...' : '🎯 Spin'}
+          </button>
+        )}
+      </div>
+    </div>
 
       {/* Modal */}
       {showModal && (
