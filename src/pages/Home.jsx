@@ -205,23 +205,34 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* Reklama - Lazy load */}
-        <React.Suspense fallback={<div className="h-[50px] sm:h-[90px]" />}>
-          <AdBanner />
-        </React.Suspense>
+        {/* Sekce Odkazy (Bonusy) - render prvního linku bezprostředně */}
+        {selectedCategory !== 'Článek' && selectedCategory !== 'wheel' && (
+          <>
+            {/* Prvního LinkCard - kritické pro LCP */}
+            {!isLoading && filteredLinks.length > 0 && (
+              <div className="mb-6">
+                {(() => {
+                  const link = filteredLinks[0];
+                  const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
+                  return (
+                    <div className="relative" style={{ contain: 'layout style paint' }}>
+                      {isFavorite && (
+                        <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
+                          🔥 NEJOBLÍBENĚJŠÍ
+                        </div>
+                      )}
+                      <LinkCard link={link} priority={true} loading="eager" />
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
 
-        {/* Sekce Kolo Štěstí */}
-        {selectedCategory === 'wheel' &&
-        <React.Suspense fallback={<div className="h-64 flex items-center justify-center text-white">Načítám...</div>}>
-            <WheelOfFortune />
-          </React.Suspense>
-        }
-
-        {/* Sekce Odkazy (Bonusy) */}
-          {selectedCategory !== 'Článek' && selectedCategory !== 'wheel' &&
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20" style={{ contain: 'layout style paint' }}>
-              {isLoading ?
-          [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />) :
+            {/* Zbytek linků */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20" style={{ contain: 'layout style paint' }}>
+              {isLoading ? (
+                [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
+              ) : (
 
           filteredLinks.map((link, index) => {
             const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
