@@ -181,11 +181,18 @@ const WheelOfFortune = () => {
           />
         </div>
 
+        {/* Login check */}
+        {!user && (
+          <p style={styles.subtitle}>Aby ses mohl účastnit, musíš se nejdříve přihlásit!</p>
+        )}
+
         {/* Tlačítka */}
         <div style={styles.buttonContainer}>
-          {!isUnlocked ? (
-            <button style={styles.unlockButton} onClick={handleUnlock}>
-              🔓 ODEMKNOUT KOLO
+          {!user ? (
+            <p style={{color: '#00d4ff', fontSize: '16px'}}>Přihlašte se pro účast</p>
+          ) : !isUnlocked ? (
+            <button style={styles.unlockButton} onClick={handleAdClick}>
+              🎬 KLIKNI NA REKLAMU
             </button>
           ) : (
             <button
