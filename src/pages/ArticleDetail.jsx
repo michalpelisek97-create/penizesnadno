@@ -16,12 +16,14 @@ export default function ArticleDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const id = paramId || urlParams.get('id');
 
-  // Fetchujeme plná data článku přímo podle id (vždy čerstvá data včetně content)
+  // Fetchujeme plná data článku - načteme vše a najdeme podle id
   const { data: article, isLoading } = useQuery({
     queryKey: ['article-full', id],
     queryFn: async () => {
-      const results = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 500);
-      return results.find(r => r.id === id) || null;
+      const results = await base44.entities.ReferralLink.list('sort_order', 500);
+      const found = results.find(r => r.id === id);
+      console.log('Hledám id:', id, 'Nalezeno:', found?.title, 'Celkem záznamů:', results.length);
+      return found || null;
     },
     enabled: !!id,
   });
