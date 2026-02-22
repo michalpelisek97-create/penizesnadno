@@ -144,6 +144,7 @@ export default function ArticleDetail() {
         .article-wrap .validity { text-align: center; color: #666; font-weight: bold; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; }
         .article-wrap .bank-name { font-weight: bold; font-size: 1.1em; color: #333; }
         .article-wrap .reward { color: #27ae60; font-weight: bold; font-size: 1.2em; text-align: right; }
+        .article-wrap img { max-width: 100%; height: auto; display: block; margin: 20px 0; border-radius: 8px; }
       `}</style>
 
       <div className="max-w-4xl mx-auto px-4 py-12">
