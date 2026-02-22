@@ -48,7 +48,17 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
         <div className="relative h-40 overflow-hidden bg-gradient-to-br from-slate-200 to-slate-300">
           {link.image_url && !imgError ? (
             <img
-              src={link.image_url}
+              src={
+                link.image_url?.includes('images.unsplash.com')
+                  ? link.image_url.split('?')[0] + '?w=400&q=50&fm=webp&fit=crop'
+                  : link.image_url
+              }
+              srcSet={
+                link.image_url?.includes('images.unsplash.com')
+                  ? `${link.image_url.split('?')[0]}?w=200&q=50&fm=webp&fit=crop 200w, ${link.image_url.split('?')[0]}?w=400&q=50&fm=webp&fit=crop 400w`
+                  : undefined
+              }
+              sizes="(max-width: 640px) 50vw, 33vw"
               alt={link.title}
               loading={priority ? "eager" : "lazy"}
               fetchpriority={priority ? "high" : "low"}
