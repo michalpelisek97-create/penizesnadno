@@ -29,6 +29,18 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
 
   const handleImageError = () => setImgError(true);
 
+  // Preload LCP image
+  React.useEffect(() => {
+    if (priority && link.image_url && !imgError) {
+      const link_el = document.createElement('link');
+      link_el.rel = 'preload';
+      link_el.as = 'image';
+      link_el.href = link.image_url;
+      link_el.fetchPriority = 'high';
+      document.head.appendChild(link_el);
+    }
+  }, []);
+
   return (
     <div className="group relative">
       <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
