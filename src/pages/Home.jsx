@@ -231,6 +231,11 @@ export default function Home() {
                     const isAirBank = link.title.includes('Air Bank');
                     return (
                       <React.Fragment key={link.id}>
+                        {index === 2 && (
+                          <React.Suspense fallback={<Skeleton className="h-96 w-full rounded-2xl" />}>
+                            <WheelOfFortune />
+                          </React.Suspense>
+                        )}
                         <div className="relative">
                           {isFavorite && (
                             <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
@@ -243,11 +248,6 @@ export default function Home() {
                       </React.Fragment>
                     );
                   })}
-                  {filteredLinks.length >= 3 && (
-                    <React.Suspense fallback={<Skeleton className="h-96 w-full rounded-2xl" />}>
-                      <WheelOfFortune />
-                    </React.Suspense>
-                  )}
                 </>
               )}
             </div>
