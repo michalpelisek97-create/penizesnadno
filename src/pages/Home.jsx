@@ -251,9 +251,9 @@ export default function Home() {
                 <h2 className="text-3xl font-bold text-white">Návody a články</h2>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {isLoading ? (
-                  [...Array(4)].map((_, i) => <Skeleton key={i} className="h-48 w-full rounded-2xl" />)
+                  [...Array(3)].map((_, i) => <Skeleton key={i} className="h-40 w-full rounded-2xl" />)
                 ) : (
                   articles.map((article) => (
                     <Link 
