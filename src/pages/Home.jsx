@@ -260,7 +260,7 @@ export default function Home() {
             const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
             const isAirBank = link.title.includes('Air Bank');
             return (
-              <React.Fragment key={link.id || `link-${index}`}>
+              <React.Fragment key={link.id}>
                       <div className="relative">
                         {isFavorite &&
                   <div className="bg-gradient-to-r text-[10px] mx-2 my-5 py-2 font-bold rounded-full absolute -top-3 -right-2 z-20 from-amber-500 to-orange-600 shadow-lg border-2 border-white animate-bounce">
