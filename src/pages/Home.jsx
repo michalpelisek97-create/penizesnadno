@@ -205,72 +205,48 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* Sekce Odkazy (Bonusy) - render prvního linku bezprostředně */}
-        {selectedCategory !== 'Článek' && selectedCategory !== 'wheel' && (
-          <>
-            {/* Prvního LinkCard - kritické pro LCP */}
-            {!isLoading && filteredLinks.length > 0 && (
-              <div className="mb-6">
-                {(() => {
-                  const link = filteredLinks[0];
-                  const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
-                  return (
-                    <div className="relative" style={{ contain: 'layout style paint' }}>
-                      {isFavorite && (
-                        <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
-                          🔥 NEJOBLÍBENĚJŠÍ
-                        </div>
-                      )}
-                      <LinkCard link={link} priority={true} loading="eager" />
-                    </div>
-                  );
-                })()}
-              </div>
-            )}
-
-            {/* Zbytek linků */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20" style={{ contain: 'layout style paint' }}>
-              {isLoading ? (
-                [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
-              ) : (
-                filteredLinks.map((link, index) => {
-                  if (index === 0) return null;
-                  const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
-                  const isAirBank = link.title.includes('Air Bank');
-                  return (
-                    <React.Fragment key={link.id}>
-                      <div className="relative">
-                        {isFavorite && (
-                          <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
-                            🔥 NEJOBLÍBENĚJŠÍ
-                          </div>
-                        )}
-                        <LinkCard link={link} priority={false} loading={index < 3 ? "eager" : "lazy"} />
-                      </div>
-                      {isAirBank && <WheelCard />}
-                    </React.Fragment>
-                  );
-                })
-              )}
-              </div>
-          </>
-          )}
-
         {/* Reklama - Lazy load */}
         <React.Suspense fallback={<div className="h-[50px] sm:h-[90px]" />}>
           <AdBanner />
         </React.Suspense>
 
         {/* Sekce Kolo Štěstí */}
-        {selectedCategory === 'wheel' && (
-          <React.Suspense fallback={<div className="h-64 flex items-center justify-center text-white">Načítám...</div>}>
+        {selectedCategory === 'wheel' &&
+        <React.Suspense fallback={<div className="h-64 flex items-center justify-center text-white">Načítám...</div>}>
             <WheelOfFortune />
           </React.Suspense>
-        )}
+        }
+
+        {/* Sekce Odkazy (Bonusy) */}
+          {selectedCategory !== 'Článek' && selectedCategory !== 'wheel' &&
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20" style={{ contain: 'layout style paint' }}>
+              {isLoading ?
+          [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />) :
+
+          filteredLinks.map((link, index) => {
+            const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
+            const isAirBank = link.title.includes('Air Bank');
+            return (
+              <React.Fragment key={link.id}>
+                      <div className="relative">
+                        {isFavorite &&
+                  <div className="bg-gradient-to-r text-[10px] mx-2 my-5 py-2 font-bold rounded-full absolute -top-3 -right-2 z-20 from-amber-500 to-orange-600 shadow-lg border-2 border-white animate-bounce">
+                            🔥 NEJOBLÍBENĚJŠÍ
+                          </div>
+                  }
+                        <LinkCard link={link} priority={index === 0} loading={index < 2 ? "eager" : "lazy"} />
+                      </div>
+                      {isAirBank && <WheelCard />}
+                    </React.Fragment>);
+
+          })
+          }
+            </div>
+        }
 
         {/* Sekce Články */}
-        {(selectedCategory === 'Článek' || selectedCategory === 'all') && (
-          <div className="space-y-8">
+          {(selectedCategory === 'Článek' || selectedCategory === 'all') &&
+        <div className="space-y-8">
                <div className="flex items-center gap-3 mb-8 border-b pb-6 border-emerald-600/30">
                 <FileText className="w-6 h-6 text-emerald-300" />
                 <h2 className="text-3xl font-bold text-white">Návody a články</h2>
@@ -299,8 +275,8 @@ export default function Home() {
             )
             }
               </div>
-              </div>
-              )}
+            </div>
+        }
 
         {/* Footer info s počítadlem - Jackpot style */}
         <div className="mt-20 relative">

@@ -61,21 +61,22 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
     return undefined;
   }, []);
 
-  // Preload LCP image immediately
+  // Preload LCP image
   React.useEffect(() => {
     if (priority && link.image_url && !link.image_url.startsWith('data:')) {
-      const src = getOptimizedSrc(link.image_url);
-      const existing = document.querySelector(`link[rel="preload"][href*="${link.id}"]`);
+      const existing = document.querySelector(`link[rel="preload"][href="${getOptimizedSrc(link.image_url)}"]`);
       if (!existing) {
         const link_el = document.createElement('link');
         link_el.rel = 'preload';
         link_el.as = 'image';
-        link_el.href = src;
-        link_el.setAttribute('fetchpriority', 'high');
+        link_el.href = getOptimizedSrc(link.image_url);
+        link_el.setAttribute('fetchpriority', 'critical');
+        link_el.setAttribute('imagesrcset', getOptimizedSrc(link.image_url, 200) + ' 200w, ' + getOptimizedSrc(link.image_url, 400) + ' 400w');
+        link_el.setAttribute('data-card-lcp', 'true');
         document.head.insertBefore(link_el, document.head.firstChild);
       }
     }
-  }, [priority, link.image_url, link.id]);
+  }, [priority, link.image_url]);
 
   return (
     <div className="group relative" style={{ contain: 'layout style paint' }}>
@@ -88,14 +89,14 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
               srcSet={getOptimizedSrcSet(link.image_url)}
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               alt={link.title}
-              loading="eager"
-              fetchpriority={priority ? "high" : "low"}
-              decoding="async"
+              loading={priority ? "eager" : "lazy"}
+              fetchpriority={priority ? "critical" : "low"}
+              decoding={priority ? "sync" : "async"}
               width="400"
               height="160"
               onError={handleImageError}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              style={{ aspectRatio: '5/2' }}
+              style={{ aspectRatio: '5/2', contentVisibility: 'auto' }}
             />
           ) : (
             <div className={`w-full h-full bg-gradient-to-br ${gradientClass} flex items-center justify-center`}>
