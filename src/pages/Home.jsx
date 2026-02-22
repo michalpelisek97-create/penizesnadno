@@ -43,6 +43,7 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notifIndex, setNotifIndex] = useState(0);
   const [displayCount, setDisplayCount] = useState(6);
+  const [shouldLoadData, setShouldLoadData] = useState(false);
 
   // Memoized scroll handler
   const handleScroll = useCallback(() => {
