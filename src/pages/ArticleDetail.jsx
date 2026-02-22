@@ -55,7 +55,7 @@ export default function ArticleDetail() {
     }
   }, [article]);
 
-  if (isLoading && !passedArticle) {
+  if (isLoading && !article) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-20">
         <Skeleton className="h-10 w-3/4 mb-6" />
