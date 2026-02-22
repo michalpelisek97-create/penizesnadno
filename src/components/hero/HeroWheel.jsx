@@ -1,13 +1,18 @@
 import React from 'react';
 
-export default function HeroWheel() {
+export default function HeroWheel({ onWheelClick }) {
   const scrollToWheel = () => {
-    const element = document.querySelector('#kolo-stesti');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      window.scrollBy({ top: 500, behavior: 'smooth' });
+    if (onWheelClick) {
+      onWheelClick();
     }
+    setTimeout(() => {
+      const element = document.querySelector('[data-wheel-section]');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.scrollBy({ top: 800, behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   return (
