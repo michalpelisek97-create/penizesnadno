@@ -7,10 +7,10 @@ export default function AdBanner() {
     if (!ref.current) return;
 
     const script1 = document.createElement('script');
-    script1.innerHTML = `atOptions = { 'key' : '8d435fcf615b84048a82837131497a64', 'format' : 'iframe', 'height' : 300, 'width' : 160, 'params' : {} };`;
+    script1.innerHTML = `atOptions = { 'key' : '87afe0cbb8dd8164f2c3a4a2524323d6', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };`;
 
     const script2 = document.createElement('script');
-    script2.src = 'https://www.highperformanceformat.com/8d435fcf615b84048a82837131497a64/invoke.js';
+    script2.src = 'https://www.highperformanceformat.com/87afe0cbb8dd8164f2c3a4a2524323d6/invoke.js';
     script2.async = true;
 
     ref.current.appendChild(script1);
