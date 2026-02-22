@@ -28,8 +28,8 @@ const setSEOMeta = (title, description, image, url) => {
   setMeta('twitter:image', image);
 };
 
-// Preload LCP image co nejdříve - critical priorita
-if (typeof document !== 'undefined' && document.readyState === 'loading') {
+// Preload LCP image co nejdříve - high priorita
+if (typeof document !== 'undefined') {
   const lcpImageUrl = 'https://www.tosevyplati.cz/_next/image?url=https%3A%2F%2Fim.tosevyplati.cz%2Fraiffeisenbank.jpg&w=828&q=75';
   const existing = document.querySelector('link[rel="preload"][data-lcp]');
   if (!existing) {
@@ -37,10 +37,15 @@ if (typeof document !== 'undefined' && document.readyState === 'loading') {
     preload.rel = 'preload';
     preload.as = 'image';
     preload.href = lcpImageUrl;
-    preload.setAttribute('fetchpriority', 'critical');
+    preload.setAttribute('fetchpriority', 'high');
     preload.setAttribute('data-lcp', 'true');
     preload.setAttribute('imagesrcset', lcpImageUrl + ' 1x, ' + lcpImageUrl.replace('w=828', 'w=1656') + ' 2x');
-    document.head.insertBefore(preload, document.head.firstChild);
+    // Insert at start of head
+    if (document.head.firstChild) {
+      document.head.insertBefore(preload, document.head.firstChild);
+    } else {
+      document.head.appendChild(preload);
+    }
   }
 }
 
