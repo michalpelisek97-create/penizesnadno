@@ -16,21 +16,14 @@ export default function ArticleDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const id = paramId || urlParams.get('id');
 
-  // Data předaná z Home page (bez content)
-  const stateArticle = location.state?.articleData;
-
-  // Fetchujeme plná data článku (včetně content)
+  // Fetchujeme plná data článku přímo podle id (vždy čerstvá data včetně content)
   const { data: article, isLoading } = useQuery({
-    queryKey: ['article', id],
+    queryKey: ['article-full', id],
     queryFn: async () => {
-      // Načteme všechny aktivní záznamy a najdeme správný podle id
       const results = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 500);
-      const found = results.find(r => r.id === id);
-      return found || null;
+      return results.find(r => r.id === id) || null;
     },
     enabled: !!id,
-    // Použijeme state data jako placeholder, dokud se nenačtou plná data
-    placeholderData: stateArticle || undefined,
   });
 
   // Nastavit meta tagy a schema.org data
