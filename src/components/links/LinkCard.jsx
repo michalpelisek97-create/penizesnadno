@@ -63,13 +63,17 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
 
   // Preload LCP image
   React.useEffect(() => {
-    if (priority && link.image_url && !imgError) {
-      const link_el = document.createElement('link');
-      link_el.rel = 'preload';
-      link_el.as = 'image';
-      link_el.href = link.image_url;
-      link_el.fetchPriority = 'high';
-      document.head.appendChild(link_el);
+    if (priority && link.image_url && !link.image_url.startsWith('data:')) {
+      const existing = document.querySelector(`link[rel="preload"][data-card-lcp]`);
+      if (!existing) {
+        const link_el = document.createElement('link');
+        link_el.rel = 'preload';
+        link_el.as = 'image';
+        link_el.href = getOptimizedSrc(link.image_url);
+        link_el.setAttribute('fetchpriority', 'high');
+        link_el.setAttribute('data-card-lcp', 'true');
+        document.head.prepend(link_el);
+      }
     }
   }, []);
 
