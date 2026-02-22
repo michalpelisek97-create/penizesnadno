@@ -19,11 +19,11 @@ const WheelOfFortune = () => {
 
   const prizes = [
     { text: '🎯 Nic', fullName: 'Zkus to znovu', points: 0, color: '#95a5a6' },
-    { text: '⭐ 5 bodů', fullName: 'Malá výhra', points: 5, color: '#3498db' },
-    { text: '✨ 7 bodů', fullName: 'Malá výhra', points: 7, color: '#9b59b6' },
-    { text: '💎 10 bodů', fullName: 'Střední výhra', points: 10, color: '#e74c3c' },
-    { text: '👑 50 bodů', fullName: 'Velká výhra', points: 50, color: '#f39c12' },
-    { text: '🏆 1000 bodů', fullName: 'JACKPOT!', points: 1000, color: '#f1c40f' }
+    { text: '⭐ 5 kreditů', fullName: 'Malá výhra', points: 5, color: '#3498db' },
+    { text: '✨ 7 kreditů', fullName: 'Malá výhra', points: 7, color: '#9b59b6' },
+    { text: '💎 10 kreditů', fullName: 'Střední výhra', points: 10, color: '#e74c3c' },
+    { text: '👑 50 kreditů', fullName: 'Velká výhra', points: 50, color: '#f39c12' },
+    { text: '🏆 1000 kreditů', fullName: 'JACKPOT!', points: 1000, color: '#f1c40f' }
   ];
 
   const adUrl = 'https://www.effectivegatecpm.com/ij547nkxe?key=8b2ae4a3228e917760d4cc1d37ea46f6';
