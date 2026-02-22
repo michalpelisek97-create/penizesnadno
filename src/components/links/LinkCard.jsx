@@ -32,37 +32,34 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
 
   const handleImageError = React.useCallback(() => setImgError(true), []);
 
-    // Optimalizuje URL obrázku podle domény
-    const getOptimizedSrc = (url, width = 400) => {
-      if (!url || url.startsWith('data:')) return url;
-      if (url.includes('images.unsplash.com')) {
-        return url.split('?')[0] + `?w=${width}&q=60&fm=webp&fit=crop`;
-      }
-      if (url.includes('i0.wp.com') || url.includes('i1.wp.com') || url.includes('i2.wp.com')) {
-        // WordPress Jetpack CDN podporuje ?w= a ?webp
-        return url.split('?')[0] + `?w=${width}&ssl=1&strip=all`;
-      }
-      if (url.includes('tosevyplati.cz')) {
-        // Pokud URL už obsahuje _next/image, nebalíme znovu
-        if (url.includes('_next/image')) return url;
-        return `https://www.tosevyplati.cz/_next/image?url=${encodeURIComponent(url)}&w=${width}&q=75`;
-      }
-      // Ostatní domény - jen vrátíme původní URL
-      return url;
-    };
+  // Optimalizuje URL obrázku podle domény - memoizované
+  const getOptimizedSrc = React.useCallback((url, width = 400) => {
+    if (!url || url.startsWith('data:')) return url;
+    if (url.includes('images.unsplash.com')) {
+      return url.split('?')[0] + `?w=${width}&q=60&fm=webp&fit=crop`;
+    }
+    if (url.includes('i0.wp.com') || url.includes('i1.wp.com') || url.includes('i2.wp.com')) {
+      return url.split('?')[0] + `?w=${width}&ssl=1&strip=all`;
+    }
+    if (url.includes('tosevyplati.cz')) {
+      if (url.includes('_next/image')) return url;
+      return `https://www.tosevyplati.cz/_next/image?url=${encodeURIComponent(url)}&w=${width}&q=75`;
+    }
+    return url;
+  }, []);
 
-    const getOptimizedSrcSet = (url) => {
-      if (!url || url.startsWith('data:')) return undefined;
-      if (url.includes('images.unsplash.com')) {
-        const base = url.split('?')[0];
-        return `${base}?w=200&q=60&fm=webp&fit=crop 200w, ${base}?w=400&q=60&fm=webp&fit=crop 400w`;
-      }
-      if (url.includes('i0.wp.com') || url.includes('i1.wp.com') || url.includes('i2.wp.com')) {
-        const base = url.split('?')[0];
-        return `${base}?w=200&ssl=1&strip=all 200w, ${base}?w=400&ssl=1&strip=all 400w`;
-      }
-      return undefined;
-    };
+  const getOptimizedSrcSet = React.useCallback((url) => {
+    if (!url || url.startsWith('data:')) return undefined;
+    if (url.includes('images.unsplash.com')) {
+      const base = url.split('?')[0];
+      return `${base}?w=200&q=60&fm=webp&fit=crop 200w, ${base}?w=400&q=60&fm=webp&fit=crop 400w`;
+    }
+    if (url.includes('i0.wp.com') || url.includes('i1.wp.com') || url.includes('i2.wp.com')) {
+      const base = url.split('?')[0];
+      return `${base}?w=200&ssl=1&strip=all 200w, ${base}?w=400&ssl=1&strip=all 400w`;
+    }
+    return undefined;
+  }, []);
 
   // Preload LCP image
   React.useEffect(() => {
