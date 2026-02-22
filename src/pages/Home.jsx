@@ -117,13 +117,8 @@ export default function Home() {
     refetchOnMount: false
   });
 
-  // Kombinuj data - initial + lazy loaded
-   const combinedData = useMemo(() => {
-     const combined = displayCount > 18 ? [...allData, ...allDataMore] : allData;
-     return combined;
-   }, [allData, allDataMore, displayCount]);
-
-   const links = useMemo(() => combinedData.filter((item) => !item.is_article), [combinedData]);
+  // Filtruj a připrav data
+   const links = useMemo(() => allData.filter((item) => !item.is_article), [allData]);
    const articles = useMemo(() => allData.filter((item) => item.is_article), [allData]);
 
   // FILTRACE: Logika pro zobrazení bonusů
