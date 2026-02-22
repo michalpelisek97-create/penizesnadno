@@ -244,9 +244,8 @@ export default function Home() {
             </div>
           )}
 
-        {/* Sekce Články - lazy load */}
+        {/* Sekce Články */}
           {(selectedCategory === 'Článek' || selectedCategory === 'all') && (
-            <React.Suspense fallback={null}>
             <div className="space-y-8">
                <div className="flex items-center gap-3 mb-8 border-b pb-6 border-emerald-600/30">
                 <FileText className="w-6 h-6 text-emerald-300" />
@@ -277,7 +276,6 @@ export default function Home() {
                 )}
               </div>
             </div>
-            </React.Suspense>
           )}
 
         {/* Footer info s počítadlem - Jackpot style */}
