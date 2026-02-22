@@ -175,38 +175,36 @@ const WheelOfFortune = () => {
       <p className="text-sm text-slate-400 mb-4">Odemkni a vyhraj kredity!</p>
 
       {/* Kolo */}
-      <div className="flex justify-center mb-4 relative">
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10"
+      <div className="flex justify-center mb-6 relative flex-1">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10"
           style={{ width: 0, height: 0, borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderTop: '14px solid #f1c40f', filter: 'drop-shadow(0 0 6px rgba(241,196,15,0.8))' }}
         />
         <canvas
           ref={canvasRef}
-          width={300}
-          height={300}
-          style={{ maxWidth: '100%', filter: 'drop-shadow(0 0 10px rgba(241,196,15,0.3))' }}
+          width={240}
+          height={240}
+          className="max-w-full"
+          style={{ filter: 'drop-shadow(0 0 10px rgba(241,196,15,0.3))' }}
         />
       </div>
 
-      {/* Login check */}
-      {!user && (
-        <p className="text-xs text-blue-300 text-center mb-4">Přihlaste se pro účast</p>
-      )}
-
       {/* Tlačítka */}
-      <div className="flex justify-center">
+      <div className="flex gap-2 w-full">
         {!user ? (
-          <p className="text-xs text-blue-300">Přihlašte se</p>
+          <button disabled className="w-full bg-slate-600 text-white font-medium py-2 rounded-lg text-xs font-bold uppercase opacity-50 cursor-not-allowed">
+            🔒 Přihlaste se
+          </button>
         ) : !isUnlocked ? (
-          <button onClick={handleAdClick} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:opacity-90 text-white font-medium py-2 rounded-lg text-xs font-bold uppercase">
+          <button onClick={handleAdClick} className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-medium py-2 rounded-lg text-xs font-bold uppercase transition-all">
             🔓 Odemknout
           </button>
         ) : (
           <button
             onClick={handleSpin}
             disabled={isSpinning}
-            className="w-full bg-gradient-to-r from-amber-400 to-orange-500 hover:opacity-90 text-slate-900 font-bold py-2 rounded-lg text-xs uppercase disabled:opacity-70 disabled:cursor-not-allowed"
+            className="flex-1 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-slate-900 font-bold py-2 rounded-lg text-xs uppercase disabled:opacity-70 disabled:cursor-not-allowed transition-all"
           >
-            {isSpinning ? '⏳ Točím...' : '🎯 Spin'}
+            {isSpinning ? '⏳ Točím...' : '🎯 Roztočit'}
           </button>
         )}
       </div>
