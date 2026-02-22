@@ -102,7 +102,14 @@ export default function ArticleDetail() {
 
         <div className="article-container">
           <div 
-            dangerouslySetInnerHTML={{ __html: article.content || article.description || '' }} 
+            dangerouslySetInnerHTML={{ __html: (() => {
+              const raw = article.content || article.description || '';
+              // Pokud content obsahuje celý HTML dokument, vyextrahujeme jen obsah <body>
+              const bodyMatch = raw.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+              if (bodyMatch) return bodyMatch[1];
+              // Jinak odstraníme případné <html>, <head> tagy a vrátíme zbytek
+              return raw.replace(/<\/?html[^>]*>/gi, '').replace(/<head[\s\S]*?<\/head>/gi, '').replace(/<\/?body[^>]*>/gi, '');
+            })() }} 
           />
         </div>
       </div>
