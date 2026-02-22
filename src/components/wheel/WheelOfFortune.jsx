@@ -223,10 +223,10 @@ const WheelOfFortune = () => {
               <p style={styles.modalText}>Vyhrál jsi:</p>
               <div style={styles.prizeDisplay}>
                 {prizes[winnerIndex]?.fullName}
-                {earnedPoints > 0 && <div style={{fontSize: '24px', marginTop: '10px'}}>+{earnedPoints} bodů</div>}
+                {earnedPoints > 0 && <div style={{fontSize: '24px', marginTop: '10px'}}>+{earnedPoints} kreditů</div>}
               </div>
               <p style={styles.modalDescription}>
-                {earnedPoints === 0 ? 'Zkus to znovu!' : 'Body byly přidány do tvého účtu!'}
+                {earnedPoints === 0 ? 'Zkus to znovu!' : 'Kredity byly přidány do tvého účtu!'}
               </p>
             </div>
           </div>
