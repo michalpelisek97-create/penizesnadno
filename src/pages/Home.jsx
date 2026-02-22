@@ -225,7 +225,8 @@ export default function Home() {
               {isLoading ? (
                 [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
               ) : (
-                filteredLinks.map((link, index) => {
+                filteredLinks.map((link, index) => { 
+                   const displayIndex = index < 3 ? index : index + 1;
                   const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
                   const isAirBank = link.title.includes('Air Bank');
                   return (
