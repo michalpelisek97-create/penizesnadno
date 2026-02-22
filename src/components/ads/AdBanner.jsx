@@ -1,5 +1,13 @@
+import { useEffect, useRef } from 'react';
+
 export default function AdBanner() {
-  const html = `<!DOCTYPE html>
+  const iframeRef = useRef(null);
+
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+
+    const html = `<!DOCTYPE html>
 <html>
 <head><style>body{margin:0;padding:0;overflow:hidden;}</style></head>
 <body>
@@ -10,11 +18,18 @@ export default function AdBanner() {
 </body>
 </html>`;
 
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    iframe.src = url;
+
+    return () => URL.revokeObjectURL(url);
+  }, []);
+
   return (
     <div className="flex justify-center my-6">
       <iframe
-        srcDoc={html}
-        sandbox="allow-scripts allow-same-origin allow-popups-to-escape-sandbox"
+        ref={iframeRef}
+        sandbox="allow-scripts allow-same-origin"
         style={{ width: '320px', height: '50px', border: 'none', overflow: 'hidden' }}
         scrolling="no"
       />
