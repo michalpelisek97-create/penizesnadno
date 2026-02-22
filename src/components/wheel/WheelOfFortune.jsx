@@ -1,32 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 
 const WheelOfFortune = () => {
+  const [user, setUser] = useState(null);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
   const [winnerIndex, setWinnerIndex] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [rotation, setRotation] = useState(0);
+  const [earnedPoints, setEarnedPoints] = useState(0);
   const canvasRef = useRef(null);
 
-  // Base64 zakódované referral linky
-  const encodedLinks = [
-    'aHR0cHM6Ly9nLmNiLmNsaWNrL0htQXJ4aA==', // CTpool
-    'aHR0cHM6Ly93d3cuYWlyYmFuay5jei9wb3p2YW5pLXByYXRlbD9yZWZlcnJlcj01MmF3eXg=', // AirBank
-    'aHR0cHM6Ly9yb2xsZXJjb2luLmNvbS8/cj1rczVyYmR2Mg==', // RollerCoin
-    'aHR0cHM6Ly9qb2luLmhvbmV5Z2Fpbi5jb20vUEVMSVMwMDdCNQ==', // HoneyGain
-    'aHR0cHM6Ly9vbmIucmIuY3ovb25iLXdlYj9tZ209TjBGbng=' // RB
-  ];
+  // Ověření přihlášení
+  useEffect(() => {
+    base44.auth.me().then(u => setUser(u)).catch(() => setUser(null));
+  }, []);
 
   const prizes = [
-    { text: '🪙 CTpool', symbol: '🪙', fullName: 'Bonus CTpool', color: '#2c3e50' },
-    { text: '🏦 AirBank', symbol: '🏦', fullName: 'AirBank Bonus', color: '#f1c40f' },
-    { text: '⛏️ RollerCoin', symbol: '⛏️', fullName: 'Těžba RollerCoin', color: '#00d4ff' },
-    { text: '🍯 HoneyGain', symbol: '🍯', fullName: 'HoneyGain Credit', color: '#2c3e50' },
-    { text: '💳 Raiffeisen', symbol: '💳', fullName: 'RB Odměna', color: '#f1c40f' }
+    { text: '🎯 Nic', fullName: 'Zkus to znovu', points: 0, color: '#95a5a6' },
+    { text: '⭐ 5 bodů', fullName: 'Malá výhra', points: 5, color: '#3498db' },
+    { text: '✨ 7 bodů', fullName: 'Malá výhra', points: 7, color: '#9b59b6' },
+    { text: '💎 10 bodů', fullName: 'Střední výhra', points: 10, color: '#e74c3c' },
+    { text: '👑 50 bodů', fullName: 'Velká výhra', points: 50, color: '#f39c12' },
+    { text: '🏆 1000 bodů', fullName: 'JACKPOT!', points: 1000, color: '#f1c40f' }
   ];
 
-  const smartlinkUrl = 'https://www.effectivegatecpm.com/whifkrp4te?key=06123d4024c40ca03236d07ac020b0c6';
+  const adUrl = 'https://www.effectivegatecpm.com/ij547nkxe?key=8b2ae4a3228e917760d4cc1d37ea46f6';
 
   // Kolo je vždy zamčené při příchodu na stránku
 
