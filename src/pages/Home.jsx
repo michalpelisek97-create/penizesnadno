@@ -91,10 +91,17 @@ export default function Home() {
   []);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setNotifIndex((prev) => (prev + 1) % notifications.length);
-    }, 5000);
-    return () => clearInterval(timer);
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      const timer = setInterval(() => {
+        setNotifIndex((prev) => (prev + 1) % notifications.length);
+      }, 5000);
+      return () => clearInterval(timer);
+    }, { threshold: 0.3 });
+
+    const el = document.querySelector('[data-notif]');
+    if (el) observer.observe(el);
+    return () => observer.disconnect();
   }, [notifications.length]);
 
   // 4. API Data Fetching - Ultra-light inicializace (jen 12 záznamů)
