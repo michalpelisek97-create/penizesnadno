@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 
 import LinkCard from '@/components/links/LinkCard';
+import WheelCard from '@/components/wheel/WheelCard';
 import AdBanner from '@/components/ads/AdBanner';
 import { generateSchemaData } from '@/components/utils/seoHelper';
 
