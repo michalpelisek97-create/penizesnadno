@@ -79,8 +79,8 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
   }, [priority, link.image_url]);
 
   return (
-    <div className="group relative">
-      <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+    <div className="group relative" style={{ contain: 'layout style paint' }}>
+      <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1" style={{ willChange: 'transform' }}>
         {/* Image Section */}
                 <div className="relative h-40 overflow-hidden bg-gradient-to-br from-slate-200 to-slate-300" style={{ aspectRatio: '5/2', contain: 'strict' }}>
           {link.image_url && !imgError ? (
