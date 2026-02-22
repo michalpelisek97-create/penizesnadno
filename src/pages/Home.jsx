@@ -132,7 +132,11 @@ export default function Home() {
    });
 
   // Kombinuj data - initial + lazy loaded
-   const combinedData = useMemo(() => [...allData, ...allDataMore], [allData, allDataMore]);
+   const combinedData = useMemo(() => {
+     const combined = displayCount > 18 ? [...allData, ...allDataMore] : allData;
+     return combined;
+   }, [allData, allDataMore, displayCount]);
+
    const links = useMemo(() => combinedData.filter((item) => !item.is_article), [combinedData]);
    const articles = useMemo(() => allData.filter((item) => item.is_article), [allData]);
 
