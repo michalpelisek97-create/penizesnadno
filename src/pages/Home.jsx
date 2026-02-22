@@ -253,14 +253,14 @@ export default function Home() {
         {/* Sekce Odkazy (Bonusy) */}
           {selectedCategory !== 'Článek' && selectedCategory !== 'wheel' &&
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20" style={{ contain: 'layout style paint' }}>
-              {isLoading ?
+              {isLoading && filteredLinks.length === 0 ?
           [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />) :
 
-          filteredLinks.map((link, index) => {
+          filteredLinks.length > 0 ? filteredLinks.map((link, index) => {
             const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
             const isAirBank = link.title.includes('Air Bank');
             return (
-              <React.Fragment key={link.id}>
+              <React.Fragment key={link.id || `link-${index}`}>
                       <div className="relative">
                         {isFavorite &&
                   <div className="bg-gradient-to-r text-[10px] mx-2 my-5 py-2 font-bold rounded-full absolute -top-3 -right-2 z-20 from-amber-500 to-orange-600 shadow-lg border-2 border-white animate-bounce">
@@ -272,8 +272,8 @@ export default function Home() {
                       {isAirBank && <WheelCard />}
                     </React.Fragment>);
 
-          })
-          }
+          }) : <div className="col-span-full text-center text-slate-400">Žádné bonusy v kategorii</div>
+            }
             </div>
         }
 
