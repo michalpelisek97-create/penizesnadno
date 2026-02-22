@@ -44,6 +44,13 @@ export default function Home() {
   const [notifIndex, setNotifIndex] = useState(0);
   const [displayCount, setDisplayCount] = useState(6);
 
+  // Memoized scroll handler
+  const handleScroll = useCallback(() => {
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+      setDisplayCount(prev => prev + 6);
+    }
+  }, []);
+
   // Funkce pro získání dnešního data
   const getFormattedDate = () => {
     return new Date().toLocaleDateString('cs-CZ', {
