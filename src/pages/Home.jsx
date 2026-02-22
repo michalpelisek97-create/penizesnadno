@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
@@ -15,7 +15,7 @@ import { createPageUrl } from '@/utils';
 
 import LinkCard from '@/components/links/LinkCard';
 import WheelCard from '@/components/wheel/WheelCard';
-import AdBanner from '@/components/ads/AdBanner';
+const AdBanner = React.lazy(() => import('@/components/ads/AdBanner'));
 import { generateSchemaData } from '@/components/utils/seoHelper';
 
 // Lazy import těžkých komponent
