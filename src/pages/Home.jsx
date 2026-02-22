@@ -81,7 +81,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setInterval(() => {
       setNotifIndex((prev) => (prev + 1) % notifications.length);
-    }, 4000);
+    }, 5000);
     return () => clearInterval(timer);
   }, [notifications.length]);
 
