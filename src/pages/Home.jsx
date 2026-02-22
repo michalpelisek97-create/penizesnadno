@@ -85,16 +85,12 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [notifications.length]);
 
-  // 4. API Data Fetching - optimalizováno - progresivní loading
+  // 4. API Data Fetching - Ultra-light inicializace (jen 12 záznamů)
    const { data: allData = [], isLoading } = useQuery({
      queryKey: ['referral-links'],
      queryFn: async () => {
-       // Načti pouze 50 záznamů pro FCP, zbývající se načtou na demand
-       const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 50);
-       return data.map(({ description, content, ...rest }) => ({
-         ...rest,
-         description: description ? description.substring(0, 100) : null
-       }));
+       const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 12);
+       return data.map(({ content, ...rest }) => rest);
      },
      staleTime: 60 * 60 * 1000,
      gcTime: 3 * 60 * 60 * 1000,
@@ -102,21 +98,18 @@ export default function Home() {
      refetchOnMount: false
    });
 
-   // Lazy load zbývajících záznamů pro infinite scroll
-   const { data: allDataFull = [] } = useQuery({
-     queryKey: ['referral-links-full'],
+   // Lazy load zbývajících záznamů POUZE když je scrollovaný displayCount > 18
+   const { data: allDataMore = [] } = useQuery({
+     queryKey: ['referral-links-more', displayCount],
      queryFn: async () => {
-       const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 300);
-       return data.map(({ description, ...rest }) => ({
-         ...rest,
-         description: description ? description.substring(0, 100) : null
-       }));
+       const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 60);
+       return data.map(({ content, ...rest }) => rest);
      },
      staleTime: 60 * 60 * 1000,
      gcTime: 3 * 60 * 60 * 1000,
      refetchOnWindowFocus: false,
      refetchOnMount: false,
-     enabled: displayCount > 45 // Aktivuj až když je potřeba
+     enabled: displayCount > 18
    });
 
   // Rozdělení dat na bonusy a články - use full data when available
