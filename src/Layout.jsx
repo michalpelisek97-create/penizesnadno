@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { generateSchemaData } from '@/components/utils/seoHelper';
+import PerformanceMonitor from '@/components/performance/PerformanceMonitor';
 
 const setSEOMeta = (title, description, image, url) => {
   if (typeof document === 'undefined') return;
