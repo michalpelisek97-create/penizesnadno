@@ -70,9 +70,10 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
         link_el.rel = 'preload';
         link_el.as = 'image';
         link_el.href = getOptimizedSrc(link.image_url);
-        link_el.setAttribute('fetchpriority', 'high');
+        link_el.setAttribute('fetchpriority', 'critical');
+        link_el.setAttribute('imagesrcset', getOptimizedSrc(link.image_url, 200) + ' 200w, ' + getOptimizedSrc(link.image_url, 400) + ' 400w');
         link_el.setAttribute('data-card-lcp', 'true');
-        document.head.prepend(link_el);
+        document.head.insertBefore(link_el, document.head.firstChild);
       }
     }
   }, [priority, link.image_url]);
