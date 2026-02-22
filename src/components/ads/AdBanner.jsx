@@ -71,13 +71,16 @@ function DesktopAd() {
 export default function AdBanner() {
   return (
     <div className="flex justify-center my-6">
-      {/* Mobilní reklama - zobrazí se jen na malých obrazovkách */}
-      <div className="block sm:hidden">
-        <MobileAd />
-      </div>
-      {/* Desktopová reklama - zobrazí se jen na velkých obrazovkách */}
-      <div className="hidden sm:block">
-        <DesktopAd />
+      <div className="rounded-xl overflow-hidden ring-2 ring-amber-400/40 shadow-lg shadow-amber-500/20 bg-black/30 backdrop-blur-sm p-1">
+        <div className="text-[10px] text-amber-400/60 text-center mb-1 uppercase tracking-widest font-semibold">Reklama</div>
+        {/* Mobilní reklama */}
+        <div className="block sm:hidden">
+          <MobileAd />
+        </div>
+        {/* Desktopová reklama */}
+        <div className="hidden sm:block">
+          <DesktopAd />
+        </div>
       </div>
     </div>
   );
