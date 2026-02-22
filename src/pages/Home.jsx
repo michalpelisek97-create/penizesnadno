@@ -85,23 +85,39 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [notifications.length]);
 
-  // 4. API Data Fetching - optimalizováno pro rychlé načtení
-  const { data: allData = [], isLoading } = useQuery({
-    queryKey: ['referral-links'],
-    queryFn: async () => {
-      const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 300);
-      return data.map(({ description, content, ...rest }) => {
-        return {
-          ...rest,
-          description: description ? description.substring(0, 100) : null
-        };
-      });
-    },
-    staleTime: 60 * 60 * 1000,
-    gcTime: 3 * 60 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false
-  });
+  // 4. API Data Fetching - optimalizováno - progresivní loading
+   const { data: allData = [], isLoading } = useQuery({
+     queryKey: ['referral-links'],
+     queryFn: async () => {
+       // Načti pouze 50 záznamů pro FCP, zbývající se načtou na demand
+       const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 50);
+       return data.map(({ description, content, ...rest }) => ({
+         ...rest,
+         description: description ? description.substring(0, 100) : null
+       }));
+     },
+     staleTime: 60 * 60 * 1000,
+     gcTime: 3 * 60 * 60 * 1000,
+     refetchOnWindowFocus: false,
+     refetchOnMount: false
+   });
+
+   // Lazy load zbývajících záznamů pro infinite scroll
+   const { data: allDataFull = [] } = useQuery({
+     queryKey: ['referral-links-full'],
+     queryFn: async () => {
+       const data = await base44.entities.ReferralLink.filter({ is_active: true }, 'sort_order', 300);
+       return data.map(({ description, ...rest }) => ({
+         ...rest,
+         description: description ? description.substring(0, 100) : null
+       }));
+     },
+     staleTime: 60 * 60 * 1000,
+     gcTime: 3 * 60 * 60 * 1000,
+     refetchOnWindowFocus: false,
+     refetchOnMount: false,
+     enabled: displayCount > 45 // Aktivuj až když je potřeba
+   });
 
   // Rozdělení dat na bonusy a články na základě příznaku is_article
   const links = useMemo(() => allData.filter((item) => !item.is_article), [allData]);
