@@ -1,4 +1,22 @@
+import { useEffect, useRef, useState } from 'react';
+
 export default function AdBanner() {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    // Odložit načtení reklamy - nejdřív po 3s nebo když je element viditelný
+    const timer = setTimeout(() => setVisible(true), 3000);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); clearTimeout(timer); } },
+      { rootMargin: '200px' }
+    );
+    if (ref.current) observer.observe(ref.current);
+
+    return () => { clearTimeout(timer); observer.disconnect(); };
+  }, []);
+
   const mobileHtml = `<!DOCTYPE html>
 <html>
 <head><style>body{margin:0;padding:0;overflow:hidden;background:transparent;}</style></head>
@@ -18,26 +36,30 @@ export default function AdBanner() {
 </html>`;
 
   return (
-    <div className="flex justify-center mb-2 mt-0">
-        {/* Mobilní reklama */}
-        <div className="block sm:hidden">
-          <iframe
-            srcDoc={mobileHtml}
-            sandbox="allow-scripts allow-same-origin allow-popups"
-            style={{ width: '320px', height: '50px', border: 'none', overflow: 'hidden', display: 'block' }}
-            scrolling="no"
-          />
-        </div>
+    <div ref={ref} className="flex justify-center mb-2 mt-0" style={{ minHeight: '50px' }}>
+      {visible && (
+        <>
+          {/* Mobilní reklama */}
+          <div className="block sm:hidden">
+            <iframe
+              srcDoc={mobileHtml}
+              sandbox="allow-scripts allow-same-origin allow-popups"
+              style={{ width: '320px', height: '50px', border: 'none', overflow: 'hidden', display: 'block' }}
+              scrolling="no"
+            />
+          </div>
 
-        {/* Desktopová reklama */}
-        <div className="hidden sm:block">
-          <iframe
-            srcDoc={desktopHtml}
-            sandbox="allow-scripts allow-same-origin allow-popups"
-            style={{ width: '728px', height: '90px', border: 'none', overflow: 'hidden', display: 'block' }}
-            scrolling="no"
-          />
-        </div>
+          {/* Desktopová reklama */}
+          <div className="hidden sm:block">
+            <iframe
+              srcDoc={desktopHtml}
+              sandbox="allow-scripts allow-same-origin allow-popups"
+              style={{ width: '728px', height: '90px', border: 'none', overflow: 'hidden', display: 'block' }}
+              scrolling="no"
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }
