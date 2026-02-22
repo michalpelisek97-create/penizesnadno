@@ -300,8 +300,8 @@ export default function Home() {
             )
             }
               </div>
-            </div>
-        }
+              </div>
+              )}
 
         {/* Footer info s počítadlem - Jackpot style */}
         <div className="mt-20 relative">
