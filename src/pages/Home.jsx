@@ -226,22 +226,22 @@ export default function Home() {
                 [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
               ) : (
                 filteredLinks.map((link, index) => {
-                   const displayIndex = index < 3 ? index : index + 1;
-                   const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
-                   return (
-                     <React.Fragment key={link.id}>
-                       {displayIndex === 3 && <WheelCard />}
-                       <div className="relative">
-                         {isFavorite && (
-                           <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
-                             🔥 NEJOBLÍBENĚJŠÍ
-                           </div>
-                         )}
-                         <LinkCard link={link} priority={index === 0} loading={index < 2 ? "eager" : "lazy"} />
-                       </div>
-                     </React.Fragment>
-                   );
-                 })
+                  const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
+                  const isAirBank = link.title.includes('Air Bank');
+                  return (
+                    <React.Fragment key={link.id}>
+                      <div className="relative">
+                        {isFavorite && (
+                          <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
+                            🔥 NEJOBLÍBENĚJŠÍ
+                          </div>
+                        )}
+                        <LinkCard link={link} priority={index === 0} loading={index < 2 ? "eager" : "lazy"} />
+                      </div>
+                      {isAirBank && <WheelCard />}
+                    </React.Fragment>
+                  );
+                })
               )}
             </div>
           )}
@@ -258,30 +258,20 @@ export default function Home() {
                 {isLoading ? (
                   [...Array(3)].map((_, i) => <Skeleton key={i} className="h-40 w-full rounded-2xl" />)
                 ) : (
-                  articles.slice(0, displayCount).map(article => (
-                    <Link
+                  articles.map((article) => (
+                    <Link 
+                      to={`/ArticleDetail?id=${article.id}`}
                       key={article.id}
-                      to={createPageUrl(`ArticleDetail?id=${article.id}`)}
-                      className="group relative bg-gradient-to-br from-slate-800 to-slate-900 border border-purple-500/40 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                      className="group bg-gradient-to-br from-emerald-900/40 to-teal-900/40 p-4 sm:p-5 rounded-xl border border-emerald-500/40 hover:border-emerald-400/60 hover:shadow-xl transition-all duration-300 flex flex-col"
                     >
-                      {article.image_url && (
-                        <div className="relative h-32 overflow-hidden bg-gradient-to-br from-purple-900 to-indigo-900">
-                          <img
-                            src={article.image_url}
-                            alt={article.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                            loading="lazy"
-                          />
-                        </div>
-                      )}
-                      <div className="p-5 flex flex-col h-full">
-                        <p className="text-sm text-emerald-300 font-semibold mb-2">📖 Návod / Článek</p>
-                        <p className="text-lg font-semibold text-white mb-2 line-clamp-2 group-hover:text-amber-300 transition-colors">{article.title}</p>
-                        <p className="text-sm text-slate-400 line-clamp-2 flex-grow">{article.description}</p>
-                        <div className="flex items-center gap-2 text-amber-400 mt-4 group-hover:gap-3 transition-all">
-                          <span className="text-sm font-semibold">Přečíst</span>
-                          <ArrowRight className="w-4 h-4" />
-                        </div>
+                      <div className="flex-1">
+                        <div className="text-xs text-emerald-300 font-bold uppercase tracking-wider mb-2">Příspěvek</div>
+                        <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-emerald-200 transition-colors mb-2 line-clamp-2">
+                          {article.title}
+                        </h3>
+                      </div>
+                      <div className="flex items-center text-emerald-300 font-semibold gap-1 text-xs sm:text-sm group-hover:text-emerald-200 transition-colors mt-3">
+                        Číst <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </Link>
                   ))
@@ -290,34 +280,56 @@ export default function Home() {
             </div>
           )}
 
-        {/* FOOTER - Ceník */}
-        <div className="relative mt-32 mb-16">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-            {[
-              { emoji: '🎁', text: 'Bezplatné', desc: 'Bez poplatků' },
-              { emoji: '🔒', text: 'Bezpečné', desc: 'Ověřené partnery' },
-              { emoji: '⚡', text: 'Rychlé', desc: 'Ihned k dispozici' },
-              { emoji: '📱', text: 'Mobilní', desc: 'Kdykoliv a kdekoli' }
-            ].map((feature, idx) => (
-              <div key={idx} className="text-center p-6 rounded-xl bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-purple-500/20">
-                <div className="text-4xl mb-3">{feature.emoji}</div>
-                <p className="font-bold text-white mb-1">{feature.text}</p>
-                <p className="text-sm text-slate-400">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Bottom Banner - Sdílení */}
-          <div className="relative bg-gradient-to-r from-slate-800 to-slate-900 border border-purple-500/40 rounded-2xl p-8 text-center shadow-lg">
-            <h3 className="text-2xl font-bold text-white mb-4">💰 Už jsi vydělal <InfiniteCounter startValue={2450} /> Kč?</h3>
-            <p className="text-slate-300 mb-6 max-w-2xl mx-auto">Sdílej tuto stránku se svými přáteli a vy si budete moct vydělávat spolu!</p>
-            <button
+        {/* Footer info s počítadlem - Jackpot style */}
+        <div className="mt-20 relative">
+          <style>{`
+            @keyframes jackpot-glow {
+              0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4), 0 0 40px rgba(34, 197, 94, 0.2); }
+              50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.8), 0 0 80px rgba(34, 197, 94, 0.5), inset 0 0 20px rgba(16, 185, 129, 0.2); }
+            }
+            @keyframes number-pulse {
+              0%, 100% { text-shadow: 0 0 10px rgba(16, 185, 129, 0.5), 0 0 20px rgba(34, 197, 94, 0.3); }
+              50% { text-shadow: 0 0 30px rgba(16, 185, 129, 1), 0 0 60px rgba(34, 197, 94, 0.8), 0 0 100px rgba(34, 197, 94, 0.4); }
+            }
+            @keyframes jackpot-shine {
+              0% { left: -100%; }
+              100% { left: 100%; }
+            }
+            .jackpot-container {
+              animation: jackpot-glow 2s ease-in-out infinite;
+            }
+            .jackpot-number {
+              animation: number-pulse 1.5s ease-in-out infinite;
+            }
+            .jackpot-shine {
+              position: absolute;
+              top: 0;
+              left: -100%;
+              width: 100%;
+              height: 100%;
+              background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+              animation: jackpot-shine 2.5s ease-in-out infinite;
+              border-radius: 1rem;
+            }
+          `}</style>
+          
+          <div className="jackpot-container bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-600 border-4 border-yellow-300 rounded-2xl p-8 text-center relative overflow-hidden backdrop-blur-sm">
+            <div className="jackpot-shine" />
+            
+            <p className="text-sm font-bold text-yellow-100 mb-3 tracking-widest uppercase">Uživatelé s námi už ušetřili</p>
+            
+            <div className="jackpot-number text-7xl font-black text-white mb-6 drop-shadow-2xl">
+              <InfiniteCounter startValue={142255} />
+            </div>
+            
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="bg-yellow-300 text-yellow-900 border-yellow-200 hover:bg-yellow-200 font-bold shadow-lg"
               onClick={handleShare}
-              className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-full shadow-lg transition-all duration-300 hover:scale-105"
             >
-              <Share2 className="w-5 h-5" />
-              Sdílet s přáteli
-            </button>
+              <Share2 className="w-4 h-4 mr-2" /> Sdílet s přáteli
+            </Button>
           </div>
         </div>
       </main>
