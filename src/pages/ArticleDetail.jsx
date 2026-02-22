@@ -8,9 +8,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { generateSchemaData } from '@/components/utils/seoHelper';
 
 export default function ArticleDetail() {
-  const { id } = useParams();
+  const { id: paramId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // ID může být v URL params nebo jako query param (?id=xxx)
+  const urlParams = new URLSearchParams(window.location.search);
+  const id = paramId || urlParams.get('id');
 
   // Vždy fetchujeme plná data článku (content byl vynechán na homepage kvůli optimalizaci)
   const { data: article, isLoading } = useQuery({
