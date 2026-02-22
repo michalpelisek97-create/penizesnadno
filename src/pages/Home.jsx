@@ -2,12 +2,12 @@ import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
-import { 
-  Sparkles, 
-  FileText, 
-  ArrowRight, 
-  Share2 
-} from 'lucide-react';
+import {
+  Sparkles,
+  FileText,
+  ArrowRight,
+  Share2 } from
+'lucide-react';
 import CategoryFilter from '@/components/links/CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -27,7 +27,7 @@ const InfiniteCounter = ({ startValue }) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCount(prev => prev + Math.floor(Math.random() * 5) + 1);
+      setCount((prev) => prev + Math.floor(Math.random() * 5) + 1);
     }, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -35,8 +35,8 @@ const InfiniteCounter = ({ startValue }) => {
   return (
     <span className="tabular-nums">
       {count.toLocaleString('cs-CZ')} Kč
-    </span>
-  );
+    </span>);
+
 };
 
 export default function Home() {
@@ -46,8 +46,8 @@ export default function Home() {
 
   // Memoized scroll handler
   const handleScroll = useCallback(() => {
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-      setDisplayCount(prev => prev + 6);
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+      setDisplayCount((prev) => prev + 6);
     }
   }, []);
 
@@ -64,19 +64,19 @@ export default function Home() {
 
   // 3. Social Proof Oznámení
   const notifications = useMemo(() => [
-    { name: 'Marek P.', app: 'Air Bank' },
-    { name: 'Lucie K.', app: 'Honeygain' },
-    { name: 'Jakub S.', app: 'Raiffeisenbank' },
-    { name: 'Petr M.', app: 'Revolut' },
-    { name: 'Veronika T.', app: 'Aircash' },
-    { name: 'Honza B.', app: 'Binance' },
-    { name: 'Klára V.', app: 'Tipli' },
-    { name: 'Martin D.', app: 'Attapoll' },
-    { name: 'Jana R.', app: 'Plná Peněženka' },
-    { name: 'Tomáš L.', app: 'Youhodler.com' },
-    { name: 'Eva S.', app: 'CT Pool' },
-    { name: 'Filip N.', app: 'RollerCoin' }
-  ], []);
+  { name: 'Marek P.', app: 'Air Bank' },
+  { name: 'Lucie K.', app: 'Honeygain' },
+  { name: 'Jakub S.', app: 'Raiffeisenbank' },
+  { name: 'Petr M.', app: 'Revolut' },
+  { name: 'Veronika T.', app: 'Aircash' },
+  { name: 'Honza B.', app: 'Binance' },
+  { name: 'Klára V.', app: 'Tipli' },
+  { name: 'Martin D.', app: 'Attapoll' },
+  { name: 'Jana R.', app: 'Plná Peněženka' },
+  { name: 'Tomáš L.', app: 'Youhodler.com' },
+  { name: 'Eva S.', app: 'CT Pool' },
+  { name: 'Filip N.', app: 'RollerCoin' }],
+  []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -93,34 +93,34 @@ export default function Home() {
       return data.map(({ description, content, ...rest }) => {
         return {
           ...rest,
-          description: description ? description.substring(0, 100) : null,
+          description: description ? description.substring(0, 100) : null
         };
       });
     },
     staleTime: 60 * 60 * 1000,
     gcTime: 3 * 60 * 60 * 1000,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: false
   });
 
   // Rozdělení dat na bonusy a články na základě příznaku is_article
-  const links = useMemo(() => allData.filter(item => !item.is_article), [allData]);
-  const articles = useMemo(() => allData.filter(item => item.is_article), [allData]);
+  const links = useMemo(() => allData.filter((item) => !item.is_article), [allData]);
+  const articles = useMemo(() => allData.filter((item) => item.is_article), [allData]);
 
   // FILTRACE: Logika pro zobrazení bonusů
   const filteredLinks = useMemo(() => {
     let filtered;
     if (selectedCategory === 'all') {
-      filtered = links.filter(link => 
-        link.category !== 'Nákup levně' && 
-        !(Array.isArray(link.categories) && link.categories.includes('Nákup levně'))
+      filtered = links.filter((link) =>
+      link.category !== 'Nákup levně' &&
+      !(Array.isArray(link.categories) && link.categories.includes('Nákup levně'))
       );
     } else if (selectedCategory === 'Článek') {
       return [];
     } else {
-      filtered = links.filter(link => 
-        link.category === selectedCategory || 
-        (Array.isArray(link.categories) && link.categories.includes(selectedCategory))
+      filtered = links.filter((link) =>
+      link.category === selectedCategory ||
+      Array.isArray(link.categories) && link.categories.includes(selectedCategory)
       );
     }
     return filtered.slice(0, displayCount);
@@ -131,14 +131,14 @@ export default function Home() {
     if (filteredLinks.length > 0) {
       const schemaEl = document.querySelector('script[type="application/ld+json"][data-collection="true"]');
       if (schemaEl) schemaEl.remove();
-      
+
       const newSchema = document.createElement('script');
       newSchema.type = 'application/ld+json';
       newSchema.setAttribute('data-collection', 'true');
       newSchema.textContent = JSON.stringify(generateSchemaData('collectionPage', {
         title: 'Nejlepší bonusy a cashback v Česku',
         description: 'Kompletní sbírka dostupných bonusů a cashbacku',
-        items: filteredLinks.slice(0, 10).map(link => ({
+        items: filteredLinks.slice(0, 10).map((link) => ({
           title: link.title,
           description: link.description,
           image_url: link.image_url,
@@ -159,7 +159,7 @@ export default function Home() {
     const shareData = {
       title: 'Vyzkoušej & Ušetři',
       text: 'Koukni na tyhle super bonusy a odměny, které můžeš snadno získat!',
-      url: window.location.href,
+      url: window.location.href
     };
     try {
       if (navigator.share) {
@@ -211,57 +211,57 @@ export default function Home() {
         </React.Suspense>
 
         {/* Sekce Kolo Štěstí */}
-        {selectedCategory === 'wheel' && (
-          <React.Suspense fallback={<div className="h-64 flex items-center justify-center text-white">Načítám...</div>}>
+        {selectedCategory === 'wheel' &&
+        <React.Suspense fallback={<div className="h-64 flex items-center justify-center text-white">Načítám...</div>}>
             <WheelOfFortune />
           </React.Suspense>
-        )}
+        }
 
         {/* Sekce Odkazy (Bonusy) */}
-          {selectedCategory !== 'Článek' && selectedCategory !== 'wheel' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20" style={{ contain: 'layout style paint' }}>
-              {isLoading ? (
-                [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />)
-              ) : (
-                filteredLinks.map((link, index) => {
-                  const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
-                  const isAirBank = link.title.includes('Air Bank');
-                  return (
-                    <React.Fragment key={link.id}>
+          {selectedCategory !== 'Článek' && selectedCategory !== 'wheel' &&
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20" style={{ contain: 'layout style paint' }}>
+              {isLoading ?
+          [...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-2xl" />) :
+
+          filteredLinks.map((link, index) => {
+            const isFavorite = link.title.includes('Air Bank') || link.title.includes('Raiffeisenbank');
+            const isAirBank = link.title.includes('Air Bank');
+            return (
+              <React.Fragment key={link.id}>
                       <div className="relative">
-                        {isFavorite && (
-                          <div className="absolute -top-3 -right-2 z-20 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white animate-bounce">
+                        {isFavorite &&
+                  <div className="bg-gradient-to-r text-[10px] mx-2 my-5 py-2 font-bold rounded-full absolute -top-3 -right-2 z-20 from-amber-500 to-orange-600 shadow-lg border-2 border-white animate-bounce">
                             🔥 NEJOBLÍBENĚJŠÍ
                           </div>
-                        )}
+                  }
                         <LinkCard link={link} priority={index === 0} loading={index < 2 ? "eager" : "lazy"} />
                       </div>
                       {isAirBank && <WheelCard />}
-                    </React.Fragment>
-                  );
-                })
-              )}
+                    </React.Fragment>);
+
+          })
+          }
             </div>
-          )}
+        }
 
         {/* Sekce Články */}
-          {(selectedCategory === 'Článek' || selectedCategory === 'all') && (
-            <div className="space-y-8">
+          {(selectedCategory === 'Článek' || selectedCategory === 'all') &&
+        <div className="space-y-8">
                <div className="flex items-center gap-3 mb-8 border-b pb-6 border-emerald-600/30">
                 <FileText className="w-6 h-6 text-emerald-300" />
                 <h2 className="text-3xl font-bold text-white">Návody a články</h2>
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {isLoading ? (
-                  [...Array(3)].map((_, i) => <Skeleton key={i} className="h-40 w-full rounded-2xl" />)
-                ) : (
-                  articles.map((article) => (
-                    <Link 
-                      to={`/ArticleDetail?id=${article.id}`}
-                      key={article.id}
-                      className="group bg-gradient-to-br from-emerald-900/40 to-teal-900/40 p-4 sm:p-5 rounded-xl border border-emerald-500/40 hover:border-emerald-400/60 hover:shadow-xl transition-all duration-300 flex flex-col"
-                    >
+                {isLoading ?
+            [...Array(3)].map((_, i) => <Skeleton key={i} className="h-40 w-full rounded-2xl" />) :
+
+            articles.map((article) =>
+            <Link
+              to={`/ArticleDetail?id=${article.id}`}
+              key={article.id}
+              className="group bg-gradient-to-br from-emerald-900/40 to-teal-900/40 p-4 sm:p-5 rounded-xl border border-emerald-500/40 hover:border-emerald-400/60 hover:shadow-xl transition-all duration-300 flex flex-col">
+
                       <div className="flex-1">
                         <div className="text-xs text-emerald-300 font-bold uppercase tracking-wider mb-2">Příspěvek</div>
                         <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-emerald-200 transition-colors mb-2 line-clamp-2">
@@ -272,11 +272,11 @@ export default function Home() {
                         Číst <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </Link>
-                  ))
-                )}
+            )
+            }
               </div>
             </div>
-          )}
+        }
 
         {/* Footer info s počítadlem - Jackpot style */}
         <div className="mt-20 relative">
@@ -320,17 +320,17 @@ export default function Home() {
               <InfiniteCounter startValue={142255} />
             </div>
             
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="bg-yellow-300 text-yellow-900 border-yellow-200 hover:bg-yellow-200 font-bold shadow-lg"
-              onClick={handleShare}
-            >
+              onClick={handleShare}>
+
               <Share2 className="w-4 h-4 mr-2" /> Sdílet s přáteli
             </Button>
           </div>
         </div>
       </main>
-    </div>
-  );
+    </div>);
+
 }
