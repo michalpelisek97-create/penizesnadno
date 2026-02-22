@@ -87,7 +87,7 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
             <img
               src={getOptimizedSrc(link.image_url)}
               srcSet={getOptimizedSrcSet(link.image_url)}
-              sizes="(max-width: 640px) 50vw, 33vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               alt={link.title}
               loading={priority ? "eager" : "lazy"}
               fetchpriority={priority ? "critical" : "low"}
@@ -96,6 +96,7 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
               height="160"
               onError={handleImageError}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              style={{ aspectRatio: '5/2', contentVisibility: 'auto' }}
             />
           ) : (
             <div className={`w-full h-full bg-gradient-to-br ${gradientClass} flex items-center justify-center`}>
