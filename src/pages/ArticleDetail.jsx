@@ -186,19 +186,58 @@ export default function ArticleDetail() {
         .article-wrap .reward { color: #27ae60; font-weight: bold; font-size: 1.2em; text-align: right; }
         .article-wrap img { width: 100% !important; height: auto !important; max-width: 100% !important; display: block !important; margin: 20px 0 !important; border-radius: 8px !important; object-fit: cover !important; }
 
-        /* Mobile overflow fix - prevents content from being wider than viewport */
-        .article-wrap * { max-width: 100% !important; box-sizing: border-box !important; }
-        .article-wrap table { width: 100% !important; table-layout: fixed !important; word-break: break-word !important; }
-        .article-wrap td, .article-wrap th { word-break: break-word !important; overflow-wrap: break-word !important; white-space: normal !important; }
-        .article-wrap div, .article-wrap section, .article-wrap article { max-width: 100% !important; overflow-x: hidden !important; }
+        /* === MOBILE OVERFLOW FIX === */
+        .article-wrap { overflow-x: hidden !important; }
+        .article-wrap * { 
+          max-width: 100% !important; 
+          box-sizing: border-box !important; 
+          word-break: break-word !important;
+          overflow-wrap: break-word !important;
+        }
+        /* Všechny divy, sekce, articles - žádné přetékání */
+        .article-wrap div, .article-wrap section, .article-wrap article, .article-wrap header, .article-wrap footer {
+          max-width: 100% !important;
+          overflow-x: hidden !important;
+        }
+        /* Tabulky */
+        .article-wrap table { 
+          width: 100% !important; 
+          table-layout: fixed !important; 
+          display: block !important;
+          overflow-x: auto !important;
+          -webkit-overflow-scrolling: touch !important;
+        }
+        .article-wrap td, .article-wrap th { 
+          word-break: break-word !important; 
+          white-space: normal !important; 
+        }
+        /* Obrázky a iframy */
+        .article-wrap img, .article-wrap iframe { max-width: 100% !important; height: auto !important; }
+        /* Kód */
         .article-wrap pre, .article-wrap code { white-space: pre-wrap !important; word-break: break-word !important; }
-        .article-wrap iframe { max-width: 100% !important; }
-        .article-wrap .content-card, .article-wrap .main-card, .article-wrap .bonus-section, .article-wrap .step-box, .article-wrap .hack-box, .article-wrap .pro-tip { 
-          max-width: 100% !important; overflow-x: hidden !important; 
+        /* Tlačítka a odkazy - zamezení přetékání */
+        .article-wrap a[style], .article-wrap div[style] { 
+          max-width: 100% !important; 
+          overflow-x: hidden !important;
         }
         @media (max-width: 640px) {
-          .article-wrap { overflow-x: hidden !important; }
-          .article-wrap table { display: block !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
+          /* Redukujeme velké paddingy na mobilu */
+          .article-wrap [style*="padding: 4"], .article-wrap [style*="padding: 5"] {
+            padding: 16px !important;
+          }
+          /* Redukujeme velké font-size na mobilu */
+          .article-wrap h1 { font-size: 1.4em !important; }
+          .article-wrap h2 { font-size: 1.2em !important; }
+          .article-wrap h3 { font-size: 1.05em !important; }
+          /* Inline velká tlačítka */
+          .article-wrap a[style*="padding: 2"], .article-wrap a[style*="padding: 1"] {
+            display: block !important;
+            width: 100% !important;
+            text-align: center !important;
+            font-size: 1em !important;
+            padding: 14px 16px !important;
+            border-radius: 12px !important;
+          }
         }
       `}</style>
 
