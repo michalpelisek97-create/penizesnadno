@@ -180,7 +180,7 @@ export default function WheelCard() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={closeModal}>
+        <div className="fixed inset-0 bg-black/80 flex items-start justify-center z-50 p-4 pt-16" onClick={closeModal}>
           <div
             className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 max-w-sm w-full relative border-2 border-yellow-400"
             style={{ boxShadow: '0 0 40px rgba(241,196,15,0.4)' }}
