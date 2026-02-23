@@ -161,6 +161,21 @@ export default function ArticleDetail() {
         .article-wrap .bank-name { font-weight: bold; font-size: 1.1em; color: #333; }
         .article-wrap .reward { color: #27ae60; font-weight: bold; font-size: 1.2em; text-align: right; }
         .article-wrap img { width: 100% !important; height: auto !important; max-width: 100% !important; display: block !important; margin: 20px 0 !important; border-radius: 8px !important; object-fit: cover !important; }
+
+        /* Mobile overflow fix - prevents content from being wider than viewport */
+        .article-wrap * { max-width: 100% !important; box-sizing: border-box !important; }
+        .article-wrap table { width: 100% !important; table-layout: fixed !important; word-break: break-word !important; }
+        .article-wrap td, .article-wrap th { word-break: break-word !important; overflow-wrap: break-word !important; white-space: normal !important; }
+        .article-wrap div, .article-wrap section, .article-wrap article { max-width: 100% !important; overflow-x: hidden !important; }
+        .article-wrap pre, .article-wrap code { white-space: pre-wrap !important; word-break: break-word !important; }
+        .article-wrap iframe { max-width: 100% !important; }
+        .article-wrap .content-card, .article-wrap .main-card, .article-wrap .bonus-section, .article-wrap .step-box, .article-wrap .hack-box, .article-wrap .pro-tip { 
+          max-width: 100% !important; overflow-x: hidden !important; 
+        }
+        @media (max-width: 640px) {
+          .article-wrap { overflow-x: hidden !important; }
+          .article-wrap table { display: block !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
+        }
       `}</style>
 
       <div className="max-w-4xl mx-auto px-4 py-12">
