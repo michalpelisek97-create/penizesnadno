@@ -91,8 +91,6 @@ export default function ArticleDetail() {
     );
   }
 
-  const [copied, setCopied] = useState(false);
-
   const handleShare = async () => {
     const url = window.location.href;
     const shareData = {
