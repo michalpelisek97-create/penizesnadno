@@ -93,14 +93,17 @@ export default function ArticleDetail() {
 
   const handleShare = async () => {
     const url = window.location.href;
-    const shareData = { title: article?.title, text: article?.description || article?.title, url };
     if (navigator.share) {
-      await navigator.share(shareData);
-    } else {
-      await navigator.clipboard.writeText(url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      try {
+        await navigator.share({ title: article?.title, text: article?.description || article?.title, url });
+        return;
+      } catch (e) {
+        // fallback to clipboard if share fails or is denied
+      }
     }
+    await navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   // Vyextrahujeme obsah z HTML dokumentu
