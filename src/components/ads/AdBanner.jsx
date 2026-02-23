@@ -19,7 +19,7 @@ export default function AdBanner() {
 
   const mobileHtml = `<!DOCTYPE html>
 <html>
-<head><style>body{margin:0;padding:0;overflow:hidden;background:transparent;}</style></head>
+<head><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{margin:0;padding:0;overflow:hidden;background:transparent;}</style></head>
 <body>
 <script>atOptions = { 'key' : '87afe0cbb8dd8164f2c3a4a2524323d6', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };<\/script>
 <script src="https://www.highperformanceformat.com/87afe0cbb8dd8164f2c3a4a2524323d6/invoke.js"><\/script>
@@ -35,16 +35,18 @@ export default function AdBanner() {
 </body>
 </html>`;
 
+  const sandboxPerms = "allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation";
+
   return (
     <div ref={ref} className="flex justify-center mb-2 mt-0" style={{ minHeight: '50px' }}>
       {visible && (
         <>
           {/* Mobilní reklama */}
-          <div className="block sm:hidden">
+          <div className="block sm:hidden" style={{ width: '100%', maxWidth: '320px' }}>
             <iframe
               srcDoc={mobileHtml}
-              sandbox="allow-scripts allow-same-origin allow-popups"
-              style={{ width: '320px', height: '50px', border: 'none', overflow: 'hidden', display: 'block' }}
+              sandbox={sandboxPerms}
+              style={{ width: '320px', height: '50px', border: 'none', overflow: 'hidden', display: 'block', maxWidth: '100%' }}
               scrolling="no"
             />
           </div>
@@ -53,7 +55,7 @@ export default function AdBanner() {
           <div className="hidden sm:block">
             <iframe
               srcDoc={desktopHtml}
-              sandbox="allow-scripts allow-same-origin allow-popups"
+              sandbox={sandboxPerms}
               style={{ width: '728px', height: '90px', border: 'none', overflow: 'hidden', display: 'block' }}
               scrolling="no"
             />
