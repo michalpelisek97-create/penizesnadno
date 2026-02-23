@@ -90,6 +90,24 @@ export default function ArticleDetail() {
     );
   }
 
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    const shareData = {
+      title: article.title,
+      text: article.description || article.title,
+      url,
+    };
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   // Vyextrahujeme obsah z HTML dokumentu
   const getContent = (raw) => {
     if (!raw) return '';
