@@ -93,11 +93,7 @@ export default function ArticleDetail() {
 
   const handleShare = async () => {
     const url = window.location.href;
-    const shareData = {
-      title: article.title,
-      text: article.description || article.title,
-      url,
-    };
+    const shareData = { title: article?.title, text: article?.description || article?.title, url };
     if (navigator.share) {
       await navigator.share(shareData);
     } else {
