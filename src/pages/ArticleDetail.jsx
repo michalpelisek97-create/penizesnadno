@@ -166,12 +166,39 @@ export default function ArticleDetail() {
       `}</style>
 
       <div className="max-w-4xl mx-auto px-4 py-12">
-        <Button variant="ghost" onClick={() => navigate('/')} className="mb-8 text-white hover:text-gray-200">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Zpět
-        </Button>
+        <div className="flex items-center justify-between mb-8">
+          <Button variant="ghost" onClick={() => navigate('/')} className="text-white hover:text-gray-200">
+            <ArrowLeft className="mr-2 h-4 w-4" /> Zpět
+          </Button>
+          <Button
+            onClick={handleShare}
+            className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-5 py-2 rounded-full shadow-lg transition-all"
+          >
+            {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+            {copied ? 'Zkopírováno!' : 'Sdílet článek'}
+          </Button>
+        </div>
+
+        {/* Náhled pro sdílení */}
+        {article.image_url && (
+          <div className="mb-6 rounded-xl overflow-hidden shadow-xl max-h-64">
+            <img src={article.image_url} alt={article.title} className="w-full h-64 object-cover" />
+          </div>
+        )}
 
         <div className="article-wrap">
           <div dangerouslySetInnerHTML={{ __html: getContent(article.content || article.description || '') }} />
+        </div>
+
+        {/* Sdílet dole */}
+        <div className="mt-8 flex justify-center">
+          <Button
+            onClick={handleShare}
+            className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-8 py-3 rounded-full shadow-lg text-base transition-all"
+          >
+            {copied ? <Check className="h-5 w-5" /> : <Share2 className="h-5 w-5" />}
+            {copied ? 'Odkaz zkopírován!' : 'Sdílet tento článek'}
+          </Button>
         </div>
       </div>
     </div>
