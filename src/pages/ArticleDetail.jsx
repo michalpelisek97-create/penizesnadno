@@ -11,6 +11,7 @@ export default function ArticleDetail() {
   const [article, setArticle] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   // Získání ID z query parametru
   const id = new URLSearchParams(window.location.search).get('id');
