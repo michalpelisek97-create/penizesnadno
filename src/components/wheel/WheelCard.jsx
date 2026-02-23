@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 
 const encodedLinks = [
@@ -19,88 +19,69 @@ const prizes = [
 
 const smartlinkUrl = 'https://www.effectivegatecpm.com/whifkrp4te?key=06123d4024c40ca03236d07ac020b0c6';
 
-function drawWheel(canvas, rotation) {
-  const dpr = window.devicePixelRatio || 1;
-  const displaySize = canvas.offsetWidth || 160;
-
-  if (canvas.width !== displaySize * dpr) {
-    canvas.width = displaySize * dpr;
-    canvas.height = displaySize * dpr;
-  }
-
-  const ctx = canvas.getContext('2d');
-  const size = canvas.width;
-  const center = size / 2;
-  const radius = center - 4 * dpr;
-
-  ctx.clearRect(0, 0, size, size);
-  ctx.save();
-  ctx.translate(center, center);
-  ctx.rotate((rotation * Math.PI) / 180);
-
-  prizes.forEach((prize, index) => {
-    const sliceAngle = (2 * Math.PI) / prizes.length;
-    const startAngle = index * sliceAngle;
-
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.arc(0, 0, radius, startAngle, startAngle + sliceAngle);
-    ctx.closePath();
-    ctx.fillStyle = prize.color;
-    ctx.fill();
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 2 * dpr;
-    ctx.stroke();
-
-    ctx.save();
-    ctx.rotate(startAngle + sliceAngle / 2);
-    ctx.textAlign = 'right';
-    ctx.fillStyle = '#fff';
-    ctx.font = `bold ${Math.round(size * 0.09)}px Arial`;
-    ctx.fillText(prize.symbol, radius - 8 * dpr, 6 * dpr);
-    ctx.restore();
-  });
-
-  // Center circle
-  const centerR = size * 0.13;
-  ctx.beginPath();
-  ctx.arc(0, 0, centerR, 0, 2 * Math.PI);
-  ctx.fillStyle = '#fff';
-  ctx.fill();
-  ctx.strokeStyle = '#f1c40f';
-  ctx.lineWidth = 3 * dpr;
-  ctx.stroke();
-
-  ctx.fillStyle = '#2c3e50';
-  ctx.font = `bold ${Math.round(size * 0.08)}px Arial`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('SPIN', 0, 0);
-
-  ctx.restore();
-}
-
 export default function WheelCard() {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
   const [winnerIndex, setWinnerIndex] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [rotation, setRotation] = useState(0);
   const canvasRef = useRef(null);
-  const rotationRef = useRef(0);
-  const rafRef = useRef(null);
-
-  const redraw = useCallback(() => {
-    if (canvasRef.current) {
-      drawWheel(canvasRef.current, rotationRef.current);
-    }
-  }, []);
 
   useEffect(() => {
-    redraw();
-    const observer = new ResizeObserver(redraw);
-    if (canvasRef.current) observer.observe(canvasRef.current);
-    return () => observer.disconnect();
-  }, [redraw]);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const size = canvas.width;
+    const centerX = size / 2;
+    const centerY = size / 2;
+    const radius = size / 2 - 4;
+
+    ctx.clearRect(0, 0, size, size);
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate((rotation * Math.PI) / 180);
+
+    prizes.forEach((prize, index) => {
+      const sliceAngle = (2 * Math.PI) / prizes.length;
+      const startAngle = index * sliceAngle;
+
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.arc(0, 0, radius, startAngle, startAngle + sliceAngle);
+      ctx.closePath();
+      ctx.fillStyle = prize.color;
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.save();
+      ctx.rotate(startAngle + sliceAngle / 2);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#fff';
+      ctx.font = `bold ${size * 0.07}px Arial`;
+      ctx.fillText(prize.symbol, radius - 8, 6);
+      ctx.restore();
+    });
+
+    // Center circle
+    const centerR = size * 0.13;
+    ctx.beginPath();
+    ctx.arc(0, 0, centerR, 0, 2 * Math.PI);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.strokeStyle = '#f1c40f';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.fillStyle = '#2c3e50';
+    ctx.font = `bold ${size * 0.07}px Arial`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('SPIN', 0, 0);
+
+    ctx.restore();
+  }, [rotation]);
 
   const handleUnlock = () => {
     window.open(smartlinkUrl, '_blank');
@@ -108,43 +89,40 @@ export default function WheelCard() {
   };
 
   const decodeLink = (encoded, index) => {
-    if (index === 4) return 'https://onb.rb.cz/onb-web?mgm=N0Fnxi';
+    // RB bonus - direct URL
+    if (index === 4) {
+      return 'https://onb.rb.cz/onb-web?mgm=N0Fnxi';
+    }
     try { return atob(encoded); } catch { return ''; }
   };
 
   const handleSpin = () => {
     if (!isUnlocked || isSpinning) return;
     setIsSpinning(true);
-
     const spinCount = 5 + Math.random() * 5;
     const randomPrize = Math.floor(Math.random() * prizes.length);
-    const finalRotation = rotationRef.current + spinCount * 360 + (randomPrize * 72);
-    const startRotation = rotationRef.current;
-    const startTime = performance.now();
+    const finalRotation = spinCount * 360 + (randomPrize * 72);
+    let currentRotation = 0;
+    const startTime = Date.now();
     const duration = 3000;
 
-    const animate = (now) => {
-      const elapsed = now - startTime;
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
       const ease = 0.25 * progress - 1.25 * progress ** 2 + 2 * progress ** 3;
-      rotationRef.current = startRotation + ease * (finalRotation - startRotation);
-      redraw();
-
+      currentRotation = ease * finalRotation;
+      setRotation(currentRotation);
       if (progress < 1) {
-        rafRef.current = requestAnimationFrame(animate);
+        requestAnimationFrame(animate);
       } else {
-        rotationRef.current = finalRotation;
-        redraw();
+        setRotation(finalRotation);
         setWinnerIndex(randomPrize);
         setIsSpinning(false);
         setShowModal(true);
       }
     };
-
-    rafRef.current = requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
   };
-
-  useEffect(() => () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); }, []);
 
   const closeModal = () => {
     setShowModal(false);
@@ -156,16 +134,16 @@ export default function WheelCard() {
       <div className="group relative">
         <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 border border-purple-500/40 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
           {/* Header */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-purple-900 to-indigo-900 flex flex-col items-center justify-center"
-            style={{ aspectRatio: '1 / 1', maxHeight: '200px' }}
-          >
+          <div className="relative h-40 overflow-hidden bg-gradient-to-br from-purple-900 to-indigo-900 flex flex-col items-center justify-center">
             {/* Pointer */}
             <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10"
               style={{ width: 0, height: 0, borderLeft: '8px solid transparent', borderRight: '8px solid transparent', borderTop: '14px solid #f1c40f', filter: 'drop-shadow(0 0 6px rgba(241,196,15,0.8))' }}
             />
             <canvas
               ref={canvasRef}
-              style={{ width: '100%', height: '100%', display: 'block' }}
+              width={160}
+              height={160}
+              style={{ maxWidth: '100%', filter: 'drop-shadow(0 0 10px rgba(241,196,15,0.3))' }}
             />
             {/* Locked overlay */}
             {!isUnlocked && (
