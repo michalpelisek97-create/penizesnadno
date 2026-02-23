@@ -106,15 +106,39 @@ export default function ArticleDetail() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Vyextrahujeme obsah z HTML dokumentu
+  // Vyextrahujeme obsah z HTML dokumentu a opravíme inline styly pro mobil
   const getContent = (raw) => {
     if (!raw) return '';
+    let content = raw;
     const bodyMatch = raw.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-    if (bodyMatch) return bodyMatch[1];
-    return raw
-      .replace(/<\/?html[^>]*>/gi, '')
-      .replace(/<head[\s\S]*?<\/head>/gi, '')
-      .replace(/<\/?body[^>]*>/gi, '');
+    if (bodyMatch) {
+      content = bodyMatch[1];
+    } else {
+      content = raw
+        .replace(/<\/?html[^>]*>/gi, '')
+        .replace(/<head[\s\S]*?<\/head>/gi, '')
+        .replace(/<\/?body[^>]*>/gi, '');
+    }
+
+    // Odstraníme problematické inline styly které způsobují přetékání na mobilu
+    content = content
+      // Odstraníme fixní max-width z inline stylů
+      .replace(/max-width\s*:\s*\d+px\s*;?/gi, 'max-width: 100%;')
+      // Odstraníme velké padding hodnoty, nahradíme mobilními
+      .replace(/padding\s*:\s*(\d+)px(\s+\d+px)?(\s+\d+px)?(\s+\d+px)?\s*;?/gi, (match, p1) => {
+        const val = parseInt(p1);
+        return val > 20 ? 'padding: 16px;' : match;
+      })
+      // Odstraníme fixní šířky
+      .replace(/(?<!max-)width\s*:\s*\d+px\s*;?/gi, 'width: 100%;')
+      // Opravíme font-size které jsou příliš velké
+      .replace(/font-size\s*:\s*([\d.]+)em\s*;?/gi, (match, size) => {
+        const s = parseFloat(size);
+        if (s > 2.0) return `font-size: ${Math.min(s, 1.8)}em;`;
+        return match;
+      });
+
+    return content;
   };
 
   return (
