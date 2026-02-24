@@ -38,14 +38,13 @@ export default function RollerCoinCalculator() {
     if (!net || !usr || !reward || net === 0) return;
     const share = usr / net;
     const perBlock = share * reward;
-    const blocksPerHour = coin.blocks_per_hour;
     setResults({
       perBlock,
-      perHour: perBlock * blocksPerHour,
-      perDay: perBlock * blocksPerHour * 24,
-      perWeek: perBlock * blocksPerHour * 24 * 7,
-      perMonth: perBlock * blocksPerHour * 24 * 30,
-      sharePercent: (share * 100).toFixed(8),
+      perHour: perBlock * BLOCKS_PER_HOUR,
+      perDay: perBlock * BLOCKS_PER_HOUR * 24,
+      perWeek: perBlock * BLOCKS_PER_HOUR * 24 * 7,
+      perMonth: perBlock * BLOCKS_PER_HOUR * 24 * 30,
+      sharePercent: (share * 100).toFixed(12),
     });
   };
 
