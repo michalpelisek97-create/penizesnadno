@@ -7,19 +7,36 @@ export default function AdBanner() {
   const desktopIframeRef = useRef(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), 2000);
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setVisible(true); clearTimeout(timer); } },
-      { rootMargin: '300px' }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => { clearTimeout(timer); observer.disconnect(); };
+    // Načti reklamy až po interakci uživatele NEBO po 5 sekundách
+    // Tím předejdeme okamžitému spuštění video reklam při načtení stránky
+    let loaded = false;
+
+    const load = () => {
+      if (loaded) return;
+      loaded = true;
+      setVisible(true);
+    };
+
+    // Po interakci uživatele
+    const onInteraction = () => load();
+    window.addEventListener('scroll', onInteraction, { once: true, passive: true });
+    window.addEventListener('touchstart', onInteraction, { once: true, passive: true });
+    window.addEventListener('click', onInteraction, { once: true, passive: true });
+
+    // Fallback: načti po 5 sekundách i bez interakce
+    const timer = setTimeout(load, 5000);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', onInteraction);
+      window.removeEventListener('touchstart', onInteraction);
+      window.removeEventListener('click', onInteraction);
+    };
   }, []);
 
   useEffect(() => {
     if (!visible) return;
 
-    // Inject mobile ad script directly into iframe document (works on iOS)
     const injectMobile = () => {
       const iframe = mobileIframeRef.current;
       if (!iframe) return;
@@ -28,7 +45,11 @@ export default function AdBanner() {
       doc.open();
       doc.write(`<!DOCTYPE html><html><head>
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <style>body{margin:0;padding:0;overflow:hidden;background:transparent;}</style>
+        <style>
+          body{margin:0;padding:0;overflow:hidden;background:transparent;}
+          video{display:none!important;}
+          [id*="video"],[class*="video"],[id*="Video"],[class*="Video"]{display:none!important;}
+        </style>
       </head><body>
         <script>atOptions={'key':'87afe0cbb8dd8164f2c3a4a2524323d6','format':'iframe','height':50,'width':320,'params':{}};<\/script>
         <script src="https://www.highperformanceformat.com/87afe0cbb8dd8164f2c3a4a2524323d6/invoke.js"><\/script>
@@ -43,7 +64,11 @@ export default function AdBanner() {
       if (!doc) return;
       doc.open();
       doc.write(`<!DOCTYPE html><html><head>
-        <style>body{margin:0;padding:0;overflow:hidden;background:transparent;}</style>
+        <style>
+          body{margin:0;padding:0;overflow:hidden;background:transparent;}
+          video{display:none!important;}
+          [id*="video"],[class*="video"],[id*="Video"],[class*="Video"]{display:none!important;}
+        </style>
       </head><body>
         <script async data-cfasync="false" src="https://pl28764392.effectivegatecpm.com/0a15c12ae0beea74e0cf91c387f1d820/invoke.js"><\/script>
         <div id="container-0a15c12ae0beea74e0cf91c387f1d820"></div>
@@ -51,7 +76,6 @@ export default function AdBanner() {
       doc.close();
     };
 
-    // Small delay to ensure iframes are mounted
     const t = setTimeout(() => {
       injectMobile();
       injectDesktop();
