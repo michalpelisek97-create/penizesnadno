@@ -53,10 +53,10 @@ export default function RollerCoinCalculator() {
     setUnlocked(true);
   };
 
-  const fmt = (val) => val < 0.001 ? val.toExponential(6) : val.toFixed(8);
+  const fmt = (val) => Number(val).toFixed(15);
 
   const rows = results ? [
-    { label: 'Za blok (~' + Math.round(60 / coin.blocks_per_hour) + ' min)', value: fmt(results.perBlock) },
+    { label: 'Za blok (10 min)', value: fmt(results.perBlock) },
     { label: 'Za hodinu', value: fmt(results.perHour) },
     { label: 'Za den', value: fmt(results.perDay) },
     { label: 'Za týden', value: fmt(results.perWeek) },
