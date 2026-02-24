@@ -18,7 +18,7 @@ const categories = [
   { id: 'wheel', label: 'Kolo Štěstí', icon: Dice5, hotLabel: 'Hot novinka' },
   { id: 'crypto', label: 'Kryptoměny', icon: Bitcoin },
   { id: 'cashback', label: 'Cashback', icon: Percent },
-  { id: 'Nákup levně', label: 'Nákup levně', icon: ShoppingBag, new: true },
+  { id: 'Nákup levně', label: 'Spočítat si výdělky', icon: ShoppingBag, new: true },
   { id: 'games', label: 'Hry', icon: Gamepad2 },
   { id: 'apps', label: 'Aplikace', icon: Smartphone },
   { id: 'Článek', label: 'Články', icon: FileText },
