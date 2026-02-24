@@ -61,6 +61,10 @@ export default function AdAnalytics() {
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-purple-400" />
           </div>
+        ) : !stats ? (
+          <div className="flex justify-center items-center h-64 text-slate-400">
+            Nepodařilo se načíst data. Ujistěte se, že jste přihlášeni jako admin.
+          </div>
         ) : (
           <>
             {/* Metriky karty */}
