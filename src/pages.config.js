@@ -50,6 +50,7 @@
 import Admin from './pages/Admin';
 import ArticleDetail from './pages/ArticleDetail';
 import Home from './pages/Home';
+import AdAnalytics from './pages/AdAnalytics';
 import __Layout from './Layout.jsx';
 
 
@@ -57,6 +58,7 @@ export const PAGES = {
     "Admin": Admin,
     "ArticleDetail": ArticleDetail,
     "Home": Home,
+    "AdAnalytics": AdAnalytics,
 }
 
 export const pagesConfig = {
