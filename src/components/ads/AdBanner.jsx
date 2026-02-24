@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 
 export default function AdBanner() {
@@ -7,8 +7,10 @@ export default function AdBanner() {
   const mobileTracked = useRef(false);
   const desktopTracked = useRef(false);
 
-  const trackImpression = (type) => {
-    base44.analytics.track({ eventName: 'ad_impression', properties: { ad_type: type } });
+  const today = new Date().toISOString().split('T')[0];
+
+  const trackEvent = (event_type, ad_type) => {
+    base44.entities.AdEvent.create({ event_type, ad_type, date: today }).catch(() => {});
   };
 
   const injectMobile = () => {
