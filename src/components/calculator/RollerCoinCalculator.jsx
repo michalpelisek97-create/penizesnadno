@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
 import { Lock, Unlock, Calculator } from 'lucide-react';
 
+// Každý blok trvá 10 minut → 6 bloků za hodinu pro všechny mince v RollerCoin
+const BLOCKS_PER_HOUR = 6;
+
 const COINS = [
-  { id: 'BTC', name: 'Bitcoin', symbol: 'BTC', color: '#f7931a', blocks_per_hour: 6 },
-  { id: 'ETH', name: 'Ethereum', symbol: 'ETH', color: '#627eea', blocks_per_hour: 240 },
-  { id: 'RLT', name: 'RollerToken', symbol: 'RLT', color: '#ff6b6b', blocks_per_hour: 360 },
-  { id: 'DOGE', name: 'Dogecoin', symbol: 'DOGE', color: '#c2a633', blocks_per_hour: 60 },
-  { id: 'LTC', name: 'Litecoin', symbol: 'LTC', color: '#bfbbbb', blocks_per_hour: 24 },
+  { id: 'BTC',  name: 'Bitcoin',      symbol: 'BTC',  color: '#f7931a' },
+  { id: 'ETH',  name: 'Ethereum',     symbol: 'ETH',  color: '#627eea' },
+  { id: 'RLT',  name: 'RollerToken',  symbol: 'RLT',  color: '#ff6b6b' },
+  { id: 'DOGE', name: 'Dogecoin',     symbol: 'DOGE', color: '#c2a633' },
+  { id: 'LTC',  name: 'Litecoin',     symbol: 'LTC',  color: '#bfbbbb' },
+  { id: 'SOL',  name: 'Solana',       symbol: 'SOL',  color: '#9945ff' },
+  { id: 'TRX',  name: 'TRON',         symbol: 'TRX',  color: '#ef0027' },
+  { id: 'POL',  name: 'Polygon',      symbol: 'POL',  color: '#8247e5' },
+  { id: 'BNB',  name: 'BNB',          symbol: 'BNB',  color: '#f3ba2f' },
+  { id: 'HMT',  name: 'Human Protocol',symbol: 'HMT', color: '#5affb7' },
+  { id: 'RST',  name: 'RST Token',    symbol: 'RST',  color: '#ff9f43' },
 ];
 
 const POWER_UNITS = ['H/s', 'KH/s', 'MH/s', 'GH/s', 'TH/s', 'PH/s', 'EH/s'];
