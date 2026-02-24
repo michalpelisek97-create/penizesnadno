@@ -216,6 +216,17 @@ export default function Home() {
         {/* Reklama */}
         <AdBanner />
 
+        {/* Sekce Spočítat si výdělky */}
+        {selectedCategory === 'Nákup levně' && (
+          <div className="mb-12">
+            <div className="flex items-center gap-3 mb-6 border-b pb-4 border-purple-500/30">
+              <span className="text-2xl">💰</span>
+              <h2 className="text-2xl font-bold text-white">RollerCoin Profit Calculator</h2>
+            </div>
+            <RollerCoinCalculator />
+          </div>
+        )}
+
         {/* Sekce Kolo Štěstí */}
          {selectedCategory === 'wheel' &&
          <React.Suspense fallback={<div className="h-64 flex items-center justify-center text-white">Načítám...</div>}>
