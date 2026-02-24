@@ -71,11 +71,11 @@ export default function AdBanner() {
         const el = entry.target;
         if (el === mobileIframeRef.current && !mobileTracked.current) {
           mobileTracked.current = true;
-          trackImpression('mobile_banner');
+          trackEvent('impression', 'mobile_banner');
         }
         if (el === desktopIframeRef.current && !desktopTracked.current) {
           desktopTracked.current = true;
-          trackImpression('desktop_leaderboard');
+          trackEvent('impression', 'desktop_leaderboard');
         }
       });
     }, { threshold: 0.5 });
@@ -87,7 +87,7 @@ export default function AdBanner() {
   }, []);
 
   const handleClick = (type) => {
-    base44.analytics.track({ eventName: 'ad_click', properties: { ad_type: type } });
+    trackEvent('click', type);
   };
 
   return (
