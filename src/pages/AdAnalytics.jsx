@@ -129,7 +129,7 @@ export default function AdAnalytics() {
             </div>
 
             <p className="text-xs text-slate-500 mt-4 text-center">
-              * Příjmy jsou orientační odhad na základě průměrného CPM {CPM_ESTIMATE} Kč. Skutečné příjmy závisí na reklamní síti.
+              * Příjmy jsou orientační odhad na základě průměrného CPM 0.80 Kč. Skutečné příjmy závisí na reklamní síti.
             </p>
           </>
         )}
