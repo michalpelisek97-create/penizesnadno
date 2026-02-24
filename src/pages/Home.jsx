@@ -18,8 +18,8 @@ import WheelCard from '@/components/wheel/WheelCard';
 import HeroWheel from '@/components/hero/HeroWheel';
 import { generateSchemaData } from '@/components/utils/seoHelper';
 
+import AdBanner from '@/components/ads/AdBanner';
 // Lazy import těžkých komponent
-const AdBanner = React.lazy(() => import('@/components/ads/AdBanner'));
 const WheelOfFortune = React.lazy(() => import('@/components/wheel/WheelOfFortune'));
 
 // 1. Komponenta pro NEKONEČNĚ STOUPAJÍCÍ počítadlo
