@@ -47,9 +47,14 @@ export default function AdBanner() {
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <style>
           body{margin:0;padding:0;overflow:hidden;background:transparent;}
-          video{display:none!important;}
-          [id*="video"],[class*="video"],[id*="Video"],[class*="Video"]{display:none!important;}
+          video,iframe[src*="video"],object,embed{display:none!important;width:0!important;height:0!important;}
+          [id*="video"],[class*="video"],[id*="Video"],[class*="Video"],[class*="interstitial"],[class*="overlay"],[class*="popup"],[id*="popup"]{display:none!important;}
         </style>
+        <script>
+          // Blokovat autoplay video reklamy
+          Object.defineProperty(HTMLMediaElement.prototype, 'autoplay', { set: function(){}, get: function(){ return false; } });
+          Object.defineProperty(HTMLMediaElement.prototype, 'play', { value: function(){ return Promise.reject(); } });
+        <\/script>
       </head><body>
         <script>atOptions={'key':'87afe0cbb8dd8164f2c3a4a2524323d6','format':'iframe','height':50,'width':320,'params':{}};<\/script>
         <script src="https://www.highperformanceformat.com/87afe0cbb8dd8164f2c3a4a2524323d6/invoke.js"><\/script>
