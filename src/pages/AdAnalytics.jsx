@@ -4,12 +4,10 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { TrendingUp, MousePointerClick, Eye, DollarSign, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const CPM_ESTIMATE = 0.80; // Odhadovaný CPM v Kč
-
 export default function AdAnalytics() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [range, setRange] = useState(7); // dní
+  const [range, setRange] = useState(7);
 
   useEffect(() => {
     loadStats();
@@ -17,34 +15,8 @@ export default function AdAnalytics() {
 
   const loadStats = async () => {
     setLoading(true);
-    // Simulujeme načtení dat z analytics - base44 analytics events
-    // V reálu by bylo potřeba backend funkci pro agregaci
-    // Zde zobrazujeme demo data + reálná data pokud dostupná
-    const now = new Date();
-    const days = Array.from({ length: range }, (_, i) => {
-      const d = new Date(now);
-      d.setDate(d.getDate() - (range - 1 - i));
-      return d.toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric' });
-    });
-
-    // Demo data - realné by přišly z analytics endpointu
-    const impressions = days.map(() => Math.floor(Math.random() * 300 + 100));
-    const clicks = impressions.map(imp => Math.floor(imp * (Math.random() * 0.03 + 0.005)));
-
-    const chartData = days.map((day, i) => ({
-      day,
-      zobrazení: impressions[i],
-      kliknutí: clicks[i],
-      CTR: ((clicks[i] / impressions[i]) * 100).toFixed(2),
-      příjmy: ((impressions[i] / 1000) * CPM_ESTIMATE).toFixed(2)
-    }));
-
-    const totalImpressions = impressions.reduce((a, b) => a + b, 0);
-    const totalClicks = clicks.reduce((a, b) => a + b, 0);
-    const totalRevenue = (totalImpressions / 1000) * CPM_ESTIMATE;
-    const avgCTR = ((totalClicks / totalImpressions) * 100).toFixed(2);
-
-    setStats({ chartData, totalImpressions, totalClicks, totalRevenue, avgCTR });
+    const res = await base44.functions.invoke('getAdStats', { days: range });
+    setStats(res.data);
     setLoading(false);
   };
 
