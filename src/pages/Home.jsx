@@ -19,6 +19,7 @@ import HeroWheel from '@/components/hero/HeroWheel';
 import { generateSchemaData } from '@/components/utils/seoHelper';
 
 import AdBanner from '@/components/ads/AdBanner';
+import RollerCoinCalculator from '@/components/calculator/RollerCoinCalculator';
 // Lazy import těžkých komponent
 const WheelOfFortune = React.lazy(() => import('@/components/wheel/WheelOfFortune'));
 
