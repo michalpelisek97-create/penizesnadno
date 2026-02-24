@@ -15,8 +15,12 @@ export default function AdAnalytics() {
 
   const loadStats = async () => {
     setLoading(true);
-    const res = await base44.functions.invoke('getAdStats', { days: range });
-    setStats(res.data);
+    try {
+      const res = await base44.functions.invoke('getAdStats', { days: range });
+      setStats(res.data);
+    } catch (e) {
+      console.error('getAdStats error', e);
+    }
     setLoading(false);
   };
 
