@@ -24,7 +24,7 @@ export default function AdAnalytics() {
     { label: 'Celkem zobrazení', value: stats.totalImpressions.toLocaleString('cs-CZ'), icon: Eye, color: 'from-blue-500 to-blue-700' },
     { label: 'Celkem kliknutí', value: stats.totalClicks.toLocaleString('cs-CZ'), icon: MousePointerClick, color: 'from-green-500 to-green-700' },
     { label: 'Průměrné CTR', value: `${stats.avgCTR} %`, icon: TrendingUp, color: 'from-purple-500 to-purple-700' },
-    { label: 'Odhadované příjmy', value: `${stats.totalRevenue.toFixed(2)} Kč`, icon: DollarSign, color: 'from-amber-500 to-amber-700' },
+    { label: 'Odhadované příjmy', value: `${stats.totalRevenue} Kč`, icon: DollarSign, color: 'from-amber-500 to-amber-700' },
   ] : [];
 
   return (
