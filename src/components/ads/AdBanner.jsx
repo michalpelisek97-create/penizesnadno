@@ -92,6 +92,7 @@ export default function AdBanner() {
           <div className="block sm:hidden">
             <iframe
               ref={mobileIframeRef}
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
               style={{ width: '320px', height: '50px', border: 'none', overflow: 'hidden', display: 'block' }}
               scrolling="no"
             />
@@ -101,6 +102,7 @@ export default function AdBanner() {
           <div className="hidden sm:block">
             <iframe
               ref={desktopIframeRef}
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
               style={{ width: '728px', height: '90px', border: 'none', overflow: 'hidden', display: 'block' }}
               scrolling="no"
             />
