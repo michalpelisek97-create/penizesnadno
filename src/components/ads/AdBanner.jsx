@@ -71,9 +71,13 @@ export default function AdBanner() {
       doc.write(`<!DOCTYPE html><html><head>
         <style>
           body{margin:0;padding:0;overflow:hidden;background:transparent;}
-          video{display:none!important;}
-          [id*="video"],[class*="video"],[id*="Video"],[class*="Video"]{display:none!important;}
+          video,iframe[src*="video"],object,embed{display:none!important;width:0!important;height:0!important;}
+          [id*="video"],[class*="video"],[id*="Video"],[class*="Video"],[class*="interstitial"],[class*="overlay"],[class*="popup"],[id*="popup"]{display:none!important;}
         </style>
+        <script>
+          Object.defineProperty(HTMLMediaElement.prototype, 'autoplay', { set: function(){}, get: function(){ return false; } });
+          Object.defineProperty(HTMLMediaElement.prototype, 'play', { value: function(){ return Promise.reject(); } });
+        <\/script>
       </head><body>
         <script async data-cfasync="false" src="https://pl28764392.effectivegatecpm.com/0a15c12ae0beea74e0cf91c387f1d820/invoke.js"><\/script>
         <div id="container-0a15c12ae0beea74e0cf91c387f1d820"></div>
