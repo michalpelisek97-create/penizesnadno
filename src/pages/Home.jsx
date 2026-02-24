@@ -212,10 +212,8 @@ export default function Home() {
 
         <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
 
-        {/* Reklama - Lazy load */}
-        <React.Suspense fallback={<div className="h-[50px] sm:h-[90px]" />}>
-          <AdBanner />
-        </React.Suspense>
+        {/* Reklama */}
+        <AdBanner />
 
         {/* Sekce Kolo Štěstí */}
          {selectedCategory === 'wheel' &&
