@@ -9,10 +9,6 @@ export default function AdAnalytics() {
   const [loading, setLoading] = useState(true);
   const [range, setRange] = useState(7);
 
-  useEffect(() => {
-    loadStats();
-  }, [range]);
-
   const loadStats = async () => {
     setLoading(true);
     try {
@@ -23,6 +19,10 @@ export default function AdAnalytics() {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    loadStats();
+  }, [range]);
 
   const metricCards = stats ? [
     { label: 'Celkem zobrazení', value: stats.totalImpressions.toLocaleString('cs-CZ'), icon: Eye, color: 'from-blue-500 to-blue-700' },
