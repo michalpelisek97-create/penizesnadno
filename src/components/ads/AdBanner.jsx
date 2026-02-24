@@ -7,31 +7,7 @@ export default function AdBanner() {
   const desktopIframeRef = useRef(null);
 
   useEffect(() => {
-    // Načti reklamy až po interakci uživatele NEBO po 5 sekundách
-    // Tím předejdeme okamžitému spuštění video reklam při načtení stránky
-    let loaded = false;
-
-    const load = () => {
-      if (loaded) return;
-      loaded = true;
-      setVisible(true);
-    };
-
-    // Po interakci uživatele
-    const onInteraction = () => load();
-    window.addEventListener('scroll', onInteraction, { once: true, passive: true });
-    window.addEventListener('touchstart', onInteraction, { once: true, passive: true });
-    window.addEventListener('click', onInteraction, { once: true, passive: true });
-
-    // Fallback: načti po 5 sekundách i bez interakce
-    const timer = setTimeout(load, 5000);
-
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('scroll', onInteraction);
-      window.removeEventListener('touchstart', onInteraction);
-      window.removeEventListener('click', onInteraction);
-    };
+    setVisible(true);
   }, []);
 
   useEffect(() => {
