@@ -87,7 +87,7 @@ export default function AdBanner() {
           <div className="hidden sm:block">
             <iframe
               ref={desktopIframeRef}
-              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-top-navigation-by-user-activation allow-popups-to-escape-sandbox"
               style={{ width: '728px', height: '90px', border: 'none', overflow: 'hidden', display: 'block' }}
               scrolling="no"
             />
