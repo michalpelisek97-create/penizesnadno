@@ -53,6 +53,22 @@ export default function RollerCoinCalculator() {
     setUnlocked(true);
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: 'RollerCoin Profit Calculator',
+      text: 'Spočítej si výdělek z těžby na RollerCoin! 🎮⛏️',
+      url: window.location.href,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Odkaz byl zkopírován do schránky!');
+      }
+    } catch (err) {}
+  };
+
   const fmt = (val) => Number(val).toFixed(15);
 
   const rows = results ? [
