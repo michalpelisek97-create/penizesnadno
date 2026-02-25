@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, Unlock, Calculator, Share2 } from 'lucide-react';
+import { Lock, Unlock, Calculator } from 'lucide-react';
 
 // Každý blok trvá 10 minut → 6 bloků za hodinu pro všechny mince v RollerCoin
 const BLOCKS_PER_HOUR = 6;
@@ -53,22 +53,6 @@ export default function RollerCoinCalculator() {
     setUnlocked(true);
   };
 
-  const handleShare = async () => {
-    const shareData = {
-      title: 'RollerCoin Profit Calculator',
-      text: 'Spočítej si výdělek z těžby na RollerCoin! 🎮⛏️',
-      url: window.location.href,
-    };
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(window.location.href);
-        alert('Odkaz byl zkopírován do schránky!');
-      }
-    } catch (err) {}
-  };
-
   const fmt = (val) => Number(val).toFixed(15);
 
   const rows = results ? [
@@ -107,12 +91,6 @@ export default function RollerCoinCalculator() {
             <div className="pixel-font text-xs text-yellow-400 mb-1">🎮 ROLLERCOIN</div>
             <h2 className="pixel-font text-lg sm:text-xl text-white leading-tight">PROFIT CALCULATOR</h2>
             <div className="h-1 w-32 mx-auto mt-3 rounded" style={{ background: 'linear-gradient(90deg, #f7931a, #ff6b35)' }} />
-            <button
-              onClick={handleShare}
-              className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-slate-300 border border-slate-600 hover:border-blue-400 hover:text-blue-300 transition-all"
-            >
-              <Share2 className="w-3 h-3" /> Sdílet kalkulačku
-            </button>
           </div>
 
           {/* Coin selector */}

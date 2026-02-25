@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLink, Gift, Sparkles, ShoppingBag, Share2 } from 'lucide-react';
+import { ExternalLink, Gift, Sparkles, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const categoryColors = {
@@ -29,24 +29,6 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
   );
   const gradientClass = categoryColors[primaryCategory] || categoryColors.other;
   const [imgError, setImgError] = React.useState(false);
-
-  const handleShare = React.useCallback(async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const shareData = {
-      title: link.title,
-      text: link.description || link.title,
-      url: link.url || window.location.href,
-    };
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(link.url || window.location.href);
-        alert('Odkaz byl zkopírován do schránky!');
-      }
-    } catch (err) {}
-  }, [link]);
 
   const handleImageError = React.useCallback(() => setImgError(true), []);
 
@@ -151,31 +133,21 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
             </p>
           )}
 
-          {/* CTA + Sdílet */}
-          <div className="flex gap-2">
-            <a
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1"
-            >
-              <Button
-                className={`w-full bg-gradient-to-r ${gradientClass} hover:opacity-90 text-white font-medium py-5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group/btn`}
-              >
-                <Sparkles className="w-4 h-4 mr-2 group-hover/btn:animate-pulse" />
-                {link.cta_text || 'Získat bonus'}
-                <ExternalLink className="w-4 h-4 ml-2 opacity-70" />
-              </Button>
-            </a>
+          {/* CTA Button */}
+          <a
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block"
+          >
             <Button
-              variant="outline"
-              onClick={handleShare}
-              className="px-3 py-5 rounded-xl border-slate-300 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all"
-              title="Sdílet"
+              className={`w-full bg-gradient-to-r ${gradientClass} hover:opacity-90 text-white font-medium py-5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group/btn`}
             >
-              <Share2 className="w-4 h-4" />
+              <Sparkles className="w-4 h-4 mr-2 group-hover/btn:animate-pulse" />
+              {link.cta_text || 'Získat bonus'}
+              <ExternalLink className="w-4 h-4 ml-2 opacity-70" />
             </Button>
-          </div>
+          </a>
         </div>
       </div>
     </div>
