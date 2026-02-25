@@ -151,21 +151,31 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
             </p>
           )}
 
-          {/* CTA Button */}
-          <a
-            href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block"
-          >
-            <Button
-              className={`w-full bg-gradient-to-r ${gradientClass} hover:opacity-90 text-white font-medium py-5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group/btn`}
+          {/* CTA + Sdílet */}
+          <div className="flex gap-2">
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1"
             >
-              <Sparkles className="w-4 h-4 mr-2 group-hover/btn:animate-pulse" />
-              {link.cta_text || 'Získat bonus'}
-              <ExternalLink className="w-4 h-4 ml-2 opacity-70" />
+              <Button
+                className={`w-full bg-gradient-to-r ${gradientClass} hover:opacity-90 text-white font-medium py-5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group/btn`}
+              >
+                <Sparkles className="w-4 h-4 mr-2 group-hover/btn:animate-pulse" />
+                {link.cta_text || 'Získat bonus'}
+                <ExternalLink className="w-4 h-4 ml-2 opacity-70" />
+              </Button>
+            </a>
+            <Button
+              variant="outline"
+              onClick={handleShare}
+              className="px-3 py-5 rounded-xl border-slate-300 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all"
+              title="Sdílet"
+            >
+              <Share2 className="w-4 h-4" />
             </Button>
-          </a>
+          </div>
         </div>
       </div>
     </div>
