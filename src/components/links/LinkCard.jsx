@@ -30,6 +30,24 @@ export default function LinkCard({ link, priority = false, loading = 'lazy' }) {
   const gradientClass = categoryColors[primaryCategory] || categoryColors.other;
   const [imgError, setImgError] = React.useState(false);
 
+  const handleShare = React.useCallback(async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const shareData = {
+      title: link.title,
+      text: link.description || link.title,
+      url: link.url || window.location.href,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(link.url || window.location.href);
+        alert('Odkaz byl zkopírován do schránky!');
+      }
+    } catch (err) {}
+  }, [link]);
+
   const handleImageError = React.useCallback(() => setImgError(true), []);
 
   // Optimalizuje URL obrázku podle domény - memoizované
