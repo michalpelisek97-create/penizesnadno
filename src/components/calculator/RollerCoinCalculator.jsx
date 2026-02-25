@@ -107,6 +107,12 @@ export default function RollerCoinCalculator() {
             <div className="pixel-font text-xs text-yellow-400 mb-1">🎮 ROLLERCOIN</div>
             <h2 className="pixel-font text-lg sm:text-xl text-white leading-tight">PROFIT CALCULATOR</h2>
             <div className="h-1 w-32 mx-auto mt-3 rounded" style={{ background: 'linear-gradient(90deg, #f7931a, #ff6b35)' }} />
+            <button
+              onClick={handleShare}
+              className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-slate-300 border border-slate-600 hover:border-blue-400 hover:text-blue-300 transition-all"
+            >
+              <Share2 className="w-3 h-3" /> Sdílet kalkulačku
+            </button>
           </div>
 
           {/* Coin selector */}
