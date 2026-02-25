@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLink, Gift, Sparkles, ShoppingBag } from 'lucide-react';
+import { ExternalLink, Gift, Sparkles, ShoppingBag, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const categoryColors = {

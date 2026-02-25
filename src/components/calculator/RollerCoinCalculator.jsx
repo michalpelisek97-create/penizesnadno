@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, Unlock, Calculator } from 'lucide-react';
+import { Lock, Unlock, Calculator, Share2 } from 'lucide-react';
 
 // Každý blok trvá 10 minut → 6 bloků za hodinu pro všechny mince v RollerCoin
 const BLOCKS_PER_HOUR = 6;
