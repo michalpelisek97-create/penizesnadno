@@ -1,0 +1,28 @@
+{
+  "name": "AdEvent",
+  "type": "object",
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "impression",
+        "click"
+      ],
+      "description": "Typ ud\u00e1losti"
+    },
+    "ad_type": {
+      "type": "string",
+      "description": "Typ banneru (mobile_banner, desktop_leaderboard)"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Datum ud\u00e1losti"
+    }
+  },
+  "required": [
+    "event_type",
+    "ad_type",
+    "date"
+  ]
+}
