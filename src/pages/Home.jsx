@@ -20,6 +20,7 @@ import { generateSchemaData } from '@/components/utils/seoHelper';
 
 import AdBanner from '@/components/ads/AdBanner';
 import RollerCoinCalculator from '@/components/calculator/RollerCoinCalculator';
+import VisitorCounter from '@/components/visitors/VisitorCounter';
 // Lazy import těžkých komponent
 const WheelOfFortune = React.lazy(() => import('@/components/wheel/WheelOfFortune'));
 
@@ -347,6 +348,10 @@ export default function Home() {
 
               <Share2 className="w-4 h-4 mr-2" /> Sdílet s přáteli
             </Button>
+          </div>
+          {/* Počítadlo návštěvnosti */}
+          <div className="mt-16">
+            <VisitorCounter />
           </div>
         </div>
       </main>
